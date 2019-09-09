@@ -1,0 +1,5 @@
+## Interface: 11302
+## Title: Svens Bam AddOn
+## Notes: Svens erstes "sinnvolles" AddOn
+SvensBamAddon.lua
+SvensBamAddon.xml
