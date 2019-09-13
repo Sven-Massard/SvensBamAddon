@@ -2,9 +2,19 @@
 
 local critList = {};
 local i = 1
+outputPrepend = "BAM! "
+
 function BAM_OnLoad(self)
     print("Svens Bam Addon geladen");
-    SlashCmdList["BAM"] = bam_cmd
+    SlashCmdList["BAM"] = function(cmd)
+        local params = {}
+        local i = 1
+        for arg in string.gmatch(cmd, "%S+") do
+            params[i] = arg
+            i = i + 1
+        end
+        bam_cmd(params)
+    end
     SLASH_BAM1 = '/bam'
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
@@ -19,23 +29,34 @@ function eventHandler(self, event, ...)
 	if (eventInfo[2] == "SPELL_DAMAGE" and eventInfo[21] == true) then 
         local spellName = eventInfo[13];
         local value = eventInfo[15];
-		local outputMessage = "BAM! "..spellName.." "..value.." Damage";
+        local outputMessage = (outputPrepend..spellName.." "..value.." Damage")
 		PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
 		SendChatMessage(outputMessage ,"YELL" );
         addToCritList(spellName, value);
 	end
 end
  
-function bam_cmd(cmd)
+function bam_cmd(params)
+    cmd = params[1]
     if(cmd == "help" or cmd == "") then
-        print("Possible parameters:");
-        print("listCrits -- lists highest crits of each spell");
+        print("Possible parameters:")
+        print("list: lists highest crits of each spell")
+        print("clear: delete list of highest crits")
+        print("output msg: sets beginning of message to msg. Default: 'BAM!'")
     
     elseif(cmd == "list") then
         list();
         
     elseif(cmd == "clear") then
         clear();
+    
+    elseif(cmd == "output") then
+        local i=2
+        outputPrepend = ""
+        while(params[i]) do 
+            outputPrepend = outputPrepend..params[i].." "
+            i = i + 1
+        end
         
     elseif(cmd == "test") then
         addToCritList("SpellName"..i, i);
