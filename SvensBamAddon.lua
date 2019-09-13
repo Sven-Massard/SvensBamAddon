@@ -17,11 +17,12 @@ function eventHandler(self, event, ...)
 	end
     -- eventInfo[21] = crit
 	if (eventInfo[2] == "SPELL_DAMAGE" and eventInfo[21] == true) then 
-        spellName = eventInfo[13];
-		outputMessage = "BAM! "..spellName.." "..eventInfo[15].." Damage";
+        local spellName = eventInfo[13];
+        local value = eventInfo[15];
+		local outputMessage = "BAM! "..spellName.." "..value.." Damage";
 		PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
 		SendChatMessage(outputMessage ,"YELL" );
-        addElementToCritList(spellName);
+        addToCritList(spellName, value);
 	end
 end
  
@@ -37,8 +38,7 @@ function bam_cmd(cmd)
         clear();
         
     elseif(cmd == "test") then
-        addToCritList(i);
-        print("Added "..i)
+        addToCritList("SpellName"..i, i);
         i = i+1;
         
     end
@@ -49,41 +49,55 @@ function list()
     if not (critList.value == nil) then
         print("Highest crits:");
         local it = critList
-        print(it.value)
+        print(it.spellName..": "..it.value)
         while not (it.nextNode == nil) do
             it = it.nextNode
-            print(it.value)
+            print(it.spellName..": "..it.value)
         end
     else
         print("Not crits recorded");
     end
 end
 
-function addToCritList(val)
+function addToCritList(spellName, val)
 
-    if(critList.value == nil) then
+    if(critList.spellName==nil and critList.value==nil) then
+        critList.spellName = spellName
         critList.value = val
         critList.nextNode = nil
         
     else
         local it = critList
+        if(it.spellName==spellName) then -- Maybe later refactor to avoid duplicate code
+            if(it.value<val) then
+                it.value=val
+            end
+            do return end
+        end
+        
         while not (it.nextNode == nil) do
+            if(it.spellName==spellName) then
+                if(it.value<val) then
+                    it.value=val
+                end
+                do return end
+            end
             it = it.nextNode
         end
-        it.nextNode = newNode(val)
-        
+        it.nextNode = newNode(spellName, val)
     end
     
 end
 
-function newNode(val)
+function newNode(spellName, val)
     local newNode = {};
+    newNode.spellName = spellName
     newNode.value = val
     newNode.nextNode = nil
     return newNode
 end
 
-function clear() --TODO
+function clear()
     critList = {};
     print("Critlist cleared");
 end
