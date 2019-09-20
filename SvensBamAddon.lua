@@ -59,9 +59,11 @@ function bam_cmd(params)
         end
         
     elseif(cmd == "test") then
-        addToCritList("SpellName"..i, i);
-        i = i+1;
-        
+        -- addToCritList("SpellName"..i, i);
+        -- i = i+1;
+        addToCritList("Mindblast", 100);
+        addToCritList("Smite", 105);
+        addToCritList("Smite", 100);
     end
     
 end
@@ -83,9 +85,7 @@ end
 function addToCritList(spellName, val)
 
     if(critList.spellName==nil and critList.value==nil) then
-        critList.spellName = spellName
-        critList.value = val
-        critList.nextNode = nil
+        critList = newNode(spellName, val)
         
     else
         local it = critList
@@ -97,13 +97,13 @@ function addToCritList(spellName, val)
         end
         
         while not (it.nextNode == nil) do
+            it = it.nextNode
             if(it.spellName==spellName) then
                 if(it.value<val) then
                     it.value=val
                 end
                 do return end
-            end
-            it = it.nextNode
+            end         
         end
         it.nextNode = newNode(spellName, val)
     end
