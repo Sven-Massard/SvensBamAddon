@@ -3,6 +3,6 @@
 ## Notes: Svens erstes "sinnvolles" AddOn
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: outputPrepend,critList
+## SavedVariablesPerCharacter: outputPrepend,critList,outputChannels
 SvensBamAddon.lua
 SvensBamAddon.xml
