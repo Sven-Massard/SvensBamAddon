@@ -1,7 +1,6 @@
 ﻿-- Variables
 
-local critList = {};
-local i = 1
+critList = {};
 outputPrepend = "BAM! "
 
 function BAM_OnLoad(self)

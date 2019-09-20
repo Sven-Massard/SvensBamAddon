@@ -1,5 +1,8 @@
 ## Interface: 11302
 ## Title: Svens Bam AddOn
 ## Notes: Svens erstes "sinnvolles" AddOn
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariablesPerCharacter: outputPrepend,critList
 SvensBamAddon.lua
 SvensBamAddon.xml
