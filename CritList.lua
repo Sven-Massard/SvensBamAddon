@@ -33,3 +33,23 @@ function newNode(spellName, val)
     newNode.nextNode = nil
     return newNode
 end
+
+function clear()
+    critList = {};
+    print("Critlist cleared");
+end
+
+
+function list()
+    if not (critList.value == nil) then
+        print("Highest crits:");
+        local it = critList
+        print(it.spellName..": "..it.value)
+        while not (it.nextNode == nil) do
+            it = it.nextNode
+            print(it.spellName..": "..it.value)
+        end
+    else
+        print("Not crits recorded");
+    end
+end

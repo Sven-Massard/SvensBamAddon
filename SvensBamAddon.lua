@@ -46,27 +46,23 @@ function bam_cmd(params)
         print("list: lists highest crits of each spell")
         print("clear: delete list of highest crits")
         print("output msg: sets beginning of message to msg. Default: 'BAM!'")
-        print("channel listOfChannels: e.g. '/bam channel YELL GUILD SAY'. Channels with numbers not yet supported.")
-    
+        print("channel listOfChannels: e.g. '/bam channel YELL GUILD SAY'. Channels with numbers not yet supported.")   
     elseif(cmd == "list") then
         list();
-        
     elseif(cmd == "clear") then
-        clear();
-    
+        clear();   
     elseif(cmd == "output") then
         outputPrepend = ""
         while(params[firstVariable]) do 
             outputPrepend = outputPrepend..params[firstVariable].." "
             firstVariable = firstVariable + 1
-        end
+        end       
     elseif(cmd == "channel") then
         outputChannels = {}
         while(params[firstVariable]) do
                 table.insert(outputChannels, params[firstVariable])
                 firstVariable = firstVariable + 1
-        end
-        
+        end       
     elseif(cmd == "test") then
         addToCritList("Mindblast", 100);
         addToCritList("Smite", 105);
@@ -77,30 +73,8 @@ function bam_cmd(params)
         table.insert(list, "d")
         for _, v in pairs(list) do
             print(v)
-        end
+        end       
     else
         print("Bam Error: Unknown command")
-    end
-    
-    
-end
-
-
-function list()
-    if not (critList.value == nil) then
-        print("Highest crits:");
-        local it = critList
-        print(it.spellName..": "..it.value)
-        while not (it.nextNode == nil) do
-            it = it.nextNode
-            print(it.spellName..": "..it.value)
-        end
-    else
-        print("Not crits recorded");
-    end
-end
-
-function clear()
-    critList = {};
-    print("Critlist cleared");
+    end   
 end
