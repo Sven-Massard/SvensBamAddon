@@ -8,7 +8,13 @@
          <OnEvent>eventHandler(self, event, ...)</OnEvent>
       </Scripts> 
    </Frame> 
-
+    <Frame name="SvensBamAddon_Config">
+        <Scripts>
+            <OnLoad>
+                BAM_Config_OnLoad(self);
+            </OnLoad>
+        </Scripts>
+    </Frame>
    <GameTooltip name="BAM_Tooltip" inherits="GameTooltipTemplate"/>
 
 </Ui>

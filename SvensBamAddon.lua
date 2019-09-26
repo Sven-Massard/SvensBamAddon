@@ -2,7 +2,6 @@
 
 critList = {}
 outputPrepend = "BAM! "
-outputChannels = {"YELL"}
 
 function BAM_OnLoad(self)
     print("Svens Bam Addon geladen");
@@ -31,7 +30,7 @@ function eventHandler(self, event, ...)
         local value = eventInfo[15];
         local outputMessage = (outputPrepend..spellName.." "..value.." Damage")
 		PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
-        for _, v in pairs(outputChannels) do
+        for _, v in pairs(outputChannelList) do
 		    SendChatMessage(outputMessage ,v );
         end
         addToCritList(spellName, value);
@@ -58,11 +57,9 @@ function bam_cmd(params)
             firstVariable = firstVariable + 1
         end       
     elseif(cmd == "channel") then
-        outputChannels = {}
-        while(params[firstVariable]) do
-                table.insert(outputChannels, params[firstVariable])
-                firstVariable = firstVariable + 1
-        end       
+         for _, v in pairs(outputChannelList) do
+            print(v)
+         end
     elseif(cmd == "test") then
         addToCritList("Mindblast", 100);
         addToCritList("Smite", 105);
