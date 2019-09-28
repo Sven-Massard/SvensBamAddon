@@ -4,7 +4,6 @@ critList = {}
 outputPrepend = "BAM! "
 
 function BAM_OnLoad(self)
-    print("Svens Bam Addon geladen");
     SlashCmdList["BAM"] = function(cmd)
         local params = {}
         local i = 1
@@ -15,10 +14,19 @@ function BAM_OnLoad(self)
         bam_cmd(params)
     end
     SLASH_BAM1 = '/bam'
+    self:RegisterEvent("ADDON_LOADED")
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 
-function eventHandler(self, event, ...)
+function eventHandler(self, event, arg1)
+    if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        critEvent(self, event, arg1)
+    elseif event == "ADDON_LOADED" and arg1 == "SvensBamAddon" then
+        loadAddon()
+    end
+end
+
+function critEvent(self, event, ...)
 	name, realm = UnitName("player");
 	eventInfo = {CombatLogGetCurrentEventInfo()}
 	if not (eventInfo[5] == name) then
@@ -31,7 +39,15 @@ function eventHandler(self, event, ...)
         local outputMessage = (outputPrepend..spellName.." "..value.." Damage")
 		PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
         for _, v in pairs(outputChannelList) do
-		    SendChatMessage(outputMessage ,v );
+            if v == "Print" then
+                print(outputMessage)
+            elseif (v == "Whisper") then
+                for _, w in pairs(_G["whisperList"]) do
+                    SendChatMessage(outputMessage, "WHISPER", "COMMON", w)
+                end
+		    else
+                SendChatMessage(outputMessage ,v );
+            end
         end
         addToCritList(spellName, value);
 	end
