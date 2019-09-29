@@ -61,7 +61,6 @@ function bam_cmd(params)
         print("list: lists highest crits of each spell")
         print("clear: delete list of highest crits")
         print("output msg: sets beginning of message to msg. Default: 'BAM!'")
-        print("channel listOfChannels: e.g. '/bam channel YELL GUILD SAY'. Channels with numbers not yet supported.")   
     elseif(cmd == "list") then
         list();
     elseif(cmd == "clear") then
@@ -71,11 +70,7 @@ function bam_cmd(params)
         while(params[firstVariable]) do 
             outputPrepend = outputPrepend..params[firstVariable].." "
             firstVariable = firstVariable + 1
-        end       
-    elseif(cmd == "channel") then
-         for _, v in pairs(outputChannelList) do
-            print(v)
-         end
+        end
     elseif(cmd == "test") then
         addToCritList("Mindblast", 100);
         addToCritList("Smite", 105);
