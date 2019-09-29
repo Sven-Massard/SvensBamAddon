@@ -20,23 +20,21 @@ end
 
 function eventHandler(self, event, arg1)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        critEvent(self, event, arg1)
+        combatLogEvent(self, event, arg1)
     elseif event == "ADDON_LOADED" and arg1 == "SvensBamAddon" then
         loadAddon()
     end
 end
 
-function critEvent(self, event, ...)
+function combatLogEvent(self, event, ...)
 	name, realm = UnitName("player");
-	eventInfo = {CombatLogGetCurrentEventInfo()}
-	if not (eventInfo[5] == name) then
+    eventType,_ ,_ , eventSource = select(2, CombatLogGetCurrentEventInfo())
+	if not (eventSource == name) then
 		do return end
 	end
-    -- eventInfo[21] = crit
-	if (eventInfo[2] == "SPELL_DAMAGE" and eventInfo[21] == true) then 
-        local spellName = eventInfo[13];
-        local value = eventInfo[15];
-        local outputMessage = (outputPrepend..spellName.." "..value.." Damage")
+    spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
+	if (eventType == "SPELL_DAMAGE" and critical == true) then 
+        local outputMessage = (outputPrepend..spellName.." "..amount.." Damage")
 		PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
         for _, v in pairs(outputChannelList) do
             if v == "Print" then
@@ -49,7 +47,7 @@ function critEvent(self, event, ...)
                 SendChatMessage(outputMessage ,v );
             end
         end
-        addToCritList(spellName, value);
+        addToCritList(spellName, amount);
 	end
 end
  
