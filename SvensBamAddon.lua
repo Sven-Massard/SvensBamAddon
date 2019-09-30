@@ -17,7 +17,7 @@ function eventHandler(self, event, arg1)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         combatLogEvent(self, event, arg1)
     elseif event == "ADDON_LOADED" and arg1 == "SvensBamAddon" then
-        loadAddon()
+        loadAddon() -- in SvensBamAddonConfig.lua
     end
 end
 
@@ -54,12 +54,17 @@ function bam_cmd(params)
         print("Possible parameters:")
         print("list: lists highest crits of each spell")
         print("clear: delete list of highest crits")
+		print("config: Opens config page")
     elseif(cmd == "list") then
-        list();
+        listCrits();
     elseif(cmd == "clear") then
         clear();   
-    elseif(cmd == "test") then
-        
+    elseif(cmd == "config") then
+		-- For some reason, needs to be called twice to function correctly on first call
+		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonGeneralOptions.panel)
+		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonGeneralOptions.panel)
+	elseif(cmd == "test") then
+	
     else
         print("Bam Error: Unknown command")
     end   

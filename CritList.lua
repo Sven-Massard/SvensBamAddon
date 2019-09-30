@@ -40,7 +40,7 @@ function clear()
 end
 
 
-function list()
+function listCrits()
     if not (critList.value == nil) then
         print("Highest crits:");
         local it = critList

@@ -3,7 +3,7 @@ function loadAddon()
     local whisperFrame
     local outputMessageEditBox
     local buttonList = {}
-    local list = 
+    local channelList = 
         {
             "Say",
             "Yell",
@@ -30,6 +30,7 @@ function loadAddon()
     if(critList == nil) then
         critList = {}
     end
+    
     if(outputMessage == nil) then
         outputMessage = "BAM! SN SD"
     end
@@ -63,7 +64,7 @@ function loadAddon()
         saveOutputList()
     end
     InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
-    populateChannelSubmenu(buttonList, list)
+    populateChannelSubmenu(buttonList, channelList)
     
     print("|cff00ff00Svens Bam Addon loaded!")
 end
@@ -73,68 +74,65 @@ function populateGeneralSubmenu()
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
     SvensBamAddonGeneralOptions.panel.title:SetText("|cff00ff00Output Message")
-    --Output message
+    
+    --Output message Edit Box
     outputMessageEditBox = createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel)
     outputMessageEditBox:SetPoint("TOPLEFT", 32, -24)
-    local i = 1
     outputMessageEditBox:Insert(outputMessage)
     outputMessageEditBox:SetCursorPosition(0)   
     outputMessageEditBox:SetScript( "OnEscapePressed", function(...)
         outputMessageEditBox:ClearFocus()
         outputMessageEditBox:SetText(outputMessage)
         end)
-        outputMessageEditBox:SetScript( "OnEnterPressed", function(...)
-            outputMessageEditBox:ClearFocus()
-            saveOutputList()
-        end)
-        outputMessageEditBox:SetScript( "OnEnter", function(...)            
-            GameTooltip:SetOwner(outputMessageEditBox, "ANCHOR_BOTTOM");
-            GameTooltip:SetText( "Insert your damage message here.\nSN will be replaced with spell name\nSD with spell damage.\nDefault: BAM! SN SD" )
-            GameTooltip:ClearAllPoints()
-            GameTooltip:Show()
-        end)
-        outputMessageEditBox:SetScript( "OnLeave", function()
-            GameTooltip:Hide()
-        end)
-    
-    
-    
-    
+    outputMessageEditBox:SetScript( "OnEnterPressed", function(...)
+        outputMessageEditBox:ClearFocus()
+        saveOutputList()
+    end)
+    outputMessageEditBox:SetScript( "OnEnter", function(...)            
+        GameTooltip:SetOwner(outputMessageEditBox, "ANCHOR_BOTTOM");
+        GameTooltip:SetText( "Insert your damage message here.\nSN will be replaced with spell name.\nSD with spell damage.\nDefault: BAM! SN SD" )
+        GameTooltip:ClearAllPoints()
+        GameTooltip:Show()
+    end)
+    outputMessageEditBox:SetScript( "OnLeave", function()
+        GameTooltip:Hide()
+    end)
 end
 
-function populateChannelSubmenu(buttonList, list)
+function populateChannelSubmenu(buttonList, channelList)
     SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
     SvensBamAddonChannelOptions.panel.title:SetText("|cff00ff00Output Channel")
-    -- Checkboxes Channel and Whisperlist
-    for i=1, # list do
-        createCheckButtonChannel(i, 1, i, buttonList, list)
+    -- Checkboxes channels and Edit Box for whispers
+    for i=1, # channelList do
+        createCheckButtonChannel(i, 1, i, buttonList, channelList)
     end   
 end
 
-function createCheckButtonChannel(i, x, y, buttonList, list)
+function createCheckButtonChannel(i, x, y, buttonList, channelList)
+    -- Buttons
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_CheckButton" .. i, SvensBamAddonChannelOptions.panel, "UICheckButtonTemplate")
     buttonList[i] = checkButton
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y*-24)
     checkButton:SetSize(32, 32)
     
-    _G[checkButton:GetName() .. "Text"]:SetText(list[i])
+    _G[checkButton:GetName() .. "Text"]:SetText(channelList[i])
     _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
     for j = 1, # outputChannelList do
-        if(outputChannelList[j] == list[i]) then            
+        if(outputChannelList[j] == channelList[i]) then            
             buttonList[i]:SetChecked(true)
         end
     end
     
     buttonList[i]:SetScript("OnClick", function()   
         if buttonList[i]:GetChecked() then
-            table.insert(outputChannelList, list[i])         
+            table.insert(outputChannelList, channelList[i])         
         else
             indexOfFoundValues = {}
             for j = 1, # outputChannelList do
-                if(outputChannelList[j] == list[i]) then
+                if(outputChannelList[j] == channelList[i]) then
                     table.insert(indexOfFoundValues, j)
                 end
             end
@@ -147,7 +145,7 @@ function createCheckButtonChannel(i, x, y, buttonList, list)
     end)
     
     -- Create Edit Box for whispers
-    if(list[i] == "Whisper") then
+    if(channelList[i] == "Whisper") then
         whisperFrame = createEditBox("WhisperList", SvensBamAddonChannelOptions.panel)
         whisperFrame:SetPoint("TOP",50, -24*y)
         for _, v in pairs(whisperList) do
