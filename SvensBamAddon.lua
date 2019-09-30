@@ -27,12 +27,14 @@ function combatLogEvent(self, event, ...)
 	if not (eventSource == name) then
 		do return end
 	end
-    
     --Assign correct values to variables
     if(eventType == "SPELL_DAMAGE") then
         spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
     elseif (eventType == "RANGE_DAMAGE") then
         spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
+    elseif (eventType == "SWING_DAMAGE") then
+        spellName = "Autohit"
+        amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, CombatLogGetCurrentEventInfo())
     end
     
     for i=1, # eventList do

@@ -28,12 +28,16 @@ function loadAddon()
         whisperList = {}
     end
 
-    if(eventList == nil) then
-        eventList =
+    defaultEventList = 
         {
             {name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true},
-            {name = "Ranged", eventType = "RANGE_DAMAGE",  boolean = false}
+            {name = "Ranged", eventType = "RANGE_DAMAGE",  boolean = false},
+            {name = "Melee Autohit", eventType = "SWING_DAMAGE",  boolean = false},
         }
+
+    --reset eventList in case defaultEventList was updated
+    if(eventList == nil or not (# eventList == #defaultEventList)) then 
+        eventList = defaultEventList
     end
       
     if(critList == nil) then
