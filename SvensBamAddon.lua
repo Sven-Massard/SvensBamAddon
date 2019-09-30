@@ -72,7 +72,9 @@ function bam_cmd(params)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonGeneralOptions.panel)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonGeneralOptions.panel)
 	elseif(cmd == "test") then
-	    
+        for i = 1, # outputChannelList do
+            print(outputChannelList[i])
+        end
     else
         print("Bam Error: Unknown command")
     end   

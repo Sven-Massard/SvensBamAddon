@@ -153,7 +153,8 @@ function populateChannelSubmenu(channelButtonList, channelList)
     -- Checkboxes channels and Edit Box for whispers
     for i=1, # channelList do
         createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
-    end   
+    end
+    createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
 end
 
 function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
@@ -219,6 +220,21 @@ function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
             GameTooltip:Hide()
         end)
     end
+end
+
+function createResetChannelListButton(parentFrame, channelList, channelButtonList)
+    resetChannelListButton = CreateFrame("Button", "ResetButtonChannels", parentFrame, "UIPanelButtonTemplate");
+    resetChannelListButton:ClearAllPoints()
+    resetChannelListButton:SetPoint("TOPLEFT", 32, ((# channelList) + 1)*-24 -8)
+    resetChannelListButtonText = "Reset Channel List (May fix bugs after updating)"
+    resetChannelListButton:SetSize(resetChannelListButtonText:len()*7, 32)
+    resetChannelListButton:SetText(resetChannelListButtonText)
+    resetChannelListButton:SetScript( "OnClick", function(...)
+        for i = 1, # channelButtonList do
+            channelButtonList[i]:SetChecked(false)
+        end
+            outputChannelList = {}
+    end)
 end
 
 function saveWhisperList()
