@@ -2,7 +2,8 @@
 function loadAddon()
     local whisperFrame
     local outputMessageEditBox
-    local buttonList = {}
+    local channelButtonList = {}
+    local eventButtonList = {}
     local channelList = 
         {
             "Say",
@@ -26,7 +27,15 @@ function loadAddon()
     if(whisperList == nil) then
         whisperList = {}
     end
-    
+
+    if(eventList == nil) then
+        eventList =
+        {
+            {name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true},
+            {name = "Ranged", eventType = "RANGE_DAMAGE",  boolean = false}
+        }
+    end
+      
     if(critList == nil) then
         critList = {}
     end
@@ -52,7 +61,7 @@ function loadAddon()
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
     InterfaceOptions_AddCategory(SvensBamAddonGeneralOptions.panel);
-    populateGeneralSubmenu()
+    populateGeneralSubmenu(eventButtonList, eventList)
     
     --Channel Options SubMenu
     SvensBamAddonChannelOptions = {}
@@ -64,20 +73,57 @@ function loadAddon()
         saveOutputList()
     end
     InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
-    populateChannelSubmenu(buttonList, channelList)
+    populateChannelSubmenu(channelButtonList, channelList)
     
     print("|cff00ff00Svens Bam Addon loaded!")
 end
 
-function populateGeneralSubmenu()
+function populateGeneralSubmenu(eventButtonList, eventList)
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
     SvensBamAddonGeneralOptions.panel.title:SetText("|cff00ff00Output Message")
     
-    --Output message Edit Box
+    createOutputMessageEditBox()
+    
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 64);
+    SvensBamAddonGeneralOptions.panel.title:SetText("|cff00ff00Event Types to Trigger")
+    
+    for i=1, # eventList do
+        createEventTypeCheckBoxes(i, 1, i, eventButtonList, eventList)
+    end
+end
+
+function createEventTypeCheckBoxes(i, x, y, eventButtonList, eventList)
+    local checkButton = CreateFrame("CheckButton", "SvensBamAddon_EventTypeCheckButton" .. i, SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
+    eventButtonList[i] = checkButton
+    checkButton:ClearAllPoints()
+    checkButton:SetPoint("TOPLEFT", x * 32, y*-24 -64)
+    checkButton:SetSize(32, 32)
+    
+    _G[checkButton:GetName() .. "Text"]:SetText(eventList[i].name)
+    _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
+    for j = 1, # eventList do
+        if(eventList[i].boolean) then            
+            eventButtonList[i]:SetChecked(true)
+        end
+    end
+
+    eventButtonList[i]:SetScript("OnClick", function()   
+        if eventButtonList[i]:GetChecked() then
+            eventList[i].boolean = true
+        else
+            eventList[i].boolean = false
+        end
+    end)
+
+end
+
+function createOutputMessageEditBox()
     outputMessageEditBox = createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel)
-    outputMessageEditBox:SetPoint("TOPLEFT", 32, -24)
+    outputMessageEditBox:SetPoint("TOPLEFT", 40, -24)
     outputMessageEditBox:Insert(outputMessage)
     outputMessageEditBox:SetCursorPosition(0)   
     outputMessageEditBox:SetScript( "OnEscapePressed", function(...)
@@ -99,21 +145,20 @@ function populateGeneralSubmenu()
     end)
 end
 
-function populateChannelSubmenu(buttonList, channelList)
+function populateChannelSubmenu(channelButtonList, channelList)
     SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
     SvensBamAddonChannelOptions.panel.title:SetText("|cff00ff00Output Channel")
     -- Checkboxes channels and Edit Box for whispers
     for i=1, # channelList do
-        createCheckButtonChannel(i, 1, i, buttonList, channelList)
+        createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
     end   
 end
 
-function createCheckButtonChannel(i, x, y, buttonList, channelList)
-    -- Buttons
-    local checkButton = CreateFrame("CheckButton", "SvensBamAddon_CheckButton" .. i, SvensBamAddonChannelOptions.panel, "UICheckButtonTemplate")
-    buttonList[i] = checkButton
+function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
+    local checkButton = CreateFrame("CheckButton", "SvensBamAddon_ChannelCheckButton" .. i, SvensBamAddonChannelOptions.panel, "UICheckButtonTemplate")
+    channelButtonList[i] = checkButton
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y*-24)
     checkButton:SetSize(32, 32)
@@ -122,12 +167,12 @@ function createCheckButtonChannel(i, x, y, buttonList, channelList)
     _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
     for j = 1, # outputChannelList do
         if(outputChannelList[j] == channelList[i]) then            
-            buttonList[i]:SetChecked(true)
+            channelButtonList[i]:SetChecked(true)
         end
     end
     
-    buttonList[i]:SetScript("OnClick", function()   
-        if buttonList[i]:GetChecked() then
+    channelButtonList[i]:SetScript("OnClick", function()   
+        if channelButtonList[i]:GetChecked() then
             table.insert(outputChannelList, channelList[i])         
         else
             indexOfFoundValues = {}

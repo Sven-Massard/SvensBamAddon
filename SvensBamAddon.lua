@@ -27,24 +27,32 @@ function combatLogEvent(self, event, ...)
 	if not (eventSource == name) then
 		do return end
 	end
-
-    spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
-	if (eventType == "SPELL_DAMAGE" and critical == true) then
-        local output = outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount)
-		PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
-        for _, v in pairs(outputChannelList) do
-            if v == "Print" then
-                print(output)
-            elseif (v == "Whisper") then
-                for _, w in pairs(whisperList) do
-                    SendChatMessage(output, "WHISPER", "COMMON", w)
+    
+    --Assign correct values to variables
+    if(eventType == "SPELL_DAMAGE") then
+        spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
+    elseif (eventType == "RANGED_DAMAGE") then
+        spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
+    end
+    
+    for i=1, # eventList do
+        if (eventType == eventList[i].eventType and eventList[i].boolean and critical == true) then
+            local output = outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount)
+            PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
+            for _, v in pairs(outputChannelList) do
+                if v == "Print" then
+                    print(output)
+                elseif (v == "Whisper") then
+                    for _, w in pairs(whisperList) do
+                        SendChatMessage(output, "WHISPER", "COMMON", w)
+                    end
+                else
+                    SendChatMessage(output ,v );
                 end
-		    else
-                SendChatMessage(output ,v );
             end
+            addToCritList(spellName, amount);
         end
-        addToCritList(spellName, amount);
-	end
+    end
 end
  
 function bam_cmd(params)
