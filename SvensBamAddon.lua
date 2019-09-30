@@ -31,7 +31,7 @@ function combatLogEvent(self, event, ...)
     --Assign correct values to variables
     if(eventType == "SPELL_DAMAGE") then
         spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
-    elseif (eventType == "RANGED_DAMAGE") then
+    elseif (eventType == "RANGE_DAMAGE") then
         spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
     end
     
@@ -72,7 +72,7 @@ function bam_cmd(params)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonGeneralOptions.panel)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonGeneralOptions.panel)
 	elseif(cmd == "test") then
-	
+	    
     else
         print("Bam Error: Unknown command")
     end   
