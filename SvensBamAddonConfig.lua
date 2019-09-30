@@ -1,6 +1,6 @@
 ﻿
 function loadAddon()
-
+    local whisperFrame
     local buttonList = {}
     local list = 
         {
@@ -31,6 +31,10 @@ function loadAddon()
     SvensBamAddonConfig = {};
     SvensBamAddonConfig.panel = CreateFrame( "Frame", "SvensBamAddonConfig", UIParent );    
     SvensBamAddonConfig.panel.name = "Svens Bam Addon";
+    SvensBamAddonConfig.panel.title = SvensBamAddonConfig.panel:CreateFontString(nil, "OVERLAY");
+    SvensBamAddonConfig.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
+    SvensBamAddonConfig.panel.title:SetPoint("TOPLEFT", 5, -5);
+    SvensBamAddonConfig.panel.title:SetText("|cff00ff00 Choose sub menu to change options")
     InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
     
     --General Options SubMenu
@@ -39,28 +43,38 @@ function loadAddon()
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
     InterfaceOptions_AddCategory(SvensBamAddonGeneralOptions.panel);
+    populateGeneralSubmenu()
     
     --Channel Options SubMenu
     SvensBamAddonChannelOptions = {}
     SvensBamAddonChannelOptions.panel = CreateFrame( "Frame", "SvensBamAddonChannelOptions");
     SvensBamAddonChannelOptions.panel.name = "Channel options";
     SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
+    SvensBamAddonChannelOptions.panel.okay = function()
+        saveWhisperList()
+    end
     InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
     populateChannelSubmenu(buttonList, list)
 end
 
 function populateChannelSubmenu(buttonList, list)
-    -- Output Channel
     SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonChannelOptions.panel.title:SetText("Output Channel")
+    SvensBamAddonChannelOptions.panel.title:SetText("|cff00ff00 Output Channel")
     -- Checkboxes Channel and Whisperlist
     for i=1, # list do
         createCheckButtonChannel(i, 1, i, buttonList, list)
     end   
-end    
-    
+end
+
+function populateGeneralSubmenu()
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
+    SvensBamAddonGeneralOptions.panel.title:SetText("|cff00ff00 Message Prepend")
+--    createEditBox(name, parentFrame)
+end
     
 function createCheckButtonChannel(i, x, y, buttonList, list)
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_CheckButton" .. i, SvensBamAddonChannelOptions.panel, "UICheckButtonTemplate")
@@ -97,7 +111,7 @@ function createCheckButtonChannel(i, x, y, buttonList, list)
     
     -- Create Edit Box for whispers
     if(list[i] == "Whisper") then
-        local whisperFrame = createEditBox("WhisperList", SvensBamAddonChannelOptions.panel)
+        whisperFrame = createEditBox("WhisperList", SvensBamAddonChannelOptions.panel)
         whisperFrame:SetPoint("TOP",50, -24*y)
         for _, v in pairs(_G["whisperList"]) do
             whisperFrame:Insert(v.." ")
@@ -105,17 +119,18 @@ function createCheckButtonChannel(i, x, y, buttonList, list)
         whisperFrame:SetCursorPosition(0)
         
         whisperFrame:SetScript( "OnEscapePressed", function(...)
-            saveWhisperList(whisperFrame)
+            whisperFrame:SetText("")
+            for _, v in pairs(_G["whisperList"]) do
+                whisperFrame:Insert(v.." ")
+            end
         end)
         whisperFrame:SetScript( "OnEnterPressed", function(...)
-            saveWhisperList(whisperFrame)
+            saveWhisperList()
         end)
-        whisperFrame:SetScript( "OnEnter", function(...)
-            
+        whisperFrame:SetScript( "OnEnter", function(...)            
             GameTooltip:SetOwner(whisperFrame, "ANCHOR_BOTTOM");
             GameTooltip:SetText( "Separate names of people you want to whisper to with spaces." )
             GameTooltip:ClearAllPoints()
-            --GameTooltip:SetPoint("BOTTOMLEFT", whisperFrame, "BOTTOMLEFT", 50, 50);
             GameTooltip:Show()
         end)
         whisperFrame:SetScript( "OnLeave", function()
@@ -124,7 +139,7 @@ function createCheckButtonChannel(i, x, y, buttonList, list)
     end
 end
 
-function saveWhisperList(whisperFrame)
+function saveWhisperList()
     whisperFrame:ClearFocus()
     whisperList = {}
     for arg in string.gmatch(whisperFrame:GetText(), "%S+") do
