@@ -1,9 +1,4 @@
-﻿-- Variables
-
-critList = {}
-outputPrepend = "BAM! "
-
-function BAM_OnLoad(self)
+﻿function BAM_OnLoad(self)
     SlashCmdList["BAM"] = function(cmd)
         local params = {}
         local i = 1
@@ -32,19 +27,20 @@ function combatLogEvent(self, event, ...)
 	if not (eventSource == name) then
 		do return end
 	end
+
     spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
-	if (eventType == "SPELL_DAMAGE" and critical == true) then 
-        local outputMessage = (outputPrepend..spellName.." "..amount.." Damage")
+	if (eventType == "SPELL_DAMAGE" and critical == true) then
+        local output = outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount)
 		PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
         for _, v in pairs(outputChannelList) do
             if v == "Print" then
-                print(outputMessage)
+                print(output)
             elseif (v == "Whisper") then
-                for _, w in pairs(_G["whisperList"]) do
-                    SendChatMessage(outputMessage, "WHISPER", "COMMON", w)
+                for _, w in pairs(whisperList) do
+                    SendChatMessage(output, "WHISPER", "COMMON", w)
                 end
 		    else
-                SendChatMessage(outputMessage ,v );
+                SendChatMessage(output ,v );
             end
         end
         addToCritList(spellName, amount);
@@ -58,28 +54,12 @@ function bam_cmd(params)
         print("Possible parameters:")
         print("list: lists highest crits of each spell")
         print("clear: delete list of highest crits")
-        print("output msg: sets beginning of message to msg. Default: 'BAM!'")
     elseif(cmd == "list") then
         list();
     elseif(cmd == "clear") then
         clear();   
-    elseif(cmd == "output") then
-        outputPrepend = ""
-        while(params[firstVariable]) do 
-            outputPrepend = outputPrepend..params[firstVariable].." "
-            firstVariable = firstVariable + 1
-        end
     elseif(cmd == "test") then
-        addToCritList("Mindblast", 100);
-        addToCritList("Smite", 105);
-        addToCritList("Smite", 100);
-        local list = {}
-        table.insert(list, "a")
-        table.insert(list, "b")
-        table.insert(list, "d")
-        for _, v in pairs(list) do
-            print(v)
-        end       
+        
     else
         print("Bam Error: Unknown command")
     end   
