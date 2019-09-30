@@ -30,6 +30,8 @@ function combatLogEvent(self, event, ...)
     --Assign correct values to variables
     if(eventType == "SPELL_DAMAGE") then
         spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
+    elseif(eventType == "SPELL_HEAL") then
+        spellName, _, amount, overheal, school, critical = select(13, CombatLogGetCurrentEventInfo())
     elseif (eventType == "RANGE_DAMAGE") then
         spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
     elseif (eventType == "SWING_DAMAGE") then

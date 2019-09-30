@@ -33,6 +33,7 @@ function loadAddon()
             {name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true},
             {name = "Ranged", eventType = "RANGE_DAMAGE",  boolean = false},
             {name = "Melee Autohit", eventType = "SWING_DAMAGE",  boolean = false},
+            {name = "Heal", eventType = "SPELL_HEAL",  boolean = false},
         }
 
     --reset eventList in case defaultEventList was updated
