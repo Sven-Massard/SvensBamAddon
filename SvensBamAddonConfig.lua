@@ -15,7 +15,6 @@ function loadAddon()
             "Party",
             "Officer",
             "Raid_Warning",
-            "Instanz chat",
             "Battleground",
             "Whisper",
         }
