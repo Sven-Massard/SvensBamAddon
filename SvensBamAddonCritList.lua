@@ -1,10 +1,10 @@
 ﻿function addToCritList(spellName, val)
 
-    if(critList.spellName==nil and critList.value==nil) then
-        critList = newNode(spellName, val)
+    if(SBM_critList.spellName==nil and SBM_critList.value==nil) then
+        SBM_critList = newNode(spellName, val)
         
     else
-        local it = critList
+        local it = SBM_critList
         if(it.spellName==spellName) then -- Maybe later refactor to avoid duplicate code
             if(it.value<val) then
                 it.value=val
@@ -35,21 +35,21 @@ function newNode(spellName, val)
 end
 
 function clear()
-    critList = {};
-    print("|cff94CF00Critlist cleared");
+    SBM_critList = {};
+    print(SBM_color.."Critlist cleared");
 end
 
 
 function listCrits()
-    if not (critList.value == nil) then
-        print("|cff94CF00Highest crits:");
-        local it = critList
-        print("|cff94CF00"..it.spellName..": "..it.value)
+    if not (SBM_critList.value == nil) then
+        print(SBM_color.."Highest crits:");
+        local it = SBM_critList
+        print(SBM_color..it.spellName..": "..it.value)
         while not (it.nextNode == nil) do
             it = it.nextNode
-            print("|cff94CF00"..it.spellName..": "..it.value)
+            print(SBM_color..it.spellName..": "..it.value)
         end
     else
-        print("|cff94CF00No crits recorded");
+        print(SBM_color.."No crits recorded");
     end
 end

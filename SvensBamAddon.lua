@@ -39,15 +39,15 @@ function combatLogEvent(self, event, ...)
         amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, CombatLogGetCurrentEventInfo())
     end
     
-    for i=1, # eventList do
-        if (eventType == eventList[i].eventType and eventList[i].boolean and critical == true) then
-            local output = outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount)
+    for i=1, # SBM_eventList do
+        if (eventType == SBM_eventList[i].eventType and SBM_eventList[i].boolean and critical == true) then
+            local output = SBM_outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount)
             PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
-            for _, v in pairs(outputChannelList) do
+            for _, v in pairs(SBM_outputChannelList) do
                 if v == "Print" then
-                    print("|cff94CF00"..output)
+                    print(SBM_color..output)
                 elseif (v == "Whisper") then
-                    for _, w in pairs(whisperList) do
+                    for _, w in pairs(SBM_whisperList) do
                         SendChatMessage(output, "WHISPER", "COMMON", w)
                     end
                 else
@@ -63,10 +63,10 @@ function bam_cmd(params)
     cmd = params[1]
     local firstVariable=2
     if(cmd == "help" or cmd == "") then
-        print("|cff94CF00Possible parameters:")
-        print("|cff94CF00list: lists highest crits of each spell")
-        print("|cff94CF00clear: delete list of highest crits")
-		print("|cff94CF00config: Opens config page")
+        print(SBM_color.."Possible parameters:")
+        print(SBM_color.."list: lists highest crits of each spell")
+        print(SBM_color.."clear: delete list of highest crits")
+		print(SBM_color.."config: Opens config page")
     elseif(cmd == "list") then
         listCrits();
     elseif(cmd == "clear") then
@@ -76,8 +76,8 @@ function bam_cmd(params)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
 	elseif(cmd == "test") then
-        for i = 1, # outputChannelList do
-            print(outputChannelList[i])
+        for i = 1, # SBM_outputChannelList do
+            print(SBM_color..SBM_outputChannelList[i])
         end
     else
         print("Bam Error: Unknown command")

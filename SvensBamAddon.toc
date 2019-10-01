@@ -4,8 +4,8 @@
 ## Notes: Svens erstes "sinnvolles" AddOn
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: outputMessage,critList,outputChannelList,whisperList,eventList
+## SavedVariablesPerCharacter: SBM_outputMessage,SBM_critList,SBM_outputChannelList,SBM_whisperList,SBM_eventList
 SvensBamAddon.lua
-CritList.lua
+SvensBamAddonCritList.lua
 SvensBamAddonConfig.lua
 SvensBamAddon.xml

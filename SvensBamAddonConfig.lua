@@ -18,16 +18,19 @@ function loadAddon()
             "Battleground",
             "Whisper",
         }
-        
-    if(outputChannelList == nil) then
-        outputChannelList = {}
+    
+    if(SBM_color == nil) then
+        SBM_color = "|cff94CF00"
+    end
+    if(SBM_outputChannelList == nil) then
+        SBM_outputChannelList = {}
     end
    
-    if(whisperList == nil) then
-        whisperList = {}
+    if(SBM_whisperList == nil) then
+        SBM_whisperList = {}
     end
 
-    defaultEventList = 
+    local defaultEventList = 
         {
             {name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true},
             {name = "Ranged", eventType = "RANGE_DAMAGE",  boolean = false},
@@ -35,17 +38,17 @@ function loadAddon()
             {name = "Heal", eventType = "SPELL_HEAL",  boolean = false},
         }
 
-    --reset eventList in case defaultEventList was updated
-    if(eventList == nil or not (# eventList == #defaultEventList)) then 
-        eventList = defaultEventList
+    --reset SBM_eventList in case defaultEventList was updated
+    if(SBM_eventList == nil or not (# SBM_eventList == #defaultEventList)) then 
+        SBM_eventList = defaultEventList
     end
       
-    if(critList == nil) then
-        critList = {}
+    if(SBM_critList == nil) then
+        SBM_critList = {}
     end
     
-    if(outputMessage == nil) then
-        outputMessage = "BAM! SN SD!"
+    if(SBM_outputMessage == nil) then
+        SBM_outputMessage = "BAM! SN SD!"
     end
     
     --Good Guide https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/InterfaceOptionsFrame.lua
@@ -57,7 +60,7 @@ function loadAddon()
     SvensBamAddonConfig.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonConfig.panel.title:SetPoint("TOPLEFT", 5, -5);
     SvensBamAddonConfig.panel.title:SetJustifyH("LEFT")
-    SvensBamAddonConfig.panel.title:SetText("|cff94CF00Choose sub menu to change options.\n\n\nCommand line options:\n\n"
+    SvensBamAddonConfig.panel.title:SetText(SBM_color.."Choose sub menu to change options.\n\n\nCommand line options:\n\n"
             .."/bam list: lists highest crits of each spell.\n/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
     InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
     
@@ -67,7 +70,7 @@ function loadAddon()
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
     InterfaceOptions_AddCategory(SvensBamAddonGeneralOptions.panel);
-    populateGeneralSubmenu(eventButtonList, eventList)
+    populateGeneralSubmenu(eventButtonList, SBM_eventList)
     
     --Channel Options SubMenu
     SvensBamAddonChannelOptions = {}
@@ -81,47 +84,47 @@ function loadAddon()
     InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
     populateChannelSubmenu(channelButtonList, channelList)
     
-    print("|cff94CF00Svens Bam Addon loaded!")
+    print(SBM_color.."Svens Bam Addon loaded!")
 end
 
-function populateGeneralSubmenu(eventButtonList, eventList)
+function populateGeneralSubmenu(eventButtonList, SBM_eventList)
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonGeneralOptions.panel.title:SetText("|cff94CF00Output Message")
+    SvensBamAddonGeneralOptions.panel.title:SetText(SBM_color.."Output Message")
     
     createOutputMessageEditBox()
     
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 64);
-    SvensBamAddonGeneralOptions.panel.title:SetText("|cff94CF00Event Types to Trigger")
+    SvensBamAddonGeneralOptions.panel.title:SetText(SBM_color.."Event Types to Trigger")
     
-    for i=1, # eventList do
-        createEventTypeCheckBoxes(i, 1, i, eventButtonList, eventList)
+    for i=1, # SBM_eventList do
+        createEventTypeCheckBoxes(i, 1, i, eventButtonList, SBM_eventList)
     end
 end
 
-function createEventTypeCheckBoxes(i, x, y, eventButtonList, eventList)
+function createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_EventTypeCheckButton" .. i, SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     eventButtonList[i] = checkButton
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y*-24 -64)
     checkButton:SetSize(32, 32)
     
-    _G[checkButton:GetName() .. "Text"]:SetText(eventList[i].name)
+    _G[checkButton:GetName() .. "Text"]:SetText(SBM_eventList[i].name)
     _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-    for j = 1, # eventList do
-        if(eventList[i].boolean) then            
+    for j = 1, # SBM_eventList do
+        if(SBM_eventList[i].boolean) then            
             eventButtonList[i]:SetChecked(true)
         end
     end
 
     eventButtonList[i]:SetScript("OnClick", function()   
         if eventButtonList[i]:GetChecked() then
-            eventList[i].boolean = true
+            SBM_eventList[i].boolean = true
         else
-            eventList[i].boolean = false
+            SBM_eventList[i].boolean = false
         end
     end)
 
@@ -130,11 +133,11 @@ end
 function createOutputMessageEditBox()
     outputMessageEditBox = createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel)
     outputMessageEditBox:SetPoint("TOPLEFT", 40, -24)
-    outputMessageEditBox:Insert(outputMessage)
+    outputMessageEditBox:Insert(SBM_outputMessage)
     outputMessageEditBox:SetCursorPosition(0)   
     outputMessageEditBox:SetScript( "OnEscapePressed", function(...)
         outputMessageEditBox:ClearFocus()
-        outputMessageEditBox:SetText(outputMessage)
+        outputMessageEditBox:SetText(SBM_outputMessage)
         end)
     outputMessageEditBox:SetScript( "OnEnterPressed", function(...)
         outputMessageEditBox:ClearFocus()
@@ -155,7 +158,7 @@ function populateChannelSubmenu(channelButtonList, channelList)
     SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonChannelOptions.panel.title:SetText("|cff94CF00Output Channel")
+    SvensBamAddonChannelOptions.panel.title:SetText(SBM_color.."Output Channel")
     -- Checkboxes channels and Edit Box for whispers
     for i=1, # channelList do
         createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
@@ -172,25 +175,25 @@ function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
     
     _G[checkButton:GetName() .. "Text"]:SetText(channelList[i])
     _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-    for j = 1, # outputChannelList do
-        if(outputChannelList[j] == channelList[i]) then            
+    for j = 1, # SBM_outputChannelList do
+        if(SBM_outputChannelList[j] == channelList[i]) then            
             channelButtonList[i]:SetChecked(true)
         end
     end
     
     channelButtonList[i]:SetScript("OnClick", function()   
         if channelButtonList[i]:GetChecked() then
-            table.insert(outputChannelList, channelList[i])         
+            table.insert(SBM_outputChannelList, channelList[i])         
         else
             indexOfFoundValues = {}
-            for j = 1, # outputChannelList do
-                if(outputChannelList[j] == channelList[i]) then
+            for j = 1, # SBM_outputChannelList do
+                if(SBM_outputChannelList[j] == channelList[i]) then
                     table.insert(indexOfFoundValues, j)
                 end
             end
             j = # indexOfFoundValues
             while (j>0) do   
-                table.remove(outputChannelList, indexOfFoundValues[j])
+                table.remove(SBM_outputChannelList, indexOfFoundValues[j])
                 j = j-1;
             end
         end
@@ -200,7 +203,7 @@ function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
     if(channelList[i] == "Whisper") then
         whisperFrame = createEditBox("WhisperList", SvensBamAddonChannelOptions.panel)
         whisperFrame:SetPoint("TOP",50, -24*y)
-        for _, v in pairs(whisperList) do
+        for _, v in pairs(SBM_whisperList) do
             whisperFrame:Insert(v.." ")
         end
         whisperFrame:SetCursorPosition(0)
@@ -208,7 +211,7 @@ function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         whisperFrame:SetScript( "OnEscapePressed", function(...)
             whisperFrame:ClearFocus()
             whisperFrame:SetText("")
-            for _, v in pairs(whisperList) do
+            for _, v in pairs(SBM_whisperList) do
                 whisperFrame:Insert(v.." ")
             end
         end)
@@ -239,19 +242,19 @@ function createResetChannelListButton(parentFrame, channelList, channelButtonLis
         for i = 1, # channelButtonList do
             channelButtonList[i]:SetChecked(false)
         end
-            outputChannelList = {}
+            SBM_outputChannelList = {}
     end)
 end
 
 function saveWhisperList()
-    whisperList = {}
+    SBM_whisperList = {}
     for arg in string.gmatch(whisperFrame:GetText(), "%S+") do
-        table.insert(whisperList, arg)
+        table.insert(SBM_whisperList, arg)
     end
 end
 
 function saveOutputList()
-    outputMessage = outputMessageEditBox:GetText()
+    SBM_outputMessage = outputMessageEditBox:GetText()
 end
     
 function createEditBox(name, parentFrame)
