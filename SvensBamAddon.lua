@@ -45,7 +45,7 @@ function combatLogEvent(self, event, ...)
             PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
             for _, v in pairs(outputChannelList) do
                 if v == "Print" then
-                    print(output)
+                    print("|cff94CF00"..output)
                 elseif (v == "Whisper") then
                     for _, w in pairs(whisperList) do
                         SendChatMessage(output, "WHISPER", "COMMON", w)
@@ -63,18 +63,18 @@ function bam_cmd(params)
     cmd = params[1]
     local firstVariable=2
     if(cmd == "help" or cmd == "") then
-        print("Possible parameters:")
-        print("list: lists highest crits of each spell")
-        print("clear: delete list of highest crits")
-		print("config: Opens config page")
+        print("|cff94CF00Possible parameters:")
+        print("|cff94CF00list: lists highest crits of each spell")
+        print("|cff94CF00clear: delete list of highest crits")
+		print("|cff94CF00config: Opens config page")
     elseif(cmd == "list") then
         listCrits();
     elseif(cmd == "clear") then
         clear();   
     elseif(cmd == "config") then
 		-- For some reason, needs to be called twice to function correctly on first call
-		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonGeneralOptions.panel)
-		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonGeneralOptions.panel)
+		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
 	elseif(cmd == "test") then
         for i = 1, # outputChannelList do
             print(outputChannelList[i])

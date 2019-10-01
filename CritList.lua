@@ -36,20 +36,20 @@ end
 
 function clear()
     critList = {};
-    print("Critlist cleared");
+    print("|cff94CF00Critlist cleared");
 end
 
 
 function listCrits()
     if not (critList.value == nil) then
-        print("Highest crits:");
+        print("|cff94CF00Highest crits:");
         local it = critList
-        print(it.spellName..": "..it.value)
+        print("|cff94CF00"..it.spellName..": "..it.value)
         while not (it.nextNode == nil) do
             it = it.nextNode
-            print(it.spellName..": "..it.value)
+            print("|cff94CF00"..it.spellName..": "..it.value)
         end
     else
-        print("Not crits recorded");
+        print("|cff94CF00No crits recorded");
     end
 end

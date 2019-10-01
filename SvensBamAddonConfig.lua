@@ -45,7 +45,7 @@ function loadAddon()
     end
     
     if(outputMessage == nil) then
-        outputMessage = "BAM! SN SD"
+        outputMessage = "BAM! SN SD!"
     end
     
     --Good Guide https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/InterfaceOptionsFrame.lua
@@ -56,7 +56,9 @@ function loadAddon()
     SvensBamAddonConfig.panel.title = SvensBamAddonConfig.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonConfig.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonConfig.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonConfig.panel.title:SetText("|cff00ff00Choose sub menu to change options")
+    SvensBamAddonConfig.panel.title:SetJustifyH("LEFT")
+    SvensBamAddonConfig.panel.title:SetText("|cff94CF00Choose sub menu to change options.\n\n\nCommand line options:\n\n"
+            .."/bam list: lists highest crits of each spell.\n/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
     InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
     
     --General Options SubMenu
@@ -79,21 +81,21 @@ function loadAddon()
     InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
     populateChannelSubmenu(channelButtonList, channelList)
     
-    print("|cff00ff00Svens Bam Addon loaded!")
+    print("|cff94CF00Svens Bam Addon loaded!")
 end
 
 function populateGeneralSubmenu(eventButtonList, eventList)
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonGeneralOptions.panel.title:SetText("|cff00ff00Output Message")
+    SvensBamAddonGeneralOptions.panel.title:SetText("|cff94CF00Output Message")
     
     createOutputMessageEditBox()
     
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 64);
-    SvensBamAddonGeneralOptions.panel.title:SetText("|cff00ff00Event Types to Trigger")
+    SvensBamAddonGeneralOptions.panel.title:SetText("|cff94CF00Event Types to Trigger")
     
     for i=1, # eventList do
         createEventTypeCheckBoxes(i, 1, i, eventButtonList, eventList)
@@ -140,7 +142,7 @@ function createOutputMessageEditBox()
     end)
     outputMessageEditBox:SetScript( "OnEnter", function(...)            
         GameTooltip:SetOwner(outputMessageEditBox, "ANCHOR_BOTTOM");
-        GameTooltip:SetText( "Insert your damage message here.\nSN will be replaced with spell name.\nSD with spell damage.\nDefault: BAM! SN SD" )
+        GameTooltip:SetText( "Insert your damage message here.\nSN will be replaced with spell name.\nSD with spell damage.\nDefault: BAM! SN SD!" )
         GameTooltip:ClearAllPoints()
         GameTooltip:Show()
     end)
@@ -153,7 +155,7 @@ function populateChannelSubmenu(channelButtonList, channelList)
     SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString(nil, "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonChannelOptions.panel.title:SetText("|cff00ff00Output Channel")
+    SvensBamAddonChannelOptions.panel.title:SetText("|cff94CF00Output Channel")
     -- Checkboxes channels and Edit Box for whispers
     for i=1, # channelList do
         createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
