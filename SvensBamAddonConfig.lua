@@ -18,10 +18,18 @@ function loadAddon()
             "Battleground",
             "Whisper",
         }
-    
+
     if(SBM_color == nil) then
-        SBM_color = "|cff94CF00"
+		SBM_color = "|cff".."94".."CF".."00"
     end
+	
+	local rgb =
+		{
+			{color = "Red",   value = SBM_color:sub(5, 6)},
+			{color = "Green", value= SBM_color:sub(7, 8)},
+			{color = "Blue",  value= SBM_color:sub(9, 10)}
+		}
+
     if(SBM_outputChannelList == nil) then
         SBM_outputChannelList = {}
     end
@@ -56,22 +64,12 @@ function loadAddon()
     SvensBamAddonConfig = {};
     SvensBamAddonConfig.panel = CreateFrame( "Frame", "SvensBamAddonConfig", UIParent );    
     SvensBamAddonConfig.panel.name = "Svens Bam Addon";
-    SvensBamAddonConfig.panel.title = SvensBamAddonConfig.panel:CreateFontString(nil, "OVERLAY");
+    SvensBamAddonConfig.panel.title = SvensBamAddonConfig.panel:CreateFontString("GeneralOptionsDescription", "OVERLAY");
     SvensBamAddonConfig.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonConfig.panel.title:SetPoint("TOPLEFT", 5, -5);
     SvensBamAddonConfig.panel.title:SetJustifyH("LEFT")
-    SvensBamAddonConfig.panel.title:SetText(SBM_color.."Choose sub menu to change options.\n\n\nCommand line options:\n\n"
-            .."/bam list: lists highest crits of each spell.\n/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
-    InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
-    
-    --General Options SubMenu
-    SvensBamAddonGeneralOptions = {}
-    SvensBamAddonGeneralOptions.panel = CreateFrame( "Frame", "SvensBamAddonGeneralOptions");
-    SvensBamAddonGeneralOptions.panel.name = "General options";
-    SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
-    InterfaceOptions_AddCategory(SvensBamAddonGeneralOptions.panel);
-    populateGeneralSubmenu(eventButtonList, SBM_eventList)
-    
+
+        
     --Channel Options SubMenu
     SvensBamAddonChannelOptions = {}
     SvensBamAddonChannelOptions.panel = CreateFrame( "Frame", "SvensBamAddonChannelOptions");
@@ -81,28 +79,45 @@ function loadAddon()
         saveWhisperList()
         saveOutputList()
     end
-    InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
     populateChannelSubmenu(channelButtonList, channelList)
-    
+	
+    --General Options SubMenu NEEDS TO BE LAST BECAUSE SLIDERS CHANGE FONTSTRINGS OF ALL MENUS
+    SvensBamAddonGeneralOptions = {}
+    SvensBamAddonGeneralOptions.panel = CreateFrame( "Frame", "SvensBamAddonGeneralOptions");
+    SvensBamAddonGeneralOptions.panel.name = "General options";
+    SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
+    populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
+	
+	--Set order of Menus here
+    InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
+	InterfaceOptions_AddCategory(SvensBamAddonGeneralOptions.panel);
+	InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
+	
     print(SBM_color.."Svens Bam Addon loaded!")
 end
 
-function populateGeneralSubmenu(eventButtonList, SBM_eventList)
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
+function populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputMessageDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonGeneralOptions.panel.title:SetText(SBM_color.."Output Message")
     
     createOutputMessageEditBox()
     
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString(nil, "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("EventTypeDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 64);
-    SvensBamAddonGeneralOptions.panel.title:SetText(SBM_color.."Event Types to Trigger")
     
     for i=1, # SBM_eventList do
         createEventTypeCheckBoxes(i, 1, i, eventButtonList, SBM_eventList)
     end
+	
+	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("FontColorDescription", "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 64 -(# SBM_eventList)*32);
+	
+	for i=1, 3 do
+		createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb)
+	end
 end
 
 function createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
@@ -155,10 +170,9 @@ function createOutputMessageEditBox()
 end
 
 function populateChannelSubmenu(channelButtonList, channelList)
-    SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString(nil, "OVERLAY");
+    SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString("OutputChannelDescription", "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonChannelOptions.panel.title:SetText(SBM_color.."Output Channel")
     -- Checkboxes channels and Edit Box for whispers
     for i=1, # channelList do
         createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
@@ -246,6 +260,27 @@ function createResetChannelListButton(parentFrame, channelList, channelButtonLis
     end)
 end
 
+function createColorSlider(i, panel, rgb)
+	local slider = CreateFrame("Slider", "SBM_Slider"..i, panel, "OptionsSliderTemplate")
+	slider:ClearAllPoints()
+	slider:SetPoint("TOPLEFT", 32, -240-16*2*(i-1))
+	slider:SetSize(256,16)
+	slider:SetMinMaxValues(0, 255)
+	slider:SetValueStep(1)
+	_G[slider:GetName() .. "Low"]:SetText("|c00ffcc00Min:|r 0")
+	_G[slider:GetName() .. "High"]:SetText("|c00ffcc00Max:|r 255")
+	slider:SetScript("OnValueChanged", function(self, event, arg1)
+		local value = floor(slider:GetValue())
+		_G[slider:GetName() .. "Text"]:SetText("|c00ffcc00"..rgb[i].color.."|r "..value)
+		_G[slider:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
+		rgb[i].value = convertRGBDecimalToRGBHex(value)
+		SBM_color = "|cff"..rgb[1].value..rgb[2].value..rgb[3].value
+		setPanelTexts()
+	end)
+	slider:SetValue(tonumber("0x"..rgb[i].value))
+	
+end
+
 function saveWhisperList()
     SBM_whisperList = {}
     for arg in string.gmatch(whisperFrame:GetText(), "%S+") do
@@ -265,4 +300,21 @@ function createEditBox(name, parentFrame)
     eb:SetWidth(400)
     eb:SetFontObject("ChatFontNormal")
     return eb
+end
+
+function convertRGBDecimalToRGBHex(decimal)
+	local result
+	local numbers = "0123456789ABCDEF"
+	result = numbers:sub(1+(decimal/16), 1+(decimal/16))..numbers:sub(1+(decimal%16), 1+(decimal%16))
+	return result
+end
+
+function setPanelTexts()
+	GeneralOptionsDescription:SetText(SBM_color.."Choose sub menu to change options.\n\n\nCommand line options:\n\n"
+            .."/bam list: lists highest crits of each spell.\n/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
+	OutputMessageDescription:SetText(SBM_color.."Output Message")
+	    EventTypeDescription:SetText(SBM_color.."Event Types to Trigger")
+	SvensBamAddonGeneralOptions.panel.title:SetText(SBM_color.."Change color of Font")
+	FontColorDescription:SetText(SBM_color.."Change color of Font")
+	OutputChannelDescription:SetText(SBM_color.."Output Channel")
 end
