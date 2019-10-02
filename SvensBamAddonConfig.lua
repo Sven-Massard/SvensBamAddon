@@ -22,6 +22,10 @@ function loadAddon()
     if(SBM_color == nil) then
 		SBM_color = "|cff".."94".."CF".."00"
     end
+    
+    if(SBM_threshold == nil) then
+        SBM_threshold = 0
+    end
 	
 	local rgb =
 		{
@@ -77,7 +81,6 @@ function loadAddon()
     SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
     SvensBamAddonChannelOptions.panel.okay = function()
         saveWhisperList()
-        saveOutputList()
     end
     populateChannelSubmenu(channelButtonList, channelList)
 	
@@ -86,6 +89,10 @@ function loadAddon()
     SvensBamAddonGeneralOptions.panel = CreateFrame( "Frame", "SvensBamAddonGeneralOptions");
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
+    SvensBamAddonGeneralOptions.panel.okay = function()
+        saveOutputList()
+        saveThreshold()
+    end
     populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 	
 	--Set order of Menus here
@@ -103,9 +110,15 @@ function populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     
     createOutputMessageEditBox()
     
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("ThresholdDescription", "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5,-64 -5 );
+    
+    createThresholdEditBox(-64 -24)
+    
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("EventTypeDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 64);
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64);
     
     for i=1, # SBM_eventList do
         createEventTypeCheckBoxes(i, 1, i, eventButtonList, SBM_eventList)
@@ -113,18 +126,20 @@ function populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 	
 	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("FontColorDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 64 -(# SBM_eventList)*32);
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64 -(# SBM_eventList)*32);
 	
 	for i=1, 3 do
 		createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb)
 	end
+    
+    
 end
 
 function createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_EventTypeCheckButton" .. i, SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     eventButtonList[i] = checkButton
     checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, y*-24 -64)
+    checkButton:SetPoint("TOPLEFT", x * 32, y*-24 -2*64)
     checkButton:SetSize(32, 32)
     
     _G[checkButton:GetName() .. "Text"]:SetText(SBM_eventList[i].name)
@@ -165,6 +180,30 @@ function createOutputMessageEditBox()
         GameTooltip:Show()
     end)
     outputMessageEditBox:SetScript( "OnLeave", function()
+        GameTooltip:Hide()
+    end)
+end
+
+function createThresholdEditBox(y)
+    thresholdEditBox = createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel)
+    thresholdEditBox:SetPoint("TOPLEFT", 40, y)
+    thresholdEditBox:Insert(SBM_threshold)
+    thresholdEditBox:SetCursorPosition(0)   
+    thresholdEditBox:SetScript( "OnEscapePressed", function(...)
+        thresholdEditBox:ClearFocus()
+        thresholdEditBox:SetText(SBM_threshold)
+        end)
+    thresholdEditBox:SetScript( "OnEnterPressed", function(...)
+        thresholdEditBox:ClearFocus()
+        saveThreshold()
+    end)
+    thresholdEditBox:SetScript( "OnEnter", function(...)            
+        GameTooltip:SetOwner(thresholdEditBox, "ANCHOR_BOTTOM");
+        GameTooltip:SetText( "Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything." )
+        GameTooltip:ClearAllPoints()
+        GameTooltip:Show()
+    end)
+    thresholdEditBox:SetScript( "OnLeave", function()
         GameTooltip:Hide()
     end)
 end
@@ -263,7 +302,7 @@ end
 function createColorSlider(i, panel, rgb)
 	local slider = CreateFrame("Slider", "SBM_Slider"..i, panel, "OptionsSliderTemplate")
 	slider:ClearAllPoints()
-	slider:SetPoint("TOPLEFT", 32, -240-16*2*(i-1))
+	slider:SetPoint("TOPLEFT", 32, -240-16*2*(i-1)-64)
 	slider:SetSize(256,16)
 	slider:SetMinMaxValues(0, 255)
 	slider:SetValueStep(1)
@@ -291,6 +330,10 @@ end
 function saveOutputList()
     SBM_outputMessage = outputMessageEditBox:GetText()
 end
+
+function saveThreshold()
+    SBM_threshold = thresholdEditBox:GetNumber()
+end
     
 function createEditBox(name, parentFrame)
     local eb = CreateFrame("EditBox", name, parentFrame, "InputBoxTemplate")
@@ -317,4 +360,5 @@ function setPanelTexts()
 	SvensBamAddonGeneralOptions.panel.title:SetText(SBM_color.."Change color of Font")
 	FontColorDescription:SetText(SBM_color.."Change color of Font")
 	OutputChannelDescription:SetText(SBM_color.."Output Channel")
+    ThresholdDescription:SetText(SBM_color.."Least amount of damage/heal to trigger bam:")
 end

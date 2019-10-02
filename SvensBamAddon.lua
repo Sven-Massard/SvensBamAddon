@@ -27,6 +27,7 @@ function combatLogEvent(self, event, ...)
 	if not (eventSource == name) then
 		do return end
 	end
+    
     --Assign correct values to variables
     if(eventType == "SPELL_DAMAGE") then
         spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
@@ -37,6 +38,10 @@ function combatLogEvent(self, event, ...)
     elseif (eventType == "SWING_DAMAGE") then
         spellName = "Autohit"
         amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, CombatLogGetCurrentEventInfo())
+    end
+    
+    if (amount ~= nil and amount < SBM_threshold and SBM_threshold ~= 0) then
+        do return end
     end
     
     for i=1, # SBM_eventList do
