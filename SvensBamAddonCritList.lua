@@ -1,27 +1,35 @@
 ﻿function addToCritList(spellName, val)
-
+    -- list was empty until now
     if(SBM_critList.spellName==nil and SBM_critList.value==nil) then
         SBM_critList = newNode(spellName, val)
+        return true
         
     else
         local it = SBM_critList
+        --compare with first value
         if(it.spellName==spellName) then -- Maybe later refactor to avoid duplicate code
             if(it.value<val) then
                 it.value=val
+                return true
             end
             do return end
         end
         
+        --compare with subsequent values
         while not (it.nextNode == nil) do
             it = it.nextNode
             if(it.spellName==spellName) then
                 if(it.value<val) then
                     it.value=val
+                    return true
                 end
                 do return end
             end         
         end
+        
+        --add spell if not found till now
         it.nextNode = newNode(spellName, val)
+        return true
     end
     
 end

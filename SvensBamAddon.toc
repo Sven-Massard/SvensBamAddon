@@ -1,10 +1,11 @@
 ## Interface: 11302
 ## Title: Svens Bam AddOn
 ## Author: Verband
-## Notes: Svens erstes "sinnvolles" AddOn
+## Version: 1.0
+## Notes: Svens first "useful" addon
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: SBM_outputMessage,SBM_critList,SBM_outputChannelList,SBM_whisperList,SBM_eventList,SBM_color,SBM_threshold
+## SavedVariablesPerCharacter: SBM_outputMessage,SBM_critList,SBM_outputChannelList,SBM_whisperList,SBM_eventList,SBM_color,SBM_threshold,SBM_onlyOnNewMaxCrits
 SvensBamAddon.lua
 SvensBamAddonCritList.lua
 SvensBamAddonConfig.lua

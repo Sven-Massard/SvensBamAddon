@@ -18,7 +18,11 @@ function loadAddon()
             "Battleground",
             "Whisper",
         }
-
+    
+    if(SBM_onlyOnNewMaxCrits == nil) then
+        SBM_onlyOnNewMaxCrits = false
+    end
+    
     if(SBM_color == nil) then
 		SBM_color = "|cff".."94".."CF".."00"
     end
@@ -124,12 +128,19 @@ function populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
         createEventTypeCheckBoxes(i, 1, i, eventButtonList, SBM_eventList)
     end
 	
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OnlyOnMaxCritsDescription", "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64 - (# SBM_eventList)*32);
+    
+    createOnlyOnMaxCritCheckBox(1, -5 - 2*64 - (# SBM_eventList)*32 -16)
+    
+    yOffSet = 3
 	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("FontColorDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64 -(# SBM_eventList)*32);
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - yOffSet*64 -(# SBM_eventList)*32);
 	
 	for i=1, 3 do
-		createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb)
+		createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, yOffSet)
 	end
     
     
@@ -205,6 +216,29 @@ function createThresholdEditBox(y)
     end)
     thresholdEditBox:SetScript( "OnLeave", function()
         GameTooltip:Hide()
+    end)
+end
+
+function createOnlyOnMaxCritCheckBox(x, y)
+    local checkButton = CreateFrame("CheckButton", "OnlyOnMaxCritCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
+    checkButton:ClearAllPoints()
+    checkButton:SetPoint("TOPLEFT", x * 32, y)
+    checkButton:SetSize(32, 32)
+    print(checkButton:GetName())
+    print(checkButton:GetName().."Text")
+    OnlyOnMaxCritCheckBoxText:SetText("Only trigger on new highst crit")
+    OnlyOnMaxCritCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
+    
+    if(SBM_onlyOnNewMaxCrits) then            
+        OnlyOnMaxCritCheckBox:SetChecked(true)
+    end
+
+    OnlyOnMaxCritCheckBox:SetScript("OnClick", function()   
+        if OnlyOnMaxCritCheckBox:GetChecked() then
+            SBM_onlyOnNewMaxCrits = true
+        else
+            SBM_onlyOnNewMaxCrits = false
+        end
     end)
 end
 
@@ -299,10 +333,10 @@ function createResetChannelListButton(parentFrame, channelList, channelButtonLis
     end)
 end
 
-function createColorSlider(i, panel, rgb)
+function createColorSlider(i, panel, rgb, yOffSet)
 	local slider = CreateFrame("Slider", "SBM_Slider"..i, panel, "OptionsSliderTemplate")
 	slider:ClearAllPoints()
-	slider:SetPoint("TOPLEFT", 32, -240-16*2*(i-1)-64)
+	slider:SetPoint("TOPLEFT", 32, -176-16*2*(i-1)-yOffSet*64)
 	slider:SetSize(256,16)
 	slider:SetMinMaxValues(0, 255)
 	slider:SetValueStep(1)
@@ -361,4 +395,5 @@ function setPanelTexts()
 	FontColorDescription:SetText(SBM_color.."Change color of Font")
 	OutputChannelDescription:SetText(SBM_color.."Output Channel")
     ThresholdDescription:SetText(SBM_color.."Least amount of damage/heal to trigger bam:")
+    OnlyOnMaxCritsDescription:SetText(SBM_color.."Only trigger on new highest crit:")
 end
