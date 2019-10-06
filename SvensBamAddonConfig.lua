@@ -224,8 +224,6 @@ function createOnlyOnMaxCritCheckBox(x, y)
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
     checkButton:SetSize(32, 32)
-    print(checkButton:GetName())
-    print(checkButton:GetName().."Text")
     OnlyOnMaxCritCheckBoxText:SetText("Only trigger on new highst crit")
     OnlyOnMaxCritCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
     
