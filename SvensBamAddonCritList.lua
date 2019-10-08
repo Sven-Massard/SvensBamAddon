@@ -1,4 +1,4 @@
-﻿function addToCritList(spellName, val)
+﻿function SBM:addToCritList(spellName, val)
     -- list was empty until now
     if(SBM_critList.spellName==nil and SBM_critList.value==nil) then
         SBM_critList = newNode(spellName, val)
@@ -34,7 +34,7 @@
     
 end
 
-function newNode(spellName, val)
+function SBM:newNode(spellName, val)
     local newNode = {};
     newNode.spellName = spellName
     newNode.value = val
@@ -42,13 +42,13 @@ function newNode(spellName, val)
     return newNode
 end
 
-function clear()
+function SBM:clearCritList()
     SBM_critList = {};
     print(SBM_color.."Critlist cleared");
 end
 
 
-function listCrits()
+function SBM:listCrits()
     if not (SBM_critList.value == nil) then
         print(SBM_color.."Highest crits:");
         local it = SBM_critList

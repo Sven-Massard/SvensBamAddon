@@ -1,4 +1,7 @@
-﻿function BAM_OnLoad(self)
+﻿local _,ns = ...
+SBM = ns
+
+function SBM:BAM_OnLoad(self)
     SlashCmdList["BAM"] = function(cmd)
         local params = {}
         local i = 1
@@ -6,22 +9,22 @@
             params[i] = arg
             i = i + 1
         end
-        bam_cmd(params)
+        SBM:bam_cmd(params)
     end
     SLASH_BAM1 = '/bam'
     self:RegisterEvent("ADDON_LOADED")
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 
-function eventHandler(self, event, arg1)
+function SBM:eventHandler(self, event, arg1)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        combatLogEvent(self, event, arg1)
+        SBM:combatLogEvent(self, event, arg1)
     elseif event == "ADDON_LOADED" and arg1 == "SvensBamAddon" then
-        loadAddon() -- in SvensBamAddonConfig.lua
+        SBM:loadAddon() -- in SvensBamAddonConfig.lua
     end
 end
 
-function combatLogEvent(self, event, ...)
+function SBM:combatLogEvent(self, event, ...)
 	name, realm = UnitName("player");
     eventType,_ ,_ , eventSource = select(2, CombatLogGetCurrentEventInfo())
 	if not (eventSource == name) then
@@ -46,7 +49,7 @@ function combatLogEvent(self, event, ...)
 
     for i=1, # SBM_eventList do
         if (eventType == SBM_eventList[i].eventType and SBM_eventList[i].boolean and critical == true) then
-            newMaxCrit = addToCritList(spellName, amount);
+            newMaxCrit = SBM:addToCritList(spellName, amount);
             if(SBM_onlyOnNewMaxCrits and not newMaxCrit) then
                 do return end
             end
@@ -67,7 +70,7 @@ function combatLogEvent(self, event, ...)
     end
 end
  
-function bam_cmd(params)
+function SBM:bam_cmd(params)
     cmd = params[1]
     local firstVariable=2
     if(cmd == "help" or cmd == "") then
@@ -76,9 +79,9 @@ function bam_cmd(params)
         print(SBM_color.."clear: delete list of highest crits")
 		print(SBM_color.."config: Opens config page")
     elseif(cmd == "list") then
-        listCrits();
+        SBM:listCrits();
     elseif(cmd == "clear") then
-        clear();   
+        SBM:clearCritList();   
     elseif(cmd == "config") then
 		-- For some reason, needs to be called twice to function correctly on first call
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)

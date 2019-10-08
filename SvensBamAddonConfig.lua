@@ -1,5 +1,5 @@
 ﻿
-function loadAddon()
+function SBM:loadAddon()
     local whisperFrame
     local outputMessageEditBox
     local channelButtonList = {}
@@ -84,9 +84,9 @@ function loadAddon()
     SvensBamAddonChannelOptions.panel.name = "Channel options";
     SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
     SvensBamAddonChannelOptions.panel.okay = function()
-        saveWhisperList()
+        SBM:saveWhisperList()
     end
-    populateChannelSubmenu(channelButtonList, channelList)
+    SBM:populateChannelSubmenu(channelButtonList, channelList)
 	
     --General Options SubMenu NEEDS TO BE LAST BECAUSE SLIDERS CHANGE FONTSTRINGS OF ALL MENUS
     SvensBamAddonGeneralOptions = {}
@@ -94,10 +94,10 @@ function loadAddon()
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
     SvensBamAddonGeneralOptions.panel.okay = function()
-        saveOutputList()
-        saveThreshold()
+        SBM:saveOutputList()
+        SBM:saveThreshold()
     end
-    populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
+    SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 	
 	--Set order of Menus here
     InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
@@ -107,32 +107,32 @@ function loadAddon()
     print(SBM_color.."Svens Bam Addon loaded!")
 end
 
-function populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
+function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputMessageDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
     
-    createOutputMessageEditBox()
+    SBM:createOutputMessageEditBox()
     
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("ThresholdDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5,-64 -5 );
     
-    createThresholdEditBox(-64 -24)
+    SBM:createThresholdEditBox(-64 -24)
     
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("EventTypeDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64);
     
     for i=1, # SBM_eventList do
-        createEventTypeCheckBoxes(i, 1, i, eventButtonList, SBM_eventList)
+        SBM:createEventTypeCheckBoxes(i, 1, i, eventButtonList, SBM_eventList)
     end
 	
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OnlyOnMaxCritsDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64 - (# SBM_eventList)*32);
     
-    createOnlyOnMaxCritCheckBox(1, -5 - 2*64 - (# SBM_eventList)*32 -16)
+    SBM:createOnlyOnMaxCritCheckBox(1, -5 - 2*64 - (# SBM_eventList)*32 -16)
     
     yOffSet = 3
 	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("FontColorDescription", "OVERLAY");
@@ -140,13 +140,13 @@ function populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - yOffSet*64 -(# SBM_eventList)*32);
 	
 	for i=1, 3 do
-		createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, yOffSet)
+		SBM:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, yOffSet)
 	end
     
     
 end
 
-function createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
+function SBM:createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_EventTypeCheckButton" .. i, SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     eventButtonList[i] = checkButton
     checkButton:ClearAllPoints()
@@ -171,8 +171,8 @@ function createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
 
 end
 
-function createOutputMessageEditBox()
-    outputMessageEditBox = createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel)
+function SBM:createOutputMessageEditBox()
+    outputMessageEditBox = SBM:createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel)
     outputMessageEditBox:SetPoint("TOPLEFT", 40, -24)
     outputMessageEditBox:Insert(SBM_outputMessage)
     outputMessageEditBox:SetCursorPosition(0)   
@@ -182,7 +182,7 @@ function createOutputMessageEditBox()
         end)
     outputMessageEditBox:SetScript( "OnEnterPressed", function(...)
         outputMessageEditBox:ClearFocus()
-        saveOutputList()
+        SBM:saveOutputList()
     end)
     outputMessageEditBox:SetScript( "OnEnter", function(...)            
         GameTooltip:SetOwner(outputMessageEditBox, "ANCHOR_BOTTOM");
@@ -195,8 +195,8 @@ function createOutputMessageEditBox()
     end)
 end
 
-function createThresholdEditBox(y)
-    thresholdEditBox = createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel)
+function SBM:createThresholdEditBox(y)
+    thresholdEditBox = SBM:createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel)
     thresholdEditBox:SetPoint("TOPLEFT", 40, y)
     thresholdEditBox:Insert(SBM_threshold)
     thresholdEditBox:SetCursorPosition(0)   
@@ -206,7 +206,7 @@ function createThresholdEditBox(y)
         end)
     thresholdEditBox:SetScript( "OnEnterPressed", function(...)
         thresholdEditBox:ClearFocus()
-        saveThreshold()
+        SBM:saveThreshold()
     end)
     thresholdEditBox:SetScript( "OnEnter", function(...)            
         GameTooltip:SetOwner(thresholdEditBox, "ANCHOR_BOTTOM");
@@ -219,7 +219,7 @@ function createThresholdEditBox(y)
     end)
 end
 
-function createOnlyOnMaxCritCheckBox(x, y)
+function SBM:createOnlyOnMaxCritCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "OnlyOnMaxCritCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -240,18 +240,18 @@ function createOnlyOnMaxCritCheckBox(x, y)
     end)
 end
 
-function populateChannelSubmenu(channelButtonList, channelList)
+function SBM:populateChannelSubmenu(channelButtonList, channelList)
     SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString("OutputChannelDescription", "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
     -- Checkboxes channels and Edit Box for whispers
     for i=1, # channelList do
-        createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
+        SBM:createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
     end
-    createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
+    SBM:createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
 end
 
-function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
+function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_ChannelCheckButton" .. i, SvensBamAddonChannelOptions.panel, "UICheckButtonTemplate")
     channelButtonList[i] = checkButton
     checkButton:ClearAllPoints()
@@ -286,7 +286,7 @@ function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
     
     -- Create Edit Box for whispers
     if(channelList[i] == "Whisper") then
-        whisperFrame = createEditBox("WhisperList", SvensBamAddonChannelOptions.panel)
+        whisperFrame = SBM:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel)
         whisperFrame:SetPoint("TOP",50, -24*y)
         for _, v in pairs(SBM_whisperList) do
             whisperFrame:Insert(v.." ")
@@ -302,7 +302,7 @@ function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         end)
         whisperFrame:SetScript( "OnEnterPressed", function(...)
             whisperFrame:ClearFocus()
-            saveWhisperList()
+            SBM:saveWhisperList()
         end)
         whisperFrame:SetScript( "OnEnter", function(...)            
             GameTooltip:SetOwner(whisperFrame, "ANCHOR_BOTTOM");
@@ -316,7 +316,7 @@ function createCheckButtonChannel(i, x, y, channelButtonList, channelList)
     end
 end
 
-function createResetChannelListButton(parentFrame, channelList, channelButtonList)
+function SBM:createResetChannelListButton(parentFrame, channelList, channelButtonList)
     resetChannelListButton = CreateFrame("Button", "ResetButtonChannels", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
     resetChannelListButton:SetPoint("TOPLEFT", 32, ((# channelList) + 1)*-24 -8)
@@ -331,7 +331,7 @@ function createResetChannelListButton(parentFrame, channelList, channelButtonLis
     end)
 end
 
-function createColorSlider(i, panel, rgb, yOffSet)
+function SBM:createColorSlider(i, panel, rgb, yOffSet)
 	local slider = CreateFrame("Slider", "SBM_Slider"..i, panel, "OptionsSliderTemplate")
 	slider:ClearAllPoints()
 	slider:SetPoint("TOPLEFT", 32, -176-16*2*(i-1)-yOffSet*64)
@@ -344,30 +344,30 @@ function createColorSlider(i, panel, rgb, yOffSet)
 		local value = floor(slider:GetValue())
 		_G[slider:GetName() .. "Text"]:SetText("|c00ffcc00"..rgb[i].color.."|r "..value)
 		_G[slider:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-		rgb[i].value = convertRGBDecimalToRGBHex(value)
+		rgb[i].value = SBM:convertRGBDecimalToRGBHex(value)
 		SBM_color = "|cff"..rgb[1].value..rgb[2].value..rgb[3].value
-		setPanelTexts()
+		SBM:setPanelTexts()
 	end)
 	slider:SetValue(tonumber("0x"..rgb[i].value))
 	
 end
 
-function saveWhisperList()
+function SBM:saveWhisperList()
     SBM_whisperList = {}
     for arg in string.gmatch(whisperFrame:GetText(), "%S+") do
         table.insert(SBM_whisperList, arg)
     end
 end
 
-function saveOutputList()
+function SBM:saveOutputList()
     SBM_outputMessage = outputMessageEditBox:GetText()
 end
 
-function saveThreshold()
+function SBM:saveThreshold()
     SBM_threshold = thresholdEditBox:GetNumber()
 end
     
-function createEditBox(name, parentFrame)
+function SBM:createEditBox(name, parentFrame)
     local eb = CreateFrame("EditBox", name, parentFrame, "InputBoxTemplate")
     eb:ClearAllPoints()
     eb:SetAutoFocus(false) -- dont automatically focus
@@ -377,14 +377,14 @@ function createEditBox(name, parentFrame)
     return eb
 end
 
-function convertRGBDecimalToRGBHex(decimal)
+function SBM:convertRGBDecimalToRGBHex(decimal)
 	local result
 	local numbers = "0123456789ABCDEF"
 	result = numbers:sub(1+(decimal/16), 1+(decimal/16))..numbers:sub(1+(decimal%16), 1+(decimal%16))
 	return result
 end
 
-function setPanelTexts()
+function SBM:setPanelTexts()
 	GeneralOptionsDescription:SetText(SBM_color.."Choose sub menu to change options.\n\n\nCommand line options:\n\n"
             .."/bam list: lists highest crits of each spell.\n/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
 	OutputMessageDescription:SetText(SBM_color.."Output Message")
