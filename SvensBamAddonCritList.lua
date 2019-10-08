@@ -1,7 +1,7 @@
 ﻿function SBM:addToCritList(spellName, val)
     -- list was empty until now
     if(SBM_critList.spellName==nil and SBM_critList.value==nil) then
-        SBM_critList = newNode(spellName, val)
+        SBM_critList = SBM:newNode(spellName, val)
         return true
         
     else
