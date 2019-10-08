@@ -28,7 +28,7 @@
         end
         
         --add spell if not found till now
-        it.nextNode = newNode(spellName, val)
+        it.nextNode = SBM:newNode(spellName, val)
         return true
     end
     
