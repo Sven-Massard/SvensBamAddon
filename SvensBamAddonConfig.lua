@@ -132,7 +132,7 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64 - (# SBM_eventList)*32);
     
-    SBM:createOnlyOnMaxCritCheckBox(1, -5 - 2*64 - (# SBM_eventList)*32 -16)
+    SBM:createTriggerOnlyOnCritRecordCheckBox(1, -5 - 2*64 - (# SBM_eventList)*32 -16)
     
     yOffSet = 3
 	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("FontColorDescription", "OVERLAY");
@@ -219,12 +219,12 @@ function SBM:createThresholdEditBox(y)
     end)
 end
 
-function SBM:createOnlyOnMaxCritCheckBox(x, y)
+function SBM:createTriggerOnlyOnCritRecordCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "OnlyOnMaxCritCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
     checkButton:SetSize(32, 32)
-    OnlyOnMaxCritCheckBoxText:SetText("Only trigger on new highst crit")
+    OnlyOnMaxCritCheckBoxText:SetText("Only trigger on new crit record")
     OnlyOnMaxCritCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
     
     if(SBM_onlyOnNewMaxCrits) then            
@@ -393,5 +393,5 @@ function SBM:setPanelTexts()
 	FontColorDescription:SetText(SBM_color.."Change color of Font")
 	OutputChannelDescription:SetText(SBM_color.."Output Channel")
     ThresholdDescription:SetText(SBM_color.."Least amount of damage/heal to trigger bam:")
-    OnlyOnMaxCritsDescription:SetText(SBM_color.."Only trigger on new highest crit:")
+    OnlyOnMaxCritsDescription:SetText(SBM_color.."Trigger options:")
 end
