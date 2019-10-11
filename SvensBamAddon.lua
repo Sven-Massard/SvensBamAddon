@@ -26,7 +26,7 @@ end
 
 function SBM:combatLogEvent(self, event, ...)
 	name, realm = UnitName("player");
-    eventType,_ ,_ , eventSource = select(2, CombatLogGetCurrentEventInfo())
+    eventType,_ ,_ , eventSource,_,_,_,enemyName = select(2, CombatLogGetCurrentEventInfo())
 	if not (eventSource == name) then
 		do return end
 	end
@@ -46,14 +46,13 @@ function SBM:combatLogEvent(self, event, ...)
     if (amount ~= nil and amount < SBM_threshold and SBM_threshold ~= 0) then
         do return end
     end
-
     for i=1, # SBM_eventList do
         if (eventType == SBM_eventList[i].eventType and SBM_eventList[i].boolean and critical == true) then
             newMaxCrit = SBM:addToCritList(spellName, amount);
             if(SBM_onlyOnNewMaxCrits and not newMaxCrit) then
                 do return end
             end
-            local output = SBM_outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount)
+            local output = SBM_outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
             PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
             for _, v in pairs(SBM_outputChannelList) do
                 if v == "Print" then

@@ -186,7 +186,7 @@ function SBM:createOutputMessageEditBox()
     end)
     outputMessageEditBox:SetScript( "OnEnter", function(...)            
         GameTooltip:SetOwner(outputMessageEditBox, "ANCHOR_BOTTOM");
-        GameTooltip:SetText( "Insert your damage message here.\nSN will be replaced with spell name.\nSD with spell damage.\nDefault: BAM! SN SD!" )
+        GameTooltip:SetText( "Insert your damage message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!" )
         GameTooltip:ClearAllPoints()
         GameTooltip:Show()
     end)
