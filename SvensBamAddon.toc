@@ -1,8 +1,8 @@
 ## Interface: 11302
 ## Title: Svens Bam AddOn
 ## Author: Verband
-## Version: 1.2
-## Notes: Svens first "useful" addon
+## Version: 1.3
+## Notes: Makes a bam sound and outputs a message when you crit
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: SBM_outputMessage,SBM_critList,SBM_outputChannelList,SBM_whisperList,SBM_eventList,SBM_color,SBM_threshold,SBM_onlyOnNewMaxCrits
