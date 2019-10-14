@@ -17,6 +17,7 @@ function SBM:loadAddon()
             "Raid_Warning",
             "Battleground",
             "Whisper",
+			"Sound"
         }
     
     if(SBM_onlyOnNewMaxCrits == nil) then
@@ -39,7 +40,7 @@ function SBM:loadAddon()
 		}
 
     if(SBM_outputChannelList == nil) then
-        SBM_outputChannelList = {}
+        SBM_outputChannelList = {"Print", "Sound"}
     end
    
     if(SBM_whisperList == nil) then
@@ -320,7 +321,7 @@ function SBM:createResetChannelListButton(parentFrame, channelList, channelButto
     resetChannelListButton = CreateFrame("Button", "ResetButtonChannels", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
     resetChannelListButton:SetPoint("TOPLEFT", 32, ((# channelList) + 1)*-24 -8)
-    resetChannelListButtonText = "Reset Channel List (May fix bugs after updating)"
+    resetChannelListButtonText = "Clear Channel List (May fix bugs after updating)"
     resetChannelListButton:SetSize(resetChannelListButtonText:len()*7, 32)
     resetChannelListButton:SetText(resetChannelListButtonText)
     resetChannelListButton:SetScript( "OnClick", function(...)

@@ -53,7 +53,6 @@ function SBM:combatLogEvent(self, event, ...)
                 do return end
             end
             local output = SBM_outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
-            PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
             for _, v in pairs(SBM_outputChannelList) do
                 if v == "Print" then
                     print(SBM_color..output)
@@ -61,6 +60,8 @@ function SBM:combatLogEvent(self, event, ...)
                     for _, w in pairs(SBM_whisperList) do
                         SendChatMessage(output, "WHISPER", "COMMON", w)
                     end
+				elseif (v == "Sound") then
+					PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
                 else
                     SendChatMessage(output ,v );
                 end
