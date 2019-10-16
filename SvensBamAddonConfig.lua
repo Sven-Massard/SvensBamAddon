@@ -32,6 +32,10 @@ function SBM:loadAddon()
         SBM_threshold = 0
     end
 	
+	if(SBM_soundfile == nil) then
+		SBM_soundfile = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+	end
+	
 	local rgb =
 		{
 			{color = "Red",   value = SBM_color:sub(5, 6)},
@@ -86,6 +90,7 @@ function SBM:loadAddon()
     SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
     SvensBamAddonChannelOptions.panel.okay = function()
         SBM:saveWhisperList()
+		SBM:saveSoundfile()
     end
     SBM:populateChannelSubmenu(channelButtonList, channelList)
 	
@@ -173,7 +178,7 @@ function SBM:createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
 end
 
 function SBM:createOutputMessageEditBox()
-    outputMessageEditBox = SBM:createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel)
+    outputMessageEditBox = SBM:createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel, 32, 400)
     outputMessageEditBox:SetPoint("TOPLEFT", 40, -24)
     outputMessageEditBox:Insert(SBM_outputMessage)
     outputMessageEditBox:SetCursorPosition(0)   
@@ -197,7 +202,7 @@ function SBM:createOutputMessageEditBox()
 end
 
 function SBM:createThresholdEditBox(y)
-    thresholdEditBox = SBM:createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel)
+    thresholdEditBox = SBM:createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel, 32, 400)
     thresholdEditBox:SetPoint("TOPLEFT", 40, y)
     thresholdEditBox:Insert(SBM_threshold)
     thresholdEditBox:SetCursorPosition(0)   
@@ -253,10 +258,11 @@ function SBM:populateChannelSubmenu(channelButtonList, channelList)
 end
 
 function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
+	local YOffset = y*-24
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_ChannelCheckButton" .. i, SvensBamAddonChannelOptions.panel, "UICheckButtonTemplate")
     channelButtonList[i] = checkButton
     checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, y*-24)
+    checkButton:SetPoint("TOPLEFT", x * 32, YOffset)
     checkButton:SetSize(32, 32)
     
     _G[checkButton:GetName() .. "Text"]:SetText(channelList[i])
@@ -287,7 +293,7 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
     
     -- Create Edit Box for whispers
     if(channelList[i] == "Whisper") then
-        whisperFrame = SBM:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel)
+        whisperFrame = SBM:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel, 32, 400)
         whisperFrame:SetPoint("TOP",50, -24*y)
         for _, v in pairs(SBM_whisperList) do
             whisperFrame:Insert(v.." ")
@@ -315,6 +321,54 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
             GameTooltip:Hide()
         end)
     end
+	
+	-- Create Edit Box for Soundfile and reset button
+    if(channelList[i] == "Sound") then
+		local soundfileFrameXOffset = 50
+		local soundfileFrameHeight = 32
+		local soundfileFrameWidth = 400
+        soundfileFrame = SBM:createEditBox("Soundfile", SvensBamAddonChannelOptions.panel, soundfileFrameHeight, soundfileFrameWidth)
+        soundfileFrame:SetPoint("TOP",soundfileFrameXOffset, YOffset)
+        
+        soundfileFrame:Insert(SBM_soundfile)
+        
+        soundfileFrame:SetCursorPosition(0)
+        
+        soundfileFrame:SetScript( "OnEscapePressed", function(...)
+            soundfileFrame:ClearFocus()
+            soundfileFrame:SetText("")
+            soundfileFrame:Insert(SBM_soundfile)
+        end)
+        soundfileFrame:SetScript( "OnEnterPressed", function(...)
+            soundfileFrame:ClearFocus()
+            SBM:saveSoundfile()
+        end)
+        soundfileFrame:SetScript( "OnEnter", function(...)            
+            GameTooltip:SetOwner(soundfileFrame, "ANCHOR_BOTTOM");
+            GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\nIf you copy a sound file to your World of Warcraft folder,\nyou have to restart the client before that file works!")
+            GameTooltip:ClearAllPoints()
+            GameTooltip:Show()
+        end)
+        soundfileFrame:SetScript( "OnLeave", function()
+            GameTooltip:Hide()
+        end)
+		local resetSoundfileButtonWidth = 56
+		SBM:createResetSoundfileButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileFrameWidth/2 + soundfileFrameXOffset + resetSoundfileButtonWidth/2, YOffset, soundfileFrameHeight)
+    end
+end
+
+--SBM:createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
+function SBM:createResetSoundfileButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileFrameHeight)
+	local resetSoundfileButtonHeight = 24
+	resetChannelListButton = CreateFrame("Button", "ResetSoundfile", parentFrame, "UIPanelButtonTemplate");
+    resetChannelListButton:ClearAllPoints()
+    resetChannelListButton:SetPoint("TOP", x, y -(soundfileFrameHeight-resetSoundfileButtonHeight)/2)
+    resetChannelListButton:SetSize(resetSoundfileButtonWidth, resetSoundfileButtonHeight)
+    resetChannelListButton:SetText("Reset")
+    resetChannelListButton:SetScript( "OnClick", function(...)
+            SBM_soundfile = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+			soundfileFrame:SetText(SBM_soundfile)
+    end)
 end
 
 function SBM:createResetChannelListButton(parentFrame, channelList, channelButtonList)
@@ -360,6 +414,10 @@ function SBM:saveWhisperList()
     end
 end
 
+function SBM:saveSoundfile()
+	SBM_soundfile = soundfileFrame:GetText()
+end
+	
 function SBM:saveOutputList()
     SBM_outputMessage = outputMessageEditBox:GetText()
 end
@@ -368,12 +426,12 @@ function SBM:saveThreshold()
     SBM_threshold = thresholdEditBox:GetNumber()
 end
     
-function SBM:createEditBox(name, parentFrame)
+function SBM:createEditBox(name, parentFrame, height, width)
     local eb = CreateFrame("EditBox", name, parentFrame, "InputBoxTemplate")
     eb:ClearAllPoints()
-    eb:SetAutoFocus(false) -- dont automatically focus
-    eb:SetHeight(32)
-    eb:SetWidth(400)
+    eb:SetAutoFocus(false)
+    eb:SetHeight(height)
+    eb:SetWidth(width)
     eb:SetFontObject("ChatFontNormal")
     return eb
 end

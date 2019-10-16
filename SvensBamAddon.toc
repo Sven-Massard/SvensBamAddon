@@ -1,11 +1,11 @@
 ## Interface: 11302
 ## Title: Svens Bam AddOn
 ## Author: Verband
-## Version: 1.4
+## Version: 1.5
 ## Notes: Makes a bam sound and outputs a message when you crit
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: SBM_outputMessage,SBM_critList,SBM_outputChannelList,SBM_whisperList,SBM_eventList,SBM_color,SBM_threshold,SBM_onlyOnNewMaxCrits
+## SavedVariablesPerCharacter: SBM_outputMessage,SBM_critList,SBM_outputChannelList,SBM_whisperList,SBM_eventList,SBM_color,SBM_threshold,SBM_onlyOnNewMaxCrits,SBM_soundfile
 
 SvensBamAddon.xml
 SvensBamAddonCritList.lua

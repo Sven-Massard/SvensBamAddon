@@ -61,7 +61,7 @@ function SBM:combatLogEvent(self, event, ...)
                         SendChatMessage(output, "WHISPER", "COMMON", w)
                     end
 				elseif (v == "Sound") then
-					PlaySoundFile("Interface\\AddOns\\SvensBamAddon\\bam.ogg")
+					PlaySoundFile(SBM_soundfile)
                 else
                     SendChatMessage(output ,v );
                 end
@@ -90,6 +90,7 @@ function SBM:bam_cmd(params)
         for i = 1, # SBM_outputChannelList do
             print(SBM_color..SBM_outputChannelList[i])
         end
+		PlaySoundFile(SBM_soundfile)
     else
         print("Bam Error: Unknown command")
     end   
