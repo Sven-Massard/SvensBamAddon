@@ -114,41 +114,72 @@ function SBM:loadAddon()
 end
 
 function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
+
+	local lineHeight = 16
+	local boxHeight = 32
+	local boxSpacing = 24 -- Even though a box is 32 high, it somehow takes only 24 of space
+	local editBoxWidth = 400
+	local categoriePadding = 16
+	local baseYOffSet = 5
+	
+	local categorieNumber = 0 -- increase after each categorie
+	local amountLinesWritten = 0 -- increase after each Font String
+	local boxesPlaced = 0 -- increase after each edit box or check box placed
+	
+	-- Output Messages
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputMessageDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    
-    SBM:createOutputMessageEditBox()
-    
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
+	amountLinesWritten = amountLinesWritten + 1
+	
+    SBM:createOutputDamageMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
+	boxesPlaced = boxesPlaced +1
+	categorieNumber = categorieNumber + 1
+	
+	-- Damage Threshhold
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("ThresholdDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5,-64 -5 );
-    
-    SBM:createThresholdEditBox(-64 -24)
-    
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5,-(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
+    amountLinesWritten = amountLinesWritten + 1
+	
+    SBM:createThresholdEditBox(-(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
+	boxesPlaced = boxesPlaced +1
+    categorieNumber = categorieNumber + 1
+	
+	-- Event Types to Trigger
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("EventTypeDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64);
-    
-    for i=1, # SBM_eventList do
-        SBM:createEventTypeCheckBoxes(i, 1, i, eventButtonList, SBM_eventList)
-    end
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
+    amountLinesWritten = amountLinesWritten + 1
 	
+    for i=1, # SBM_eventList do
+        SBM:createEventTypeCheckBoxes(i, 1, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing), eventButtonList, SBM_eventList)
+		boxesPlaced = boxesPlaced +1
+    end
+	categorieNumber = categorieNumber + 1
+	
+	-- Trigger Options
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OnlyOnMaxCritsDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - 2*64 - (# SBM_eventList)*32);
-    
-    SBM:createTriggerOnlyOnCritRecordCheckBox(1, -5 - 2*64 - (# SBM_eventList)*32 -16)
-    
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
+    amountLinesWritten = amountLinesWritten + 1
+	
+	SBM:createTriggerOnlyOnCritRecordCheckBox(1, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
+	boxesPlaced = boxesPlaced +1
+	categorieNumber = categorieNumber + 1
+	
+	-- Color changer 
     yOffSet = 3
 	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("FontColorDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -5 - yOffSet*64 -(# SBM_eventList)*32);
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
+	amountLinesWritten = amountLinesWritten + 1
 	
 	for i=1, 3 do
 		SBM:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, yOffSet)
 	end
-    
+	categorieNumber = categorieNumber + 1
+	
     
 end
 
@@ -156,7 +187,7 @@ function SBM:createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_EventTypeCheckButton" .. i, SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     eventButtonList[i] = checkButton
     checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, y*-24 -2*64)
+    checkButton:SetPoint("TOPLEFT", x * 32, y)
     checkButton:SetSize(32, 32)
     
     _G[checkButton:GetName() .. "Text"]:SetText(SBM_eventList[i].name)
@@ -177,9 +208,9 @@ function SBM:createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
 
 end
 
-function SBM:createOutputMessageEditBox()
-    outputMessageEditBox = SBM:createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel, 32, 400)
-    outputMessageEditBox:SetPoint("TOPLEFT", 40, -24)
+function SBM:createOutputDamageMessageEditBox(height, width, y)
+    outputMessageEditBox = SBM:createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel, height, width)
+    outputMessageEditBox:SetPoint("TOPLEFT", 40, y)
     outputMessageEditBox:Insert(SBM_outputMessage)
     outputMessageEditBox:SetCursorPosition(0)   
     outputMessageEditBox:SetScript( "OnEscapePressed", function(...)
