@@ -174,9 +174,10 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
 	amountLinesWritten = amountLinesWritten + 1
-	
+	amountLinesWritten = amountLinesWritten + 1 --Another Time, because the Sliders have on line above
+	print(-(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	for i=1, 3 do
-		SBM:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, yOffSet)
+		SBM:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	end
 	categorieNumber = categorieNumber + 1
 	
@@ -420,7 +421,8 @@ end
 function SBM:createColorSlider(i, panel, rgb, yOffSet)
 	local slider = CreateFrame("Slider", "SBM_Slider"..i, panel, "OptionsSliderTemplate")
 	slider:ClearAllPoints()
-	slider:SetPoint("TOPLEFT", 32, -176-16*2*(i-1)-yOffSet*64)
+	print( -16*2*(i-1)+yOffSet)
+	slider:SetPoint("TOPLEFT", 32, -16*2*(i-1)+yOffSet)
 	slider:SetSize(256,16)
 	slider:SetMinMaxValues(0, 255)
 	slider:SetValueStep(1)
