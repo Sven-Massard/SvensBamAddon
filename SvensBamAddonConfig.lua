@@ -68,8 +68,12 @@ function SBM:loadAddon()
         SBM_critList = {}
     end
     
-    if(SBM_outputMessage == nil) then
-        SBM_outputMessage = "BAM! SN SD!"
+    if(SBM_outputDamageMessage == nil) then
+        SBM_outputDamageMessage = "BAM! SN SD!"
+    end
+	
+	if(SBM_outputHealMessage == nil) then
+        SBM_outputHealMessage = "BAM! SN SD!"
     end
     
     --Good Guide https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/InterfaceOptionsFrame.lua
@@ -127,12 +131,21 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 	local boxesPlaced = 0 -- increase after each edit box or check box placed
 	
 	-- Output Messages
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputMessageDescription", "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputDamageMessageDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
 	amountLinesWritten = amountLinesWritten + 1
 	
     SBM:createOutputDamageMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
+	boxesPlaced = boxesPlaced +1
+	categorieNumber = categorieNumber + 1
+	
+	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputHealMessageDescription", "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
+	amountLinesWritten = amountLinesWritten + 1
+	
+	SBM:createOutputHealMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	boxesPlaced = boxesPlaced +1
 	categorieNumber = categorieNumber + 1
 	
@@ -210,25 +223,49 @@ function SBM:createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
 end
 
 function SBM:createOutputDamageMessageEditBox(height, width, y)
-    outputMessageEditBox = SBM:createEditBox("OutputMessage", SvensBamAddonGeneralOptions.panel, height, width)
-    outputMessageEditBox:SetPoint("TOPLEFT", 40, y)
-    outputMessageEditBox:Insert(SBM_outputMessage)
-    outputMessageEditBox:SetCursorPosition(0)   
-    outputMessageEditBox:SetScript( "OnEscapePressed", function(...)
-        outputMessageEditBox:ClearFocus()
-        outputMessageEditBox:SetText(SBM_outputMessage)
+    outputDamageMessageEditBox = SBM:createEditBox("OutputDamageMessage", SvensBamAddonGeneralOptions.panel, height, width)
+    outputDamageMessageEditBox:SetPoint("TOPLEFT", 40, y)
+    outputDamageMessageEditBox:Insert(SBM_outputDamageMessage)
+    outputDamageMessageEditBox:SetCursorPosition(0)   
+    outputDamageMessageEditBox:SetScript( "OnEscapePressed", function(...)
+        outputDamageMessageEditBox:ClearFocus()
+        outputDamageMessageEditBox:SetText(SBM_outputDamageMessage)
         end)
-    outputMessageEditBox:SetScript( "OnEnterPressed", function(...)
-        outputMessageEditBox:ClearFocus()
+    outputDamageMessageEditBox:SetScript( "OnEnterPressed", function(...)
+        outputDamageMessageEditBox:ClearFocus()
         SBM:saveOutputList()
     end)
-    outputMessageEditBox:SetScript( "OnEnter", function(...)            
-        GameTooltip:SetOwner(outputMessageEditBox, "ANCHOR_BOTTOM");
+    outputDamageMessageEditBox:SetScript( "OnEnter", function(...)            
+        GameTooltip:SetOwner(outputDamageMessageEditBox, "ANCHOR_BOTTOM");
         GameTooltip:SetText( "Insert your damage message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!" )
         GameTooltip:ClearAllPoints()
         GameTooltip:Show()
     end)
-    outputMessageEditBox:SetScript( "OnLeave", function()
+    outputDamageMessageEditBox:SetScript( "OnLeave", function()
+        GameTooltip:Hide()
+    end)
+end
+
+function SBM:createOutputHealMessageEditBox(height, width, y)
+    outputHealMessageEditBox = SBM:createEditBox("OutputHealMessage", SvensBamAddonGeneralOptions.panel, height, width)
+    outputHealMessageEditBox:SetPoint("TOPLEFT", 40, y)
+    outputHealMessageEditBox:Insert(SBM_outputHealMessage)
+    outputHealMessageEditBox:SetCursorPosition(0)   
+    outputHealMessageEditBox:SetScript( "OnEscapePressed", function(...)
+        outputHealMessageEditBox:ClearFocus()
+        outputHealMessageEditBox:SetText(SBM_outputHealMessage)
+        end)
+    outputHealMessageEditBox:SetScript( "OnEnterPressed", function(...)
+        outputHealMessageEditBox:ClearFocus()
+        SBM:saveOutputList()
+    end)
+    outputHealMessageEditBox:SetScript( "OnEnter", function(...)            
+        GameTooltip:SetOwner(outputHealMessageEditBox, "ANCHOR_BOTTOM");
+        GameTooltip:SetText( "Insert your heal message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!" )
+        GameTooltip:ClearAllPoints()
+        GameTooltip:Show()
+    end)
+    outputHealMessageEditBox:SetScript( "OnLeave", function()
         GameTooltip:Hide()
     end)
 end
@@ -479,8 +516,9 @@ end
 function SBM:setPanelTexts()
 	GeneralOptionsDescription:SetText(SBM_color.."Choose sub menu to change options.\n\n\nCommand line options:\n\n"
             .."/bam list: lists highest crits of each spell.\n/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
-	OutputMessageDescription:SetText(SBM_color.."Output Message")
-	    EventTypeDescription:SetText(SBM_color.."Event Types to Trigger")
+	OutputDamageMessageDescription:SetText(SBM_color.."Output Message Damage")
+	OutputHealMessageDescription:SetText(SBM_color.."Output Message Heal")
+	EventTypeDescription:SetText(SBM_color.."Event Types to Trigger")
 	SvensBamAddonGeneralOptions.panel.title:SetText(SBM_color.."Change color of Font")
 	FontColorDescription:SetText(SBM_color.."Change color of Font")
 	OutputChannelDescription:SetText(SBM_color.."Output Channel")
