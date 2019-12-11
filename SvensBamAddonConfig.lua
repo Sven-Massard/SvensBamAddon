@@ -233,7 +233,7 @@ function SBM:createOutputDamageMessageEditBox(height, width, y)
         end)
     outputDamageMessageEditBox:SetScript( "OnEnterPressed", function(...)
         outputDamageMessageEditBox:ClearFocus()
-        SBM:saveOutputList()
+        SBM:saveDamageOutputList()
     end)
     outputDamageMessageEditBox:SetScript( "OnEnter", function(...)            
         GameTooltip:SetOwner(outputDamageMessageEditBox, "ANCHOR_BOTTOM");
@@ -257,7 +257,7 @@ function SBM:createOutputHealMessageEditBox(height, width, y)
         end)
     outputHealMessageEditBox:SetScript( "OnEnterPressed", function(...)
         outputHealMessageEditBox:ClearFocus()
-        SBM:saveOutputList()
+        SBM:saveHealOutputList()
     end)
     outputHealMessageEditBox:SetScript( "OnEnter", function(...)            
         GameTooltip:SetOwner(outputHealMessageEditBox, "ANCHOR_BOTTOM");
@@ -488,8 +488,12 @@ function SBM:saveSoundfile()
 	SBM_soundfile = soundfileFrame:GetText()
 end
 	
-function SBM:saveOutputList()
-    SBM_outputMessage = outputMessageEditBox:GetText()
+function SBM:saveDamageOutputList()
+    SBM_outputDamageMessage = outputDamageMessageEditBox:GetText()
+end
+
+function SBM:saveHealOutputList()
+    SBM_outputHealMessage = outputHealMessageEditBox:GetText()
 end
 
 function SBM:saveThreshold()

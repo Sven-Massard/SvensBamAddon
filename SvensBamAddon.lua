@@ -52,7 +52,12 @@ function SBM:combatLogEvent(self, event, ...)
             if(SBM_onlyOnNewMaxCrits and not newMaxCrit) then
                 do return end
             end
-            local output = SBM_outputMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+			local output
+			if eventType == "SPELL_HEAL" then
+				output = SBM_outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+			else
+				output = SBM_outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+			end
             for _, v in pairs(SBM_outputChannelList) do
                 if v == "Print" then
                     print(SBM_color..output)
