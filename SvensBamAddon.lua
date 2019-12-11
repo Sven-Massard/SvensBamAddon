@@ -62,6 +62,11 @@ function SBM:combatLogEvent(self, event, ...)
                     end
 				elseif (v == "Sound") then
 					PlaySoundFile(SBM_soundfile)
+				elseif (v == "Battleground") then
+					inInstance, instanceType = IsInInstance()
+					if(instanceType == "pvp") then 
+						SendChatMessage(output ,v )
+					end
                 else
                     SendChatMessage(output ,v );
                 end
