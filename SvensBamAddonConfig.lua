@@ -443,14 +443,14 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         soundfileHealFrame = SBM:createEditBox("SoundfileHeal", SvensBamAddonChannelOptions.panel, soundfileHealFrameHeight, soundfileHealFrameWidth)
         soundfileHealFrame:SetPoint("TOP",soundfileHealFrameXOffset, YOffset)
         
-        soundfileHealFrame:Insert(SBM_soundfileDamage)
+        soundfileHealFrame:Insert(SBM_soundfileHeal)
         
         soundfileHealFrame:SetCursorPosition(0)
         
         soundfileHealFrame:SetScript( "OnEscapePressed", function(...)
             soundfileHealFrame:ClearFocus()
             soundfileHealFrame:SetText("")
-            soundfileHealFrame:Insert(SBM_soundfileDamage)
+            soundfileHealFrame:Insert(SBM_soundfileHeal)
         end)
         soundfileHealFrame:SetScript( "OnEnterPressed", function(...)
             soundfileHealFrame:ClearFocus()

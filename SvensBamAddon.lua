@@ -67,11 +67,11 @@ function SBM:combatLogEvent(self, event, ...)
                     end
 				elseif (v == "Sound DMG") then
 					if (eventType == "SPELL_DAMAGE") then
-						PlaySoundFile(SBM_soundfileDamage)
+						SBM:playRandomSoundFromList(SBM_soundfileDamage)
 					end
 				elseif (v == "Sound Heal") then
 					if (eventType == "SPELL_HEAL") then
-						PlaySoundFile(SBM_soundfileHeal)
+						SBM:playRandomSoundFromList(SBM_soundfileHeal)
 					end
 				elseif (v == "Battleground") then
 					inInstance, instanceType = IsInInstance()
@@ -124,9 +124,6 @@ function SBM:playRandomSoundFromList(listOfFilesAsString)
     for arg in string.gmatch(listOfFilesAsString, "%S+") do
         table.insert(SBM_soundFileList, arg)
     end
-	for _, v in pairs(SBM_soundFileList) do
-		print(v)
-	end
 	local randomIndex = random(1, #SBM_soundFileList)
 	PlaySoundFile(SBM_soundFileList[randomIndex])
 end
