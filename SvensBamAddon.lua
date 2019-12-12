@@ -113,10 +113,20 @@ function SBM:bam_cmd(params)
         for i = 1, # SBM_outputChannelList do
             print(SBM_color..SBM_outputChannelList[i])
         end
-		print(SBM_soundfileDamage)
-		print(SBM_soundfileHeal)
-		PlaySoundFile(SBM_soundfile)
+		SBM:playRandomSoundFromList(SBM_soundfileDamage)
     else
         print("Bam Error: Unknown command")
     end   
+end
+
+function SBM:playRandomSoundFromList(listOfFilesAsString)
+	SBM_soundFileList = {}
+    for arg in string.gmatch(listOfFilesAsString, "%S+") do
+        table.insert(SBM_soundFileList, arg)
+    end
+	for _, v in pairs(SBM_soundFileList) do
+		print(v)
+	end
+	local randomIndex = random(1, #SBM_soundFileList)
+	PlaySoundFile(SBM_soundFileList[randomIndex])
 end
