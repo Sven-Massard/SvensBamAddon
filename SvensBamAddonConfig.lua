@@ -17,7 +17,8 @@ function SBM:loadAddon()
             "Raid_Warning",
             "Battleground",
             "Whisper",
-			"Sound"
+			"Sound DMG",
+			"Sound Heal"
         }
     
     if(SBM_onlyOnNewMaxCrits == nil) then
@@ -32,8 +33,12 @@ function SBM:loadAddon()
         SBM_threshold = 0
     end
 	
-	if(SBM_soundfile == nil) then
-		SBM_soundfile = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+	if(SBM_soundfileDamage == nil) then
+		SBM_soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+	end
+	
+	if(SBM_soundfileHeal == nil) then
+		SBM_soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
 	end
 	
 	local rgb =
@@ -42,10 +47,6 @@ function SBM:loadAddon()
 			{color = "Green", value= SBM_color:sub(7, 8)},
 			{color = "Blue",  value= SBM_color:sub(9, 10)}
 		}
-
-    if(SBM_outputChannelList == nil) then
-        SBM_outputChannelList = {"Print", "Sound"}
-    end
    
     if(SBM_whisperList == nil) then
         SBM_whisperList = {}
@@ -70,10 +71,16 @@ function SBM:loadAddon()
     
     if(SBM_outputDamageMessage == nil) then
         SBM_outputDamageMessage = "BAM! SN SD!"
+		SBM_outputChannelList = {"Print", "Sound DMG", "Sound Heal"} -- Reset to fix problems in new version
     end
 	
 	if(SBM_outputHealMessage == nil) then
         SBM_outputHealMessage = "BAM! SN SD!"
+		SBM_outputChannelList = {"Print", "Sound DMG", "Sound Heal"} -- Reset to fix problems in new version
+    end
+	
+	if(SBM_outputChannelList == nil) then
+        SBM_outputChannelList = {"Print", "Sound DMG", "Sound Heal"}
     end
     
     --Good Guide https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/InterfaceOptionsFrame.lua
@@ -104,7 +111,10 @@ function SBM:loadAddon()
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
     SvensBamAddonGeneralOptions.panel.okay = function()
-        SBM:saveOutputList()
+        SBM:saveDamageOutputList()
+		SBM:saveHealOutputList()
+		SBM:saveSoundfileDamage()
+		SBM:saveSoundfileHeal()
         SBM:saveThreshold()
     end
     SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
@@ -391,54 +401,102 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         end)
     end
 	
-	-- Create Edit Box for Soundfile and reset button
-    if(channelList[i] == "Sound") then
-		local soundfileFrameXOffset = 50
-		local soundfileFrameHeight = 32
-		local soundfileFrameWidth = 400
-        soundfileFrame = SBM:createEditBox("Soundfile", SvensBamAddonChannelOptions.panel, soundfileFrameHeight, soundfileFrameWidth)
-        soundfileFrame:SetPoint("TOP",soundfileFrameXOffset, YOffset)
+	-- Create Edit Box for Damage Soundfile and reset button
+    if(channelList[i] == "Sound DMG") then
+		local soundfileDamageFrameXOffset = 50
+		local soundfileDamageFrameHeight = 32
+		local soundfileDamageFrameWidth = 400
+        soundfileDamageFrame = SBM:createEditBox("SoundfileDamage", SvensBamAddonChannelOptions.panel, soundfileDamageFrameHeight, soundfileDamageFrameWidth)
+        soundfileDamageFrame:SetPoint("TOP",soundfileDamageFrameXOffset, YOffset)
         
-        soundfileFrame:Insert(SBM_soundfile)
+        soundfileDamageFrame:Insert(SBM_soundfileDamage)
         
-        soundfileFrame:SetCursorPosition(0)
+        soundfileDamageFrame:SetCursorPosition(0)
         
-        soundfileFrame:SetScript( "OnEscapePressed", function(...)
-            soundfileFrame:ClearFocus()
-            soundfileFrame:SetText("")
-            soundfileFrame:Insert(SBM_soundfile)
+        soundfileDamageFrame:SetScript( "OnEscapePressed", function(...)
+            soundfileDamageFrame:ClearFocus()
+            soundfileDamageFrame:SetText("")
+            soundfileDamageFrame:Insert(SBM_soundfileDamage)
         end)
-        soundfileFrame:SetScript( "OnEnterPressed", function(...)
-            soundfileFrame:ClearFocus()
-            SBM:saveSoundfile()
+        soundfileDamageFrame:SetScript( "OnEnterPressed", function(...)
+            soundfileDamageFrame:ClearFocus()
+            SBM:saveSoundfileDamage()
         end)
-        soundfileFrame:SetScript( "OnEnter", function(...)            
-            GameTooltip:SetOwner(soundfileFrame, "ANCHOR_BOTTOM");
+        soundfileDamageFrame:SetScript( "OnEnter", function(...)            
+            GameTooltip:SetOwner(soundfileDamageFrame, "ANCHOR_BOTTOM");
             GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\nIf you copy a sound file to your World of Warcraft folder,\nyou have to restart the client before that file works!")
             GameTooltip:ClearAllPoints()
             GameTooltip:Show()
         end)
-        soundfileFrame:SetScript( "OnLeave", function()
+        soundfileDamageFrame:SetScript( "OnLeave", function()
             GameTooltip:Hide()
         end)
 		local resetSoundfileButtonWidth = 56
-		SBM:createResetSoundfileButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileFrameWidth/2 + soundfileFrameXOffset + resetSoundfileButtonWidth/2, YOffset, soundfileFrameHeight)
+		SBM:createResetSoundfileDamageButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileDamageFrameWidth/2 + soundfileDamageFrameXOffset + resetSoundfileButtonWidth/2, YOffset, soundfileDamageFrameHeight)
+    end
+	
+	-- Create Edit Box for Heal Soundfile and reset button
+    if(channelList[i] == "Sound Heal") then
+		local soundfileHealFrameXOffset = 50
+		local soundfileHealFrameHeight = 32
+		local soundfileHealFrameWidth = 400
+        soundfileHealFrame = SBM:createEditBox("SoundfileHeal", SvensBamAddonChannelOptions.panel, soundfileHealFrameHeight, soundfileHealFrameWidth)
+        soundfileHealFrame:SetPoint("TOP",soundfileHealFrameXOffset, YOffset)
+        
+        soundfileHealFrame:Insert(SBM_soundfileDamage)
+        
+        soundfileHealFrame:SetCursorPosition(0)
+        
+        soundfileHealFrame:SetScript( "OnEscapePressed", function(...)
+            soundfileHealFrame:ClearFocus()
+            soundfileHealFrame:SetText("")
+            soundfileHealFrame:Insert(SBM_soundfileDamage)
+        end)
+        soundfileHealFrame:SetScript( "OnEnterPressed", function(...)
+            soundfileHealFrame:ClearFocus()
+            SBM:saveSoundfileHeal()
+        end)
+        soundfileHealFrame:SetScript( "OnEnter", function(...)            
+            GameTooltip:SetOwner(soundfileHealFrame, "ANCHOR_BOTTOM");
+            GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\nIf you copy a sound file to your World of Warcraft folder,\nyou have to restart the client before that file works!")
+            GameTooltip:ClearAllPoints()
+            GameTooltip:Show()
+        end)
+        soundfileHealFrame:SetScript( "OnLeave", function()
+            GameTooltip:Hide()
+        end)
+		local resetSoundfileButtonWidth = 56
+		SBM:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth/2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth/2, YOffset, soundfileHealFrameHeight)
     end
 end
 
---SBM:createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
-function SBM:createResetSoundfileButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileFrameHeight)
+function SBM:createResetSoundfileDamageButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
 	local resetSoundfileButtonHeight = 24
-	resetChannelListButton = CreateFrame("Button", "ResetSoundfile", parentFrame, "UIPanelButtonTemplate");
+	resetChannelListButton = CreateFrame("Button", "ResetSoundfileDamage", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
-    resetChannelListButton:SetPoint("TOP", x, y -(soundfileFrameHeight-resetSoundfileButtonHeight)/2)
+    resetChannelListButton:SetPoint("TOP", x, y -(soundfileDamageFrameHeight-resetSoundfileButtonHeight)/2)
     resetChannelListButton:SetSize(resetSoundfileButtonWidth, resetSoundfileButtonHeight)
     resetChannelListButton:SetText("Reset")
     resetChannelListButton:SetScript( "OnClick", function(...)
-            SBM_soundfile = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
-			soundfileFrame:SetText(SBM_soundfile)
+            SBM_soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+			soundfileDamageFrame:SetText(SBM_soundfileDamage)
     end)
 end
+
+function SBM:createResetSoundfileHealButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
+	local resetSoundfileButtonHeight = 24
+	resetChannelListButton = CreateFrame("Button", "ResetSoundfileHeal", parentFrame, "UIPanelButtonTemplate");
+    resetChannelListButton:ClearAllPoints()
+    resetChannelListButton:SetPoint("TOP", x, y -(soundfileDamageFrameHeight-resetSoundfileButtonHeight)/2)
+    resetChannelListButton:SetSize(resetSoundfileButtonWidth, resetSoundfileButtonHeight)
+    resetChannelListButton:SetText("Reset")
+    resetChannelListButton:SetScript( "OnClick", function(...)
+            SBM_soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+			soundfileHealFrame:SetText(SBM_soundfileHeal)
+    end)
+end
+
+
 
 function SBM:createResetChannelListButton(parentFrame, channelList, channelButtonList)
     resetChannelListButton = CreateFrame("Button", "ResetButtonChannels", parentFrame, "UIPanelButtonTemplate");
@@ -484,8 +542,12 @@ function SBM:saveWhisperList()
     end
 end
 
-function SBM:saveSoundfile()
-	SBM_soundfile = soundfileFrame:GetText()
+function SBM:saveSoundfileDamage()
+	SBM_soundfileDamage = soundfileDamageFrame:GetText()
+end
+
+function SBM:saveSoundfileHeal()
+	SBM_soundfileHeal = soundfileHealFrame:GetText()
 end
 	
 function SBM:saveDamageOutputList()

@@ -65,8 +65,14 @@ function SBM:combatLogEvent(self, event, ...)
                     for _, w in pairs(SBM_whisperList) do
                         SendChatMessage(output, "WHISPER", "COMMON", w)
                     end
-				elseif (v == "Sound") then
-					PlaySoundFile(SBM_soundfile)
+				elseif (v == "Sound DMG") then
+					if (eventType == "SPELL_DAMAGE") then
+						PlaySoundFile(SBM_soundfileDamage)
+					end
+				elseif (v == "Sound Heal") then
+					if (eventType == "SPELL_HEAL") then
+						PlaySoundFile(SBM_soundfileHeal)
+					end	
 				elseif (v == "Battleground") then
 					inInstance, instanceType = IsInInstance()
 					if(instanceType == "pvp") then
@@ -100,6 +106,8 @@ function SBM:bam_cmd(params)
         for i = 1, # SBM_outputChannelList do
             print(SBM_color..SBM_outputChannelList[i])
         end
+		print(SBM_soundfileDamage)
+		print(SBM_soundfileHeal)
 		PlaySoundFile(SBM_soundfile)
     else
         print("Bam Error: Unknown command")
