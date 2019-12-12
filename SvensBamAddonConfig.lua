@@ -424,7 +424,9 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         end)
         soundfileDamageFrame:SetScript( "OnEnter", function(...)            
             GameTooltip:SetOwner(soundfileDamageFrame, "ANCHOR_BOTTOM");
-            GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\nIf you copy a sound file to your World of Warcraft folder,\nyou have to restart the client before that file works!")
+            GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\n"
+								.."If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
+								.."You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.")
             GameTooltip:ClearAllPoints()
             GameTooltip:Show()
         end)
@@ -458,7 +460,9 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         end)
         soundfileHealFrame:SetScript( "OnEnter", function(...)            
             GameTooltip:SetOwner(soundfileHealFrame, "ANCHOR_BOTTOM");
-            GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\nIf you copy a sound file to your World of Warcraft folder,\nyou have to restart the client before that file works!")
+            GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\n"
+								.."If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
+								.."You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.")
             GameTooltip:ClearAllPoints()
             GameTooltip:Show()
         end)
