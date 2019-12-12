@@ -78,6 +78,10 @@ function SBM:combatLogEvent(self, event, ...)
 					if(instanceType == "pvp") then
 						SendChatMessage(output, "INSTANCE_CHAT" )
 					end
+				elseif (v == "Officer") then
+					if (CanEditOfficerNote()) then
+						SendChatMessage(output ,v )
+					end
                 else
                     SendChatMessage(output ,v );
                 end
