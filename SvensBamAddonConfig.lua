@@ -581,7 +581,9 @@ end
 
 function SBM:setPanelTexts()
 	GeneralOptionsDescription:SetText(SBM_color.."Choose sub menu to change options.\n\n\nCommand line options:\n\n"
-            .."/bam list: lists highest crits of each spell.\n/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
+            .."/bam list: lists highest crits of each spell.\n"
+			.."/bam report: report highest crits of each spell to channel list.\n"
+			.."/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
 	OutputDamageMessageDescription:SetText(SBM_color.."Output Message Damage")
 	OutputHealMessageDescription:SetText(SBM_color.."Output Message Heal")
 	EventTypeDescription:SetText(SBM_color.."Event Types to Trigger")

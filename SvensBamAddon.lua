@@ -92,6 +92,7 @@ function SBM:bam_cmd(params)
     if(cmd == "help" or cmd == "") then
         print(SBM_color.."Possible parameters:")
         print(SBM_color.."list: lists highest crits of each spell")
+		print(SBM_color.."report: report highest crits of each spell to channel list")
         print(SBM_color.."clear: delete list of highest crits")
 		print(SBM_color.."config: Opens config page")
     elseif(cmd == "list") then
