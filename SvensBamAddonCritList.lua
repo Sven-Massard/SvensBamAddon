@@ -47,7 +47,6 @@ function SBM:clearCritList()
     print(SBM_color.."Critlist cleared");
 end
 
-
 function SBM:listCrits()
     if not (SBM_critList.value == nil) then
         print(SBM_color.."Highest crits:");
@@ -57,6 +56,57 @@ function SBM:listCrits()
             it = it.nextNode
             print(SBM_color..it.spellName..": "..it.value)
         end
+    else
+        print(SBM_color.."No crits recorded");
+    end
+end
+
+function SBM:reportCrits()
+    if not (SBM_critList.value == nil) then
+		for _, v in pairs(SBM_outputChannelList) do				
+			if v == "Print" then
+				print(SBM_color.."Highest crits:");
+				local it = SBM_critList
+				print(SBM_color..it.spellName..": "..it.value)
+				while not (it.nextNode == nil) do
+					it = it.nextNode
+					print(SBM_color..it.spellName..": "..it.value)
+				end
+			elseif (v == "Whisper") then
+				for _, w in pairs(SBM_whisperList) do
+					SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
+					local it = SBM_critList
+					SendChatMessage(it.spellName..": "..it.value, "WHISPER", "COMMON", w)
+					while not (it.nextNode == nil) do
+						it = it.nextNode
+						SendChatMessage(it.spellName..": "..it.value, "WHISPER", "COMMON", w)
+					end
+				end
+			elseif (v == "Sound DMG") then
+				-- do nothing
+			elseif (v == "Sound Heal") then
+				-- do nothing
+			elseif (v == "Battleground") then
+				inInstance, instanceType = IsInInstance()
+				if(instanceType == "pvp") then
+					SendChatMessage("Highest crits:", "INSTANCE_CHAT" )
+					local it = SBM_critList
+					SendChatMessage(it.spellName..": "..it.value, "INSTANCE_CHAT" )
+					while not (it.nextNode == nil) do
+						it = it.nextNode
+						SendChatMessage(it.spellName..": "..it.value, "INSTANCE_CHAT" )
+					end
+				end
+			else
+				SendChatMessage("Highest crits:", v )
+				local it = SBM_critList
+				SendChatMessage(it.spellName..": "..it.value, v )
+				while not (it.nextNode == nil) do
+					it = it.nextNode
+					SendChatMessage(it.spellName..": "..it.value, v )
+				end
+			end
+		end
     else
         print(SBM_color.."No crits recorded");
     end

@@ -72,7 +72,7 @@ function SBM:combatLogEvent(self, event, ...)
 				elseif (v == "Sound Heal") then
 					if (eventType == "SPELL_HEAL") then
 						PlaySoundFile(SBM_soundfileHeal)
-					end	
+					end
 				elseif (v == "Battleground") then
 					inInstance, instanceType = IsInInstance()
 					if(instanceType == "pvp") then
@@ -96,6 +96,8 @@ function SBM:bam_cmd(params)
 		print(SBM_color.."config: Opens config page")
     elseif(cmd == "list") then
         SBM:listCrits();
+	elseif(cmd == "report") then
+        SBM:reportCrits();	
     elseif(cmd == "clear") then
         SBM:clearCritList();   
     elseif(cmd == "config") then
