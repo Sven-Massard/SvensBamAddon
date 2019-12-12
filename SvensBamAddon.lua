@@ -66,7 +66,7 @@ function SBM:combatLogEvent(self, event, ...)
                         SendChatMessage(output, "WHISPER", "COMMON", w)
                     end
 				elseif (v == "Sound DMG") then
-					if (eventType == "SPELL_DAMAGE") then
+					if (eventType ~= "SPELL_HEAL") then
 						SBM:playRandomSoundFromList(SBM_soundfileDamage)
 					end
 				elseif (v == "Sound Heal") then
