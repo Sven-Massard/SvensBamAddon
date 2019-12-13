@@ -216,11 +216,9 @@ function SBM:createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
     
     _G[checkButton:GetName() .. "Text"]:SetText(SBM_eventList[i].name)
     _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-    for j = 1, # SBM_eventList do
-        if(SBM_eventList[i].boolean) then            
-            eventButtonList[i]:SetChecked(true)
-        end
-    end
+	if(SBM_eventList[i].boolean) then            
+		eventButtonList[i]:SetChecked(true)
+	end
 
     eventButtonList[i]:SetScript("OnClick", function()   
         if eventButtonList[i]:GetChecked() then
