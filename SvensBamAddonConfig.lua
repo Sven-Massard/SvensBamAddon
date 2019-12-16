@@ -124,7 +124,7 @@ function SBM:loadAddon()
 	InterfaceOptions_AddCategory(SvensBamAddonGeneralOptions.panel);
 	InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
 	
-    print(SBM_color.."Svens Bam Addon loaded!")
+    print(SBM_color.."Svens Bam Addon loaded! Type /bam help for options!")
 end
 
 function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
