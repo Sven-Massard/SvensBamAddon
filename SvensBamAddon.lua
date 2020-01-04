@@ -35,15 +35,42 @@ function SBM_suppressWhisperMessage(self, event, msg, author, ...)
 end
 
 function SBM:createMinimapButton()
+
+	--Dropdown Menu
+	local lib = LibStub("LibDropDownMenu");
+	local menuFrame = lib.Create_DropDownMenu("MyAddOn_DropDownMenu");
+	-- instead of template UIDropDownMenuTemplate
+	local menuList = {
+		{ text="List crits", isNotRadio=true, notCheckable=true,
+				func = function(self)
+					SBM:listCrits();
+				end
+		},
+
+		{ text="Report crits", isNotRadio=true, notCheckable=true,
+				func = function(self)
+					SBM:reportCrits();
+				end
+		},
+
+		{ text="Open config", isNotRadio=true, notCheckable=true,
+			func = function(self)
+				InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+				InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+			end
+		},
+		{ text="Close menu", isNotRadio=true, notCheckable=true },
+	};
+
+	--Minimap Icon
 	SBM_icon = SBM_ldb:NewDataObject("SBM_dataObject", {
 		type = "data source",
 		label = "SBM_MinimapButton",
-		text = "Test Minimap Icon",
+		text = "SBM Minimap Icon",
 		icon = "Interface\\Icons\\ability_rogue_feigndeath",
 		OnClick = function(self, button)
 			if button=="RightButton" then
-				InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
-				InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+				lib.EasyMenu(menuList,menuFrame,"LibDBIcon10_SBM_dataObject",0,0,"MENU");
 			end
 		end,
 	})

@@ -1,0 +1,12 @@
+tag e59d705d38293dd8349659c2c6a9912f8b74a4ee r9
+Author:	Hizuro <hizuro@gmx.net>
+Date:	Sun Dec 1 16:17:47 2019 +0100
+
+Tagging as r9
+
+commit 0f9eeeb21757497d33106621ba7c0e6781a1e01f
+Author: Hizuro <hizuro@gmx.net>
+Date:   Sun Dec 1 16:17:33 2019 +0100
+
+    Revert DropDownMenuList Backdrop creating from DialogBorderDarkTemplate; DialogBorderDarkTemplate does not exists in classic client
+
