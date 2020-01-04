@@ -1,6 +1,37 @@
 ﻿local _,ns = ...
 SBM = ns
 
+-- Function for event filter for CHAT_MSG_SYSTEM to suppress message of player on whisper list being offline when being whispered to
+function SBM_suppressWhisperMessage(self, event, msg, author, ...)
+
+	local textWithoutName = msg:gsub("%'%a+%'", "")
+	
+	if not (textWithoutName == "No player named  is currently playing.") then
+		return false
+	end
+	
+	local name = string.gmatch(msg, "%'%a+%'")
+
+	-- gmatch returns iterator.
+	for w in name do
+		name = w
+	end
+	if not (name == nil) then	
+		name = name:gsub("'", "")
+	else
+		return false
+	end
+	
+	local nameInWhisperList = false
+	for _, w in pairs(SBM_whisperList) do
+		if(w == name) then
+			nameInWhisperList = true
+		end
+	end
+	return nameInWhisperList	
+
+end
+
 function SBM:BAM_OnLoad(self)
     SlashCmdList["BAM"] = function(cmd)
         local params = {}
@@ -14,10 +45,12 @@ function SBM:BAM_OnLoad(self)
     SLASH_BAM1 = '/bam'
     self:RegisterEvent("ADDON_LOADED")
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SBM_suppressWhisperMessage)
 end
 
 function SBM:eventHandler(self, event, arg1)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+
         SBM:combatLogEvent(self, event, arg1)
     elseif event == "ADDON_LOADED" and arg1 == "SvensBamAddon" then
         SBM:loadAddon() -- in SvensBamAddonConfig.lua
@@ -46,6 +79,7 @@ function SBM:combatLogEvent(self, event, ...)
     if (amount ~= nil and amount < SBM_threshold and SBM_threshold ~= 0) then
         do return end
     end
+	
     for i=1, # SBM_eventList do
         if (eventType == SBM_eventList[i].eventType and SBM_eventList[i].boolean and critical == true) then
             newMaxCrit = SBM:addToCritList(spellName, amount);
@@ -63,7 +97,7 @@ function SBM:combatLogEvent(self, event, ...)
                     print(SBM_color..output)
                 elseif (v == "Whisper") then
                     for _, w in pairs(SBM_whisperList) do
-                        SendChatMessage(output, "WHISPER", "COMMON", w)
+						SendChatMessage(output, "WHISPER", "COMMON", w)
                     end
 				elseif (v == "Sound DMG") then
 					if (eventType ~= "SPELL_HEAL") then
@@ -110,10 +144,7 @@ function SBM:bam_cmd(params)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
 	elseif(cmd == "test") then
-        for i = 1, # SBM_outputChannelList do
-            print(SBM_color..SBM_outputChannelList[i])
-        end
-		SBM:playRandomSoundFromList(SBM_soundfileDamage)
+		print("Function not implemented")
     else
         print("Bam Error: Unknown command")
     end   
