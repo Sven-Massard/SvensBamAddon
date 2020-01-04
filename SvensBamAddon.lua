@@ -22,13 +22,13 @@ function SBM_suppressWhisperMessage(self, event, msg, author, ...)
 		return false
 	end
 	
-	local nameInWhisperList = false
+	local isNameInWhisperList = false
 	for _, w in pairs(SBM_whisperList) do
 		if(w == name) then
-			nameInWhisperList = true
+			isNameInWhisperList = true
 		end
 	end
-	return nameInWhisperList	
+	return isNameInWhisperList
 
 end
 
