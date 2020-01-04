@@ -1,6 +1,8 @@
 ﻿local _,ns = ...
 SBM = ns
 
+local SBM_ldb = LibStub("LibDataBroker-1.1")
+
 -- Function for event filter for CHAT_MSG_SYSTEM to suppress message of player on whisper list being offline when being whispered to
 function SBM_suppressWhisperMessage(self, event, msg, author, ...)
 
@@ -32,6 +34,23 @@ function SBM_suppressWhisperMessage(self, event, msg, author, ...)
 
 end
 
+function SBM:createMinimapButton()
+	SBM_icon = SBM_ldb:NewDataObject("SBM_dataObject", {
+		type = "data source",
+		label = "SBM_MinimapButton",
+		text = "Test Minimap Icon",
+		icon = "Interface\\Icons\\ability_rogue_feigndeath",
+		OnClick = function(self, button)
+			if button=="RightButton" then
+				InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+				InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+			end
+		end,
+	})
+	local icon = LibStub("LibDBIcon-1.0")
+	icon:Register("SBM_dataObject", SBM_icon, SBM_MinimapSettings)
+end
+
 function SBM:BAM_OnLoad(self)
     SlashCmdList["BAM"] = function(cmd)
         local params = {}
@@ -53,7 +72,9 @@ function SBM:eventHandler(self, event, arg1)
 
         SBM:combatLogEvent(self, event, arg1)
     elseif event == "ADDON_LOADED" and arg1 == "SvensBamAddon" then
+		SBM_icon = nil -- Needs to be initialized to be saved
         SBM:loadAddon() -- in SvensBamAddonConfig.lua
+		SBM:createMinimapButton()
     end
 end
 

@@ -24,7 +24,14 @@ function SBM:loadAddon()
     if(SBM_onlyOnNewMaxCrits == nil) then
         SBM_onlyOnNewMaxCrits = false
     end
-    
+
+	if (SBM_MinimapSettings == nil) then
+		SBM_MinimapSettings =
+			{
+				hide = false,
+			}
+	end
+
     if(SBM_color == nil) then
 		SBM_color = "|cff".."94".."CF".."00"
     end
@@ -198,7 +205,6 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
 	amountLinesWritten = amountLinesWritten + 1
 	amountLinesWritten = amountLinesWritten + 1 --Another Time, because the Sliders have on line above
-	print(-(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	for i=1, 3 do
 		SBM:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	end
@@ -518,7 +524,6 @@ end
 function SBM:createColorSlider(i, panel, rgb, yOffSet)
 	local slider = CreateFrame("Slider", "SBM_Slider"..i, panel, "OptionsSliderTemplate")
 	slider:ClearAllPoints()
-	print( -16*2*(i-1)+yOffSet)
 	slider:SetPoint("TOPLEFT", 32, -16*2*(i-1)+yOffSet)
 	slider:SetSize(256,16)
 	slider:SetMinMaxValues(0, 255)
