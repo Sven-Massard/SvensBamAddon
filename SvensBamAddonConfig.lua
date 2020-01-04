@@ -1,4 +1,5 @@
-﻿
+﻿local SBM_ldb = LibStub("LibDataBroker-1.1")
+
 function SBM:loadAddon()
     local whisperFrame
     local outputMessageEditBox
@@ -35,26 +36,26 @@ function SBM:loadAddon()
     if(SBM_color == nil) then
 		SBM_color = "|cff".."94".."CF".."00"
     end
-    
+
     if(SBM_threshold == nil) then
         SBM_threshold = 0
     end
-	
+
 	if(SBM_soundfileDamage == nil) then
 		SBM_soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
 	end
-	
+
 	if(SBM_soundfileHeal == nil) then
 		SBM_soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
 	end
-	
+
 	local rgb =
 		{
 			{color = "Red",   value = SBM_color:sub(5, 6)},
 			{color = "Green", value= SBM_color:sub(7, 8)},
 			{color = "Blue",  value= SBM_color:sub(9, 10)}
 		}
-   
+
     if(SBM_whisperList == nil) then
         SBM_whisperList = {}
     end
@@ -71,25 +72,25 @@ function SBM:loadAddon()
     if(SBM_eventList == nil or not (# SBM_eventList == #defaultEventList)) then 
         SBM_eventList = defaultEventList
     end
-      
+
     if(SBM_critList == nil) then
         SBM_critList = {}
     end
-    
+
     if(SBM_outputDamageMessage == nil) then
         SBM_outputDamageMessage = "BAM! SN SD!"
 		SBM_outputChannelList = {"Print", "Sound DMG", "Sound Heal"} -- Reset to fix problems in new version
     end
-	
+
 	if(SBM_outputHealMessage == nil) then
         SBM_outputHealMessage = "BAM! SN SD!"
 		SBM_outputChannelList = {"Print", "Sound DMG", "Sound Heal"} -- Reset to fix problems in new version
     end
-	
+
 	if(SBM_outputChannelList == nil) then
         SBM_outputChannelList = {"Print", "Sound DMG", "Sound Heal"}
     end
-    
+
     --Good Guide https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/InterfaceOptionsFrame.lua
     --Options Main Menu
     SvensBamAddonConfig = {};
@@ -198,6 +199,16 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 	boxesPlaced = boxesPlaced +1
 	categorieNumber = categorieNumber + 1
 	
+	-- Minimap Button
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OtherOptionsDescription", "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
+    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
+    amountLinesWritten = amountLinesWritten + 1
+
+	SBM:createMinimapShowOptionCheckBox(1, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
+	boxesPlaced = boxesPlaced +1
+	categorieNumber = categorieNumber + 1
+
 	-- Color changer 
     yOffSet = 3
 	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("FontColorDescription", "OVERLAY");
@@ -325,6 +336,34 @@ function SBM:createTriggerOnlyOnCritRecordCheckBox(x, y)
             SBM_onlyOnNewMaxCrits = true
         else
             SBM_onlyOnNewMaxCrits = false
+        end
+    end)
+end
+
+function SBM:createMinimapShowOptionCheckBox(x, y)
+    local checkButton = CreateFrame("CheckButton", "MinimapShowOptionButtonCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
+    checkButton:ClearAllPoints()
+    checkButton:SetPoint("TOPLEFT", x * 32, y)
+    checkButton:SetSize(32, 32)
+    MinimapShowOptionButtonCheckBoxText:SetText("Show Minimap Button")
+    MinimapShowOptionButtonCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
+
+    if(SBM_MinimapSettings.hide == false) then
+        MinimapShowOptionButtonCheckBox:SetChecked(true)
+		SBM:createMinimapButton()
+    end
+
+    MinimapShowOptionButtonCheckBox:SetScript("OnClick", function()
+        if MinimapShowOptionButtonCheckBox:GetChecked() then
+			SBM_MinimapSettings.hide = false
+			if(LibDBIcon10_SBM_dataObject == nil) then
+				SBM:createMinimapButton()
+			else
+				LibDBIcon10_SBM_dataObject:Show()
+			end
+        else
+            LibDBIcon10_SBM_dataObject:Hide()
+			SBM_MinimapSettings.hide = true
         end
     end)
 end
@@ -584,6 +623,50 @@ function SBM:convertRGBDecimalToRGBHex(decimal)
 	local numbers = "0123456789ABCDEF"
 	result = numbers:sub(1+(decimal/16), 1+(decimal/16))..numbers:sub(1+(decimal%16), 1+(decimal%16))
 	return result
+end
+
+function SBM:createMinimapButton()
+
+	--Dropdown Menu
+	local lib = LibStub("LibDropDownMenu");
+	local menuFrame = lib.Create_DropDownMenu("MyAddOn_DropDownMenu");
+	-- instead of template UIDropDownMenuTemplate
+	local menuList = {
+		{ text="List crits", isNotRadio=true, notCheckable=true,
+			func = function(self)
+				SBM:listCrits();
+			end
+		},
+
+		{ text="Report crits", isNotRadio=true, notCheckable=true,
+			func = function(self)
+				SBM:reportCrits();
+			end
+		},
+
+		{ text="Open config", isNotRadio=true, notCheckable=true,
+			func = function(self)
+				InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+				InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+			end
+		},
+		{ text="Close menu", isNotRadio=true, notCheckable=true },
+	};
+
+	--Minimap Icon
+	SBM_icon = SBM_ldb:NewDataObject("SBM_dataObject", {
+		type = "data source",
+		label = "SBM_MinimapButton",
+		text = "SBM Minimap Icon",
+		icon = "Interface\\Icons\\ability_rogue_feigndeath",
+		OnClick = function(self, button)
+			if button=="RightButton" then
+				lib.EasyMenu(menuList,menuFrame,"LibDBIcon10_SBM_dataObject",0,0,"MENU");
+			end
+		end,
+	})
+	local icon = LibStub("LibDBIcon-1.0")
+	icon:Register("SBM_dataObject", SBM_icon, SBM_MinimapSettings)
 end
 
 function SBM:setPanelTexts()
