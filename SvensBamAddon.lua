@@ -3,13 +3,16 @@ SBM = ns
 
 -- Function for event filter for CHAT_MSG_SYSTEM to suppress message of player on whisper list being offline when being whispered to
 function SBM_suppressWhisperMessage(self, event, msg, author, ...)
+	-- TODO Suppression only works for Portugese, English, German and French because they have the same naming format.
+	-- See https://www.townlong-yak.com/framexml/live/GlobalStrings.lua
+	local textWithoutName = msg:gsub("%'%a+%'", ""):gsub("  ", " ")
 
-	local textWithoutName = msg:gsub("%'%a+%'", "")
-	
-	if not (textWithoutName == "No player named  is currently playing.") then
+	localizedPlayerNotFoundStringWithoutName = ERR_CHAT_PLAYER_NOT_FOUND_S:gsub("%'%%s%'", ""):gsub("  ", " ")
+
+	if not (textWithoutName == localizedPlayerNotFoundStringWithoutName) then
 		return false
 	end
-	
+
 	local name = string.gmatch(msg, "%'%a+%'")
 
 	-- gmatch returns iterator.
@@ -21,7 +24,7 @@ function SBM_suppressWhisperMessage(self, event, msg, author, ...)
 	else
 		return false
 	end
-	
+
 	local isNameInWhisperList = false
 	for _, w in pairs(SBM_whisperList) do
 		if(w == name) then
@@ -145,9 +148,9 @@ function SBM:bam_cmd(params)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
 		InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
 	elseif(cmd == "test") then
-		print("Function not implemented")
+		print(SBM_color.."Function not implemented")
     else
-        print("Bam Error: Unknown command")
+        print(SBM_color.."Bam Error: Unknown command")
     end   
 end
 
