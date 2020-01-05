@@ -658,7 +658,7 @@ function SBM:createMinimapButton()
 		type = "data source",
 		label = "SBM_MinimapButton",
 		text = "SBM Minimap Icon",
-		icon = "Interface\\Icons\\ability_rogue_feigndeath",
+		icon = "Interface\\AddOns\\SvensBamAddon\\textures\\Bam_Icon",
 		OnClick = function(self, button)
 			if button=="RightButton" then
 				lib.EasyMenu(menuList,menuFrame,"LibDBIcon10_SBM_dataObject",0,0,"MENU");
