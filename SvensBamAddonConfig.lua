@@ -153,21 +153,21 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
 	amountLinesWritten = amountLinesWritten + 1
-	
+
     SBM:createOutputDamageMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	boxesPlaced = boxesPlaced +1
 	categorieNumber = categorieNumber + 1
-	
+
 	SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputHealMessageDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
 	amountLinesWritten = amountLinesWritten + 1
-	
+
 	SBM:createOutputHealMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	boxesPlaced = boxesPlaced +1
-	categorieNumber = categorieNumber + 1
-	
+
 	-- Damage Threshhold
+	categorieNumber = categorieNumber + 1
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("ThresholdDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5,-(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
@@ -175,9 +175,9 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 	
     SBM:createThresholdEditBox(-(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	boxesPlaced = boxesPlaced +1
-    categorieNumber = categorieNumber + 1
-	
+
 	-- Event Types to Trigger
+	categorieNumber = categorieNumber + 1
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("EventTypeDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
@@ -187,9 +187,9 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
         SBM:createEventTypeCheckBoxes(i, 1, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing), eventButtonList, SBM_eventList)
 		boxesPlaced = boxesPlaced +1
     end
-	categorieNumber = categorieNumber + 1
-	
+
 	-- Trigger Options
+	categorieNumber = categorieNumber + 1
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OnlyOnMaxCritsDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
@@ -197,9 +197,9 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 	
 	SBM:createTriggerOnlyOnCritRecordCheckBox(1, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing))
 	boxesPlaced = boxesPlaced +1
-	categorieNumber = categorieNumber + 1
-	
+
 	-- Minimap Button
+	categorieNumber = categorieNumber + 1
     SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OtherOptionsDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categorieNumber*categoriePadding + amountLinesWritten*lineHeight + boxesPlaced*boxSpacing));
@@ -682,4 +682,5 @@ function SBM:setPanelTexts()
 	OutputChannelDescription:SetText(SBM_color.."Output Channel")
     ThresholdDescription:SetText(SBM_color.."Least amount of damage/heal to trigger bam:")
     OnlyOnMaxCritsDescription:SetText(SBM_color.."Trigger options:")
+	OtherOptionsDescription:SetText(SBM_color.."Other options:")
 end
