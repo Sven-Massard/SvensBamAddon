@@ -120,11 +120,9 @@ function SBM:combatLogEvent(self, event, ...)
 					if (CanEditOfficerNote()) then
 						SendChatMessage(output ,v )
 					end
-				elseif (v == "Say" or v == "Yell")
+				elseif (v == "Say" or v == "Yell") then
 					local inInstance, instanceType = IsInInstance()
-					print("Test")
 					if(inInstance) then
-						print("Ist in Instanz")
 						SendChatMessage(output ,v );
 					end
                 else
