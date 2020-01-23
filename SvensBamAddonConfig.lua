@@ -629,7 +629,7 @@ function SBM:createMinimapButton()
 
 	--Dropdown Menu
 	local lib = LibStub("LibDropDownMenu");
-	local menuFrame = lib.Create_DropDownMenu("SBM_DropDownMenu");
+	local menuFrame = lib.Create_DropDownMenu("MyAddOn_DropDownMenu");
 	-- instead of template UIDropDownMenuTemplate
 	local menuList = {
 		{ text="List crits", isNotRadio=true, notCheckable=true,
@@ -659,17 +659,7 @@ function SBM:createMinimapButton()
 		label = "SBM_MinimapButton",
 		text = "SBM Minimap Icon",
 		icon = "Interface\\AddOns\\SvensBamAddon\\textures\\Bam_Icon",
-
-		OnTooltipShow = function(tooltip)
-			local grayColorCode = "|cFF808080"
-			SBM:playRandomSoundFromList(SBM_soundfileDamage)
-			tooltip:SetText("Svens Bam Addon")
-			tooltip:AddLine(grayColorCode.."Left click and drag:".."|r".." Move minimap button", 1, 1, 1)
-			tooltip:AddLine(grayColorCode.."Right click:".."|r".." Open menu", 1, 1, 1)
-			tooltip:Show()
-		end,
-
-		OnClick = function(self, button, tooltip)
+		OnClick = function(self, button)
 			if button=="RightButton" then
 				lib.EasyMenu(menuList,menuFrame,"LibDBIcon10_SBM_dataObject",0,0,"MENU");
 			end
