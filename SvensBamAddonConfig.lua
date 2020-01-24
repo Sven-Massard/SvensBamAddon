@@ -632,16 +632,26 @@ function SBM:createMinimapButton()
 	local menuFrame = lib.Create_DropDownMenu("MyAddOn_DropDownMenu");
 	-- instead of template UIDropDownMenuTemplate
 	local menuList = {
-		{ text="List crits", isNotRadio=true, notCheckable=true,
-			func = function(self)
-				SBM:listCrits();
-			end
-		},
+		{ text = "Crit List options", isNotRadio=true, notCheckable=true, hasArrow = true,
+			menuList = {
+				{ text="List crits", isNotRadio=true, notCheckable=true,
+					func = function(self)
+						SBM:listCrits();
+					end
+				},
 
-		{ text="Report crits", isNotRadio=true, notCheckable=true,
-			func = function(self)
-				SBM:reportCrits();
-			end
+				{ text="Report crits", isNotRadio=true, notCheckable=true,
+					func = function(self)
+						SBM:reportCrits();
+					end
+				},
+
+				{ text="Clear crits", isNotRadio=true, notCheckable=true,
+					func = function(self)
+						SBM:clearCritList();
+					end
+				},
+			}
 		},
 
 		{ text="Open config", isNotRadio=true, notCheckable=true,
