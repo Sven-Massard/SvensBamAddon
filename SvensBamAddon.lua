@@ -99,6 +99,28 @@ function SBM:combatLogEvent(self, event, ...)
             for _, v in pairs(SBM_outputChannelList) do
                 if v == "Print" then
                     print(SBM_color..output)
+				elseif (v == "Say" or v == "Yell") then
+					local inInstance, instanceType = IsInInstance()
+					if(inInstance) then
+						SendChatMessage(output ,v );
+					end	
+				elseif (v == "Battleground") then
+					local inInstance, instanceType = IsInInstance()
+					if(instanceType == "pvp") then
+						SendChatMessage(output, "INSTANCE_CHAT" )
+					end
+				elseif (v == "Officer") then
+					if (CanEditOfficerNote()) then
+						SendChatMessage(output ,v )
+					end
+				elseif (v == "Raid" or v == "Raid_Warning") then
+					if IsInRaid() then
+						SendChatMessage(output ,v );
+					end
+				elseif (v == "Party") then
+					if IsInGroup() then
+						SendChatMessage(output ,v );						
+					end
                 elseif (v == "Whisper") then
                     for _, w in pairs(SBM_whisperList) do
 						SendChatMessage(output, "WHISPER", "COMMON", w)
@@ -111,20 +133,7 @@ function SBM:combatLogEvent(self, event, ...)
 					if (eventType == "SPELL_HEAL") then
 						SBM:playRandomSoundFromList(SBM_soundfileHeal)
 					end
-				elseif (v == "Battleground") then
-					local inInstance, instanceType = IsInInstance()
-					if(instanceType == "pvp") then
-						SendChatMessage(output, "INSTANCE_CHAT" )
-					end
-				elseif (v == "Officer") then
-					if (CanEditOfficerNote()) then
-						SendChatMessage(output ,v )
-					end
-				elseif (v == "Say" or v == "Yell") then
-					local inInstance, instanceType = IsInInstance()
-					if(inInstance) then
-						SendChatMessage(output ,v );
-					end
+
                 else
                     SendChatMessage(output ,v );
                 end
