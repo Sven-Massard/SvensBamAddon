@@ -72,6 +72,23 @@ function SBM:reportCrits()
 					it = it.nextNode
 					print(SBM_color..it.spellName..": "..it.value)
 				end
+			elseif (v == "Officer") then
+				if (CanEditOfficerNote()) then
+					SBM:ReportToChannel(v)
+				end
+			elseif (v == "Battleground") then
+				inInstance, instanceType = IsInInstance()
+				if(instanceType == "pvp") then
+					SBM:ReportToChannel("INSTANCE_CHAT")
+				end
+			elseif (v == "Party") then
+				if IsInGroup() then
+					SBM:ReportToChannel(v);
+				end
+			elseif (v == "Raid" or v == "Raid_Warning") then
+				if IsInRaid() then
+					SBM:ReportToChannel(v);
+				end
 			elseif (v == "Whisper") then
 				for _, w in pairs(SBM_whisperList) do
 					SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
@@ -86,28 +103,21 @@ function SBM:reportCrits()
 				-- do nothing
 			elseif (v == "Sound Heal") then
 				-- do nothing
-			elseif (v == "Battleground") then
-				inInstance, instanceType = IsInInstance()
-				if(instanceType == "pvp") then
-					SendChatMessage("Highest crits:", "INSTANCE_CHAT" )
-					local it = SBM_critList
-					SendChatMessage(it.spellName..": "..it.value, "INSTANCE_CHAT" )
-					while not (it.nextNode == nil) do
-						it = it.nextNode
-						SendChatMessage(it.spellName..": "..it.value, "INSTANCE_CHAT" )
-					end
-				end
 			else
-				SendChatMessage("Highest crits:", v )
-				local it = SBM_critList
-				SendChatMessage(it.spellName..": "..it.value, v )
-				while not (it.nextNode == nil) do
-					it = it.nextNode
-					SendChatMessage(it.spellName..": "..it.value, v )
-				end
+				SBM:ReportToChannel(v);
 			end
 		end
     else
         print(SBM_color.."No crits recorded");
     end
+end
+
+function SBM:ReportToChannel(channelName)
+	SendChatMessage("Highest crits:", channelName )
+	local it = SBM_critList
+	SendChatMessage(it.spellName..": "..it.value, channelName )
+	while not (it.nextNode == nil) do
+		it = it.nextNode
+		SendChatMessage(it.spellName..": "..it.value, channelName )
+	end
 end
