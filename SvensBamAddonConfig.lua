@@ -670,7 +670,7 @@ function SBM:createMinimapButton()
 		text = "SBM Minimap Icon",
 		icon = "Interface\\AddOns\\SvensBamAddon\\textures\\Bam_Icon",
 		OnClick = function(self, button)
-			if button=="RightButton" then
+			if button=="LeftButton" or button=="RightButton" then
 				lib.EasyMenu(menuList,menuFrame,"LibDBIcon10_SBM_dataObject",0,0,"MENU");
 			end
 		end,
