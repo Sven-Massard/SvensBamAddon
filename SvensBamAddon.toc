@@ -6,6 +6,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: SBM_outputDamageMessage,SBM_outputHealMessage,SBM_critList,SBM_outputChannelList,SBM_whisperList,SBM_eventList,SBM_color,SBM_threshold,SBM_onlyOnNewMaxCrits,SBM_soundfileDamage,SBM_soundfileHeal, SBM_MinimapSettings
+
 LibDBIcon-1.0\LibStub\LibStub.lua
 LibDBIcon-1.0\CallbackHandler-1.0\CallbackHandler-1.0.lua
 LibDBIcon-1.0\LibDataBroker-1.1\LibDataBroker-1.1.lua
