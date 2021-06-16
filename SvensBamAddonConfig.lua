@@ -57,9 +57,9 @@ function SBM:loadAddon()
 
     local defaultEventList = {
         { name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true },
-        { name = "Ranged", eventType = "RANGE_DAMAGE", boolean = false },
-        { name = "Melee Autohit", eventType = "SWING_DAMAGE", boolean = false },
-        { name = "Heal", eventType = "SPELL_HEAL", boolean = false },
+        { name = "Ranged", eventType = "RANGE_DAMAGE", boolean = true },
+        { name = "Melee Autohit", eventType = "SWING_DAMAGE", boolean = true },
+        { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
     }
 
     --reset SBM_eventList in case defaultEventList was updated
