@@ -62,8 +62,8 @@ function SBM:eventHandler(_, event, arg1)
 end
 
 function SBM:combatLogEvent()
-    name, realm = UnitName("player");
-    eventType, _, _, eventSource, _, _, _, enemyName = select(2, CombatLogGetCurrentEventInfo())
+    local name, _ = UnitName("player");
+    local eventType, _, _, eventSource, _, _, _, enemyName = select(2, CombatLogGetCurrentEventInfo())
     if not (eventSource == name) then
         do
             return
