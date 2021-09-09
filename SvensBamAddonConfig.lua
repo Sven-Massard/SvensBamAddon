@@ -16,7 +16,8 @@ function SBM:loadAddon()
         "Battleground",
         "Whisper",
         "Sound DMG",
-        "Sound Heal"
+        "Sound Heal",
+        "Do Train Emote"
     }
 
     if (SBM_onlyOnNewMaxCrits == nil) then

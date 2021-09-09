@@ -139,7 +139,8 @@ function SBM:combatLogEvent()
                     if (eventType == "SPELL_HEAL") then
                         SBM:playRandomSoundFromList(SBM_soundfileHeal)
                     end
-
+                elseif (v == "Do Train Emote") then
+                    DoEmote("train");
                 else
                     SendChatMessage(output, v);
                 end
