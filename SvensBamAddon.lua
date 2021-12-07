@@ -78,8 +78,12 @@ function SBM:combatLogEvent()
     elseif (eventType == "RANGE_DAMAGE") then
         spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
     elseif (eventType == "SWING_DAMAGE") then
-        spellName = "Autohit"
         amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, CombatLogGetCurrentEventInfo())
+        if(SBM_separateOffhandCrits and isOffHand) then
+            spellName = "Off-Hand Autohit"
+        else
+            spellName = "Autohit"
+        end
     end
 
     if (amount ~= nil and amount < SBM_threshold and SBM_threshold ~= 0) then

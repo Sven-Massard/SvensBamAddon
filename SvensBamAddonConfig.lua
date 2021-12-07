@@ -24,6 +24,10 @@ function SBM:loadAddon()
         SBM_onlyOnNewMaxCrits = false
     end
 
+    if (SBM_separateOffhandCrits == nil) then
+        SBM_separateOffhandCrits = false
+    end
+
     if (SBM_MinimapSettings == nil) then
         SBM_MinimapSettings = {
             hide = false,
@@ -185,12 +189,15 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 
     -- Trigger Options
     categoryCounter = categoryCounter + 1
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OnlyOnMaxCritsDescription", "OVERLAY");
+    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("TriggerOptionsDescription", "OVERLAY");
     SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
     SBM:createTriggerOnlyOnCritRecordCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    boxesPlaced = boxesPlaced + 1
+
+    SBM:createSeparateOffhandCritsCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
     -- Minimap Button
@@ -331,6 +338,27 @@ function SBM:createTriggerOnlyOnCritRecordCheckBox(x, y)
             SBM_onlyOnNewMaxCrits = true
         else
             SBM_onlyOnNewMaxCrits = false
+        end
+    end)
+end
+
+function SBM:createSeparateOffhandCritsCheckBox(x, y)
+    local checkButton = CreateFrame("CheckButton", "SeparateOffhandCritsCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
+    checkButton:ClearAllPoints()
+    checkButton:SetPoint("TOPLEFT", x * 32, y)
+    checkButton:SetSize(32, 32)
+    SeparateOffhandCritsCheckBoxText:SetText("Show off-hand crits separately")
+    SeparateOffhandCritsCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
+
+    if (SBM_separateOffhandCrits) then
+        SeparateOffhandCritsCheckBox:SetChecked(true)
+    end
+
+    SeparateOffhandCritsCheckBox:SetScript("OnClick", function()
+        if SeparateOffhandCritsCheckBox:GetChecked() then
+            SBM_separateOffhandCrits = true
+        else
+            SBM_separateOffhandCrits = false
         end
     end)
 end
@@ -684,6 +712,6 @@ function SBM:setPanelTexts()
     FontColorDescription:SetText(SBM_color .. "Change color of Font")
     OutputChannelDescription:SetText(SBM_color .. "Output Channel")
     ThresholdDescription:SetText(SBM_color .. "Least amount of damage/heal to trigger bam:")
-    OnlyOnMaxCritsDescription:SetText(SBM_color .. "Trigger options:")
+    TriggerOptionsDescription:SetText(SBM_color .. "Trigger options:")
     OtherOptionsDescription:SetText(SBM_color .. "Other options:")
 end
