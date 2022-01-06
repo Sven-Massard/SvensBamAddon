@@ -104,9 +104,7 @@ function SBM:reportCrits()
                         SendChatMessage(it.spellName .. ": " .. it.value, "WHISPER", "COMMON", w)
                     end
                 end
-            elseif (v == "Sound DMG") then
-                -- do nothing
-            elseif (v == "Sound Heal") then
+            elseif (v == "Sound DMG" or v == "Sound Heal" or v == "Do Train Emote") then
                 -- do nothing
             else
                 SBM:ReportToChannel(v);
