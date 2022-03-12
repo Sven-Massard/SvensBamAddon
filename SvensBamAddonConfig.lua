@@ -20,6 +20,10 @@ function SBM:loadAddon()
         "Do Train Emote"
     }
 
+    if (SBM_Settings == nil) then
+        SBM_Settings = {}
+    end
+
     if (SBM_onlyOnNewMaxCrits == nil) then
         SBM_onlyOnNewMaxCrits = false
     end
@@ -58,6 +62,11 @@ function SBM:loadAddon()
 
     if (SBM_whisperList == nil) then
         SBM_whisperList = {}
+    end
+
+    if (SBM_Settings.chatFrameName == nil) then
+        SBM_Settings.chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME
+        SBM:setIndexOfChatFrame(SBM_Settings.chatFrameName)
     end
 
     local defaultEventList = {
@@ -534,6 +543,33 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         local resetSoundfileButtonWidth = 56
         SBM:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth / 2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileHealFrameHeight)
     end
+
+    -- Create Edit Box for Print
+    if (channelList[i] == "Print") then
+        chatChannelFrame = SBM:createEditBox("ChatFrame", SvensBamAddonChannelOptions.panel, 32, 400)
+        chatChannelFrame:SetPoint("TOP", 50, -24 * y)
+        chatChannelFrame:Insert(SBM_Settings.chatFrameName)
+        chatChannelFrame:SetCursorPosition(0)
+
+        chatChannelFrame:SetScript("OnEscapePressed", function(...)
+            chatChannelFrame:ClearFocus()
+            chatChannelFrame:SetText("")
+            chatChannelFrame:Insert(SBM_Settings.chatFrameName)
+        end)
+        chatChannelFrame:SetScript("OnEnterPressed", function(...)
+            chatChannelFrame:ClearFocus()
+            SBM:saveChatFrame()
+        end)
+        chatChannelFrame:SetScript("OnEnter", function(...)
+            GameTooltip:SetOwner(chatChannelFrame, "ANCHOR_BOTTOM");
+            GameTooltip:SetText("Define Channel Frame you want SvensBamAddon to print to")
+            GameTooltip:ClearAllPoints()
+            GameTooltip:Show()
+        end)
+        chatChannelFrame:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+        end)
+    end
 end
 
 function SBM:createResetSoundfileDamageButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
@@ -625,6 +661,16 @@ function SBM:saveThreshold()
     SBM_threshold = thresholdEditBox:GetNumber()
 end
 
+function SBM:saveChatFrame()
+    local channelToSave = chatChannelFrame:GetText()
+    local channelFound = SBM:setIndexOfChatFrame(channelToSave)
+    if (channelFound == true) then
+        SBM_Settings.chatFrameName = channelToSave
+    else
+        print(SBM_color .. "Cannot save channel " .. channelToSave .. " . Channel not found!")
+    end
+end
+
 function SBM:saveAllStringInputs()
     SBM:saveDamageOutputList()
     SBM:saveHealOutputList()
@@ -632,6 +678,7 @@ function SBM:saveAllStringInputs()
     SBM:saveSoundfileHeal()
     SBM:saveThreshold()
     SBM:saveWhisperList()
+    SBM:saveChatFrame()
 end
 
 function SBM:createEditBox(name, parentFrame, height, width)
@@ -719,4 +766,17 @@ function SBM:setPanelTexts()
     ThresholdDescription:SetText(SBM_color .. "Least amount of damage/heal to trigger bam:")
     TriggerOptionsDescription:SetText(SBM_color .. "Trigger options:")
     OtherOptionsDescription:SetText(SBM_color .. "Other options:")
+end
+
+-- Taken and edited from BamModRevived on WoWInterface. Thanks to Sylen
+-- We use this to get the index of our output channel
+function SBM:setIndexOfChatFrame(chatFrameName)
+    for i = 1, NUM_CHAT_WINDOWS do
+        local chatWindowName = GetChatWindowInfo(i)
+        if chatWindowName == chatFrameName then
+            SBM_Settings.chatFrameIndex = i
+            return true
+        end
+    end
+    return false
 end

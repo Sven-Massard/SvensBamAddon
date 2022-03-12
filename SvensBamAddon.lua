@@ -108,7 +108,7 @@ function SBM:combatLogEvent()
             end
             for _, v in pairs(SBM_outputChannelList) do
                 if v == "Print" then
-                    print(SBM_color .. output)
+                    _G["ChatFrame" .. SBM_Settings.chatFrameIndex]:AddMessage(SBM_color .. output)
                 elseif (v == "Say" or v == "Yell") then
                     local inInstance, _ = IsInInstance()
                     if (inInstance) then
