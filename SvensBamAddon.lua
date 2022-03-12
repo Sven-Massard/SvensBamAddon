@@ -70,20 +70,26 @@ function SBM:combatLogEvent()
         end
     end
 
+    local spellId, spellName, amount, critical, spellLink
+
     --Assign correct values to variables
     if (eventType == "SPELL_DAMAGE") then
-        spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
+        spellId, spellName, _, amount, _, _, _, _, _, critical, _, _ = select(12, CombatLogGetCurrentEventInfo())
     elseif (eventType == "SPELL_HEAL") then
-        spellName, _, amount, overheal, school, critical = select(13, CombatLogGetCurrentEventInfo())
+        spellId, spellName, _, amount, _, _, critical = select(12, CombatLogGetCurrentEventInfo())
     elseif (eventType == "RANGE_DAMAGE") then
-        spellName, _, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(13, CombatLogGetCurrentEventInfo())
+        spellId, spellName, _, amount, _, _, _, _, _, critical, _, _ = select(12, CombatLogGetCurrentEventInfo())
     elseif (eventType == "SWING_DAMAGE") then
-        amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, CombatLogGetCurrentEventInfo())
-        if(SBM_separateOffhandCrits and isOffHand) then
+        amount, _, _, _, _, _, critical, _, _, isOffHand = select(12, CombatLogGetCurrentEventInfo())
+        if (SBM_separateOffhandCrits and isOffHand) then
             spellName = "Off-Hand Autohit"
         else
             spellName = "Autohit"
         end
+    end
+
+    if (spellId and SBM_Settings.postLinkOfSpell) then
+        spellLink = GetSpellLink(spellId)
     end
 
     if (amount ~= nil and amount < SBM_threshold and SBM_threshold ~= 0) then
@@ -101,6 +107,10 @@ function SBM:combatLogEvent()
                 end
             end
             local output
+            if (spellLink) then
+                spellName = spellLink
+            end
+
             if eventType == "SPELL_HEAL" then
                 output = SBM_outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
             else

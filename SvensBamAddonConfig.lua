@@ -69,6 +69,10 @@ function SBM:loadAddon()
         SBM:setIndexOfChatFrame(SBM_Settings.chatFrameName)
     end
 
+    if (SBM_Settings.postLinkOfSpell == nil) then
+        SBM_Settings.postLinkOfSpell = false
+    end
+
     local defaultEventList = {
         { name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true },
         { name = "Ranged", eventType = "RANGE_DAMAGE", boolean = true },
@@ -211,6 +215,9 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     amountLinesWritten = amountLinesWritten + 1
 
     SBM:createMinimapShowOptionCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    boxesPlaced = boxesPlaced + 1
+
+    SBM:createPostLinkCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
     categoryCounter = categoryCounter + 1
 
@@ -362,6 +369,27 @@ function SBM:createSeparateOffhandCritsCheckBox(x, y)
             SBM_separateOffhandCrits = true
         else
             SBM_separateOffhandCrits = false
+        end
+    end)
+end
+
+function SBM:createPostLinkCheckBox(x, y)
+    local checkButton = CreateFrame("CheckButton", "PostLinkCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
+    checkButton:ClearAllPoints()
+    checkButton:SetPoint("TOPLEFT", x * 32, y)
+    checkButton:SetSize(32, 32)
+    PostLinkCheckBoxText:SetText("Post links of spells")
+    PostLinkCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
+
+    if (SBM_Settings.postLinkOfSpell) then
+        PostLinkCheckBox:SetChecked(true)
+    end
+
+    PostLinkCheckBox:SetScript("OnClick", function()
+        if PostLinkCheckBox:GetChecked() then
+            SBM_Settings.postLinkOfSpell = true
+        else
+            SBM_Settings.postLinkOfSpell = false
         end
     end)
 end
