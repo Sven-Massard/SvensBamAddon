@@ -99,7 +99,6 @@ function SBM:loadAddon()
     SvensBamAddonConfig.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonConfig.panel.title:SetPoint("TOPLEFT", 5, -5);
     SvensBamAddonConfig.panel.title:SetJustifyH("LEFT")
-    SvensBamAddonConfig.panel.okay = SBM:saveAllStringInputs()
 
 
     --Channel Options SubMenu
@@ -107,7 +106,6 @@ function SBM:loadAddon()
     SvensBamAddonChannelOptions.panel = CreateFrame("Frame", "SvensBamAddonChannelOptions");
     SvensBamAddonChannelOptions.panel.name = "Channel options";
     SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
-    SvensBamAddonChannelOptions.panel.okay = SBM:saveAllStringInputs()
     SBM:populateChannelSubmenu(channelButtonList, channelList)
 
     --General Options SubMenu NEEDS TO BE LAST BECAUSE SLIDERS CHANGE FONTSTRINGS OF ALL MENUS
@@ -115,13 +113,17 @@ function SBM:loadAddon()
     SvensBamAddonGeneralOptions.panel = CreateFrame("Frame", "SvensBamAddonGeneralOptions");
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
-    SvensBamAddonGeneralOptions.panel.okay = SBM:saveAllStringInputs()
     SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 
     --Set order of Menus here
     InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
     InterfaceOptions_AddCategory(SvensBamAddonGeneralOptions.panel);
     InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
+
+    --Leave these here else we get Null Pointer
+    SvensBamAddonConfig.panel.okay = SBM:saveAllStringInputs()
+    SvensBamAddonChannelOptions.panel.okay = SBM:saveAllStringInputs()
+    SvensBamAddonGeneralOptions.panel.okay = SBM:saveAllStringInputs()
 
     print(SBM_color .. "Svens Bam Addon loaded! Type /bam help for options!")
 end
