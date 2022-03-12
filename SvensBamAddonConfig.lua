@@ -99,6 +99,7 @@ function SBM:loadAddon()
     SvensBamAddonConfig.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonConfig.panel.title:SetPoint("TOPLEFT", 5, -5);
     SvensBamAddonConfig.panel.title:SetJustifyH("LEFT")
+    SvensBamAddonConfig.panel.okay = SBM:saveAllStringInputs()
 
 
     --Channel Options SubMenu
@@ -106,10 +107,7 @@ function SBM:loadAddon()
     SvensBamAddonChannelOptions.panel = CreateFrame("Frame", "SvensBamAddonChannelOptions");
     SvensBamAddonChannelOptions.panel.name = "Channel options";
     SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
-    SvensBamAddonChannelOptions.panel.okay = function()
-        SBM:saveWhisperList()
-        SBM:saveSoundfile()
-    end
+    SvensBamAddonChannelOptions.panel.okay = SBM:saveAllStringInputs()
     SBM:populateChannelSubmenu(channelButtonList, channelList)
 
     --General Options SubMenu NEEDS TO BE LAST BECAUSE SLIDERS CHANGE FONTSTRINGS OF ALL MENUS
@@ -117,13 +115,7 @@ function SBM:loadAddon()
     SvensBamAddonGeneralOptions.panel = CreateFrame("Frame", "SvensBamAddonGeneralOptions");
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
-    SvensBamAddonGeneralOptions.panel.okay = function()
-        SBM:saveDamageOutputList()
-        SBM:saveHealOutputList()
-        SBM:saveSoundfileDamage()
-        SBM:saveSoundfileHeal()
-        SBM:saveThreshold()
-    end
+    SvensBamAddonGeneralOptions.panel.okay = SBM:saveAllStringInputs()
     SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
 
     --Set order of Menus here
@@ -627,6 +619,15 @@ end
 
 function SBM:saveThreshold()
     SBM_threshold = thresholdEditBox:GetNumber()
+end
+
+function SBM:saveAllStringInputs()
+    SBM:saveDamageOutputList()
+    SBM:saveHealOutputList()
+    SBM:saveSoundfileDamage()
+    SBM:saveSoundfileHeal()
+    SBM:saveThreshold()
+    SBM:saveWhisperList()
 end
 
 function SBM:createEditBox(name, parentFrame, height, width)
