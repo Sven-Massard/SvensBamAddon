@@ -695,7 +695,7 @@ function SBM:saveChatFrame()
     if (channelFound == true) then
         SBM_Settings.chatFrameName = channelToSave
     else
-        print(SBM_color .. "Cannot save channel " .. channelToSave .. " . Channel not found!")
+        print(SBM_color .. "Cannot save channel " .. channelToSave .. ". Channel not found!")
     end
 end
 
