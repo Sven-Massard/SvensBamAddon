@@ -397,23 +397,25 @@ function SBM:populateChannelSubmenu(channelButtonList, channelList)
 end
 
 function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
-    local YOffset = y * -24
+
+    local xOffset = x * 32
+    local yOffset = y * -24
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_ChannelCheckButton" .. i, SvensBamAddonChannelOptions.panel, "UICheckButtonTemplate")
     channelButtonList[i] = checkButton
     checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, YOffset)
+    checkButton:SetPoint("TOPLEFT", xOffset, yOffset)
     checkButton:SetSize(32, 32)
 
     _G[checkButton:GetName() .. "Text"]:SetText(channelList[i])
     _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
     for j = 1, #SBM_outputChannelList do
         if (SBM_outputChannelList[j] == channelList[i]) then
-            channelButtonList[i]:SetChecked(true)
+            checkButton:SetChecked(true)
         end
     end
 
-    channelButtonList[i]:SetScript("OnClick", function()
-        if channelButtonList[i]:GetChecked() then
+    checkButton:SetScript("OnClick", function()
+        if checkButton:GetChecked() then
             table.insert(SBM_outputChannelList, channelList[i])
         else
             indexOfFoundValues = {}
@@ -433,7 +435,7 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
     -- Create Edit Box for whispers
     if (channelList[i] == "Whisper") then
         whisperFrame = SBM:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel, 32, 400)
-        whisperFrame:SetPoint("TOP", 50, -24 * y)
+        whisperFrame:SetPoint("TOP", 50, yOffset)
         for _, v in pairs(SBM_whisperList) do
             whisperFrame:Insert(v .. " ")
         end
@@ -467,7 +469,7 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         local soundfileDamageFrameHeight = 32
         local soundfileDamageFrameWidth = 400
         soundfileDamageFrame = SBM:createEditBox("SoundfileDamage", SvensBamAddonChannelOptions.panel, soundfileDamageFrameHeight, soundfileDamageFrameWidth)
-        soundfileDamageFrame:SetPoint("TOP", soundfileDamageFrameXOffset, YOffset)
+        soundfileDamageFrame:SetPoint("TOP", soundfileDamageFrameXOffset, yOffset)
 
         soundfileDamageFrame:Insert(SBM_soundfileDamage)
 
@@ -494,7 +496,7 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
             GameTooltip:Hide()
         end)
         local resetSoundfileButtonWidth = 56
-        SBM:createResetSoundfileDamageButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileDamageFrameWidth / 2 + soundfileDamageFrameXOffset + resetSoundfileButtonWidth / 2, YOffset, soundfileDamageFrameHeight)
+        SBM:createResetSoundfileDamageButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileDamageFrameWidth / 2 + soundfileDamageFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileDamageFrameHeight)
     end
 
     -- Create Edit Box for Heal Soundfile and reset button
@@ -503,7 +505,7 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         local soundfileHealFrameHeight = 32
         local soundfileHealFrameWidth = 400
         soundfileHealFrame = SBM:createEditBox("SoundfileHeal", SvensBamAddonChannelOptions.panel, soundfileHealFrameHeight, soundfileHealFrameWidth)
-        soundfileHealFrame:SetPoint("TOP", soundfileHealFrameXOffset, YOffset)
+        soundfileHealFrame:SetPoint("TOP", soundfileHealFrameXOffset, yOffset)
 
         soundfileHealFrame:Insert(SBM_soundfileHeal)
 
@@ -530,7 +532,7 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
             GameTooltip:Hide()
         end)
         local resetSoundfileButtonWidth = 56
-        SBM:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth / 2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth / 2, YOffset, soundfileHealFrameHeight)
+        SBM:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth / 2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileHealFrameHeight)
     end
 end
 
