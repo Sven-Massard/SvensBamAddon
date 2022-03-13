@@ -1,4 +1,6 @@
-﻿SvensBamAddon = LibStub("AceAddon-3.0"):NewAddon("SvensBamAddon", "AceConsole-3.0", "AceEvent-3.0")
+﻿-- TODO Make Ace Minimap button because our current one throws lua error since migrations
+
+SvensBamAddon = LibStub("AceAddon-3.0"):NewAddon("SvensBamAddon", "AceConsole-3.0", "AceEvent-3.0")
 
 function SvensBamAddon:OnEnable()
     self:RegisterEvent("ADDON_LOADED")
