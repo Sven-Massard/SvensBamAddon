@@ -1,6 +1,7 @@
-﻿local SBM_ldb = LibStub("LibDataBroker-1.1")
+﻿local SvensBamAddon_ldb = LibStub("LibDataBroker-1.1")
 
-function SBM:loadAddon()
+function SvensBamAddon:loadAddon()
+
     local channelButtonList = {}
     local eventButtonList = {}
     local channelList = {
@@ -20,57 +21,57 @@ function SBM:loadAddon()
         "Do Train Emote"
     }
 
-    if (SBM_Settings == nil) then
-        SBM_Settings = {}
+    if (SvensBamAddon_Settings == nil) then
+        SvensBamAddon_Settings = {}
     end
 
-    if (SBM_onlyOnNewMaxCrits == nil) then
-        SBM_onlyOnNewMaxCrits = false
+    if (SvensBamAddon_onlyOnNewMaxCrits == nil) then
+        SvensBamAddon_onlyOnNewMaxCrits = false
     end
 
-    if (SBM_separateOffhandCrits == nil) then
-        SBM_separateOffhandCrits = false
+    if (SvensBamAddon_separateOffhandCrits == nil) then
+        SvensBamAddon_separateOffhandCrits = false
     end
 
-    if (SBM_MinimapSettings == nil) then
-        SBM_MinimapSettings = {
+    if (SvensBamAddon_MinimapSettings == nil) then
+        SvensBamAddon_MinimapSettings = {
             hide = false,
         }
     end
 
-    if (SBM_color == nil) then
-        SBM_color = "|cff" .. "94" .. "CF" .. "00"
+    if (SvensBamAddon_color == nil) then
+        SvensBamAddon_color = "|cff" .. "94" .. "CF" .. "00"
     end
 
-    if (SBM_threshold == nil) then
-        SBM_threshold = 0
+    if (SvensBamAddon_threshold == nil) then
+        SvensBamAddon_threshold = 0
     end
 
-    if (SBM_soundfileDamage == nil) then
-        SBM_soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+    if (SvensBamAddon_soundfileDamage == nil) then
+        SvensBamAddon_soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
     end
 
-    if (SBM_soundfileHeal == nil) then
-        SBM_soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+    if (SvensBamAddon_soundfileHeal == nil) then
+        SvensBamAddon_soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
     end
 
     local rgb = {
-        { color = "Red", value = SBM_color:sub(5, 6) },
-        { color = "Green", value = SBM_color:sub(7, 8) },
-        { color = "Blue", value = SBM_color:sub(9, 10) }
+        { color = "Red", value = SvensBamAddon_color:sub(5, 6) },
+        { color = "Green", value = SvensBamAddon_color:sub(7, 8) },
+        { color = "Blue", value = SvensBamAddon_color:sub(9, 10) }
     }
 
-    if (SBM_whisperList == nil) then
-        SBM_whisperList = {}
+    if (SvensBamAddon_whisperList == nil) then
+        SvensBamAddon_whisperList = {}
     end
 
-    if (SBM_Settings.chatFrameName == nil) then
-        SBM_Settings.chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME
-        SBM:setIndexOfChatFrame(SBM_Settings.chatFrameName)
+    if (SvensBamAddon_Settings.chatFrameName == nil) then
+        SvensBamAddon_Settings.chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME
+        SvensBamAddon:setIndexOfChatFrame(SvensBamAddon_Settings.chatFrameName)
     end
 
-    if (SBM_Settings.postLinkOfSpell == nil) then
-        SBM_Settings.postLinkOfSpell = false
+    if (SvensBamAddon_Settings.postLinkOfSpell == nil) then
+        SvensBamAddon_Settings.postLinkOfSpell = false
     end
 
     local defaultEventList = {
@@ -80,31 +81,31 @@ function SBM:loadAddon()
         { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
     }
 
-    --reset SBM_eventList in case defaultEventList was updated
-    if (SBM_eventList == nil or not (#SBM_eventList == #defaultEventList)) then
-        SBM_eventList = defaultEventList
+    --reset SvensBamAddon_eventList in case defaultEventList was updated
+    if (SvensBamAddon_eventList == nil or not (#SvensBamAddon_eventList == #defaultEventList)) then
+        SvensBamAddon_eventList = defaultEventList
     end
 
-    if (SBM_critList == nil) then
-        SBM_critList = {}
+    if (SvensBamAddon_critList == nil) then
+        SvensBamAddon_critList = {}
     end
 
-    if (SBM_outputDamageMessage == nil) then
-        SBM_outputDamageMessage = "BAM! SN SD!"
-        SBM_outputChannelList = { "Print", "Sound DMG", "Sound Heal" } -- Reset to fix problems in new version
+    if (SvensBamAddon_outputDamageMessage == nil) then
+        SvensBamAddon_outputDamageMessage = "BAM! SN SD!"
+        SvensBamAddon_outputChannelList = { "Print", "Sound DMG", "Sound Heal" } -- Reset to fix problems in new version
     end
 
-    if (SBM_outputHealMessage == nil) then
-        SBM_outputHealMessage = "BAM! SN SD!"
-        SBM_outputChannelList = { "Print", "Sound DMG", "Sound Heal" } -- Reset to fix problems in new version
+    if (SvensBamAddon_outputHealMessage == nil) then
+        SvensBamAddon_outputHealMessage = "BAM! SN SD!"
+        SvensBamAddon_outputChannelList = { "Print", "Sound DMG", "Sound Heal" } -- Reset to fix problems in new version
     end
 
-    if (SBM_outputChannelList == nil) then
-        SBM_outputChannelList = { "Print", "Sound DMG", "Sound Heal" }
+    if (SvensBamAddon_outputChannelList == nil) then
+        SvensBamAddon_outputChannelList = { "Print", "Sound DMG", "Sound Heal" }
     end
 
-    --Good Guide https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/InterfaceOptionsFrame.lua
-    --Options Main Menu
+    ----Good Guide https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/InterfaceOptionsFrame.lua
+    ----Options Main Menu
     SvensBamAddonConfig = {};
     SvensBamAddonConfig.panel = CreateFrame("Frame", "SvensBamAddonConfig", UIParent);
     SvensBamAddonConfig.panel.name = "Svens Bam Addon";
@@ -119,14 +120,14 @@ function SBM:loadAddon()
     SvensBamAddonChannelOptions.panel = CreateFrame("Frame", "SvensBamAddonChannelOptions");
     SvensBamAddonChannelOptions.panel.name = "Channel options";
     SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
-    SBM:populateChannelSubmenu(channelButtonList, channelList)
+    SvensBamAddon:populateChannelSubmenu(channelButtonList, channelList)
 
     --General Options SubMenu NEEDS TO BE LAST BECAUSE SLIDERS CHANGE FONTSTRINGS OF ALL MENUS
     SvensBamAddonGeneralOptions = {}
     SvensBamAddonGeneralOptions.panel = CreateFrame("Frame", "SvensBamAddonGeneralOptions");
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
-    SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
+    SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eventList, rgb)
 
     --Set order of Menus here
     InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
@@ -134,14 +135,13 @@ function SBM:loadAddon()
     InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
 
     --Leave these here else we get Null Pointer
-    SvensBamAddonConfig.panel.okay = SBM:saveAllStringInputs()
-    SvensBamAddonChannelOptions.panel.okay = SBM:saveAllStringInputs()
-    SvensBamAddonGeneralOptions.panel.okay = SBM:saveAllStringInputs()
+    SvensBamAddonConfig.panel.okay = SvensBamAddon:saveAllStringInputs() --TODO seems not to work
+    SvensBamAddonChannelOptions.panel.okay = SvensBamAddon:saveAllStringInputs() --TODO seems not to work
+    SvensBamAddonGeneralOptions.panel.okay = SvensBamAddon:saveAllStringInputs() --TODO seems not to work
 
-    print(SBM_color .. "Svens Bam Addon loaded! Type /bam help for options!")
 end
 
-function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
+function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eventList, rgb)
 
     local lineHeight = 16
     local boxHeight = 32
@@ -160,7 +160,7 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SBM:createOutputDamageMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    SvensBamAddon:createOutputDamageMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
     categoryCounter = categoryCounter + 1
 
@@ -169,7 +169,7 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SBM:createOutputHealMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    SvensBamAddon:createOutputHealMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
     -- Damage Threshold
@@ -179,7 +179,7 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SBM:createThresholdEditBox(-(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    SvensBamAddon:createThresholdEditBox(-(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
     -- Event Types to Trigger
@@ -189,8 +189,8 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    for i = 1, #SBM_eventList do
-        SBM:createEventTypeCheckBoxes(i, 1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing), eventButtonList, SBM_eventList)
+    for i = 1, #SvensBamAddon_eventList do
+        SvensBamAddon:createEventTypeCheckBoxes(i, 1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing), eventButtonList, SvensBamAddon_eventList)
         boxesPlaced = boxesPlaced + 1
     end
 
@@ -201,10 +201,10 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SBM:createTriggerOnlyOnCritRecordCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    SvensBamAddon:createTriggerOnlyOnCritRecordCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
-    SBM:createSeparateOffhandCritsCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    SvensBamAddon:createSeparateOffhandCritsCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
     -- Minimap Button
@@ -214,10 +214,10 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SBM:createMinimapShowOptionCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    SvensBamAddon:createMinimapShowOptionCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
-    SBM:createPostLinkCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    SvensBamAddon:createPostLinkCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
     categoryCounter = categoryCounter + 1
 
@@ -229,48 +229,48 @@ function SBM:populateGeneralSubmenu(eventButtonList, SBM_eventList, rgb)
     amountLinesWritten = amountLinesWritten + 1
     amountLinesWritten = amountLinesWritten + 1 --Another Time, because the Sliders have on line above
     for i = 1, 3 do
-        SBM:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+        SvensBamAddon:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     end
     categoryCounter = categoryCounter + 1
 
 
 end
 
-function SBM:createEventTypeCheckBoxes(i, x, y, eventButtonList, SBM_eventList)
+function SvensBamAddon:createEventTypeCheckBoxes(i, x, y, eventButtonList, SvensBamAddon_eventList)
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_EventTypeCheckButton" .. i, SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     eventButtonList[i] = checkButton
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
     checkButton:SetSize(32, 32)
 
-    _G[checkButton:GetName() .. "Text"]:SetText(SBM_eventList[i].name)
+    _G[checkButton:GetName() .. "Text"]:SetText(SvensBamAddon_eventList[i].name)
     _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-    if (SBM_eventList[i].boolean) then
+    if (SvensBamAddon_eventList[i].boolean) then
         eventButtonList[i]:SetChecked(true)
     end
 
     eventButtonList[i]:SetScript("OnClick", function()
         if eventButtonList[i]:GetChecked() then
-            SBM_eventList[i].boolean = true
+            SvensBamAddon_eventList[i].boolean = true
         else
-            SBM_eventList[i].boolean = false
+            SvensBamAddon_eventList[i].boolean = false
         end
     end)
 
 end
 
-function SBM:createOutputDamageMessageEditBox(height, width, y)
-    outputDamageMessageEditBox = SBM:createEditBox("OutputDamageMessage", SvensBamAddonGeneralOptions.panel, height, width)
+function SvensBamAddon:createOutputDamageMessageEditBox(height, width, y)
+    outputDamageMessageEditBox = SvensBamAddon:createEditBox("OutputDamageMessage", SvensBamAddonGeneralOptions.panel, height, width)
     outputDamageMessageEditBox:SetPoint("TOPLEFT", 40, y)
-    outputDamageMessageEditBox:Insert(SBM_outputDamageMessage)
+    outputDamageMessageEditBox:Insert(SvensBamAddon_outputDamageMessage)
     outputDamageMessageEditBox:SetCursorPosition(0)
     outputDamageMessageEditBox:SetScript("OnEscapePressed", function(...)
         outputDamageMessageEditBox:ClearFocus()
-        outputDamageMessageEditBox:SetText(SBM_outputDamageMessage)
+        outputDamageMessageEditBox:SetText(SvensBamAddon_outputDamageMessage)
     end)
     outputDamageMessageEditBox:SetScript("OnEnterPressed", function(...)
         outputDamageMessageEditBox:ClearFocus()
-        SBM:saveDamageOutputList()
+        SvensBamAddon:saveDamageOutputList()
     end)
     outputDamageMessageEditBox:SetScript("OnEnter", function(...)
         GameTooltip:SetOwner(outputDamageMessageEditBox, "ANCHOR_BOTTOM");
@@ -283,18 +283,18 @@ function SBM:createOutputDamageMessageEditBox(height, width, y)
     end)
 end
 
-function SBM:createOutputHealMessageEditBox(height, width, y)
-    outputHealMessageEditBox = SBM:createEditBox("OutputHealMessage", SvensBamAddonGeneralOptions.panel, height, width)
+function SvensBamAddon:createOutputHealMessageEditBox(height, width, y)
+    outputHealMessageEditBox = SvensBamAddon:createEditBox("OutputHealMessage", SvensBamAddonGeneralOptions.panel, height, width)
     outputHealMessageEditBox:SetPoint("TOPLEFT", 40, y)
-    outputHealMessageEditBox:Insert(SBM_outputHealMessage)
+    outputHealMessageEditBox:Insert(SvensBamAddon_outputHealMessage)
     outputHealMessageEditBox:SetCursorPosition(0)
     outputHealMessageEditBox:SetScript("OnEscapePressed", function(...)
         outputHealMessageEditBox:ClearFocus()
-        outputHealMessageEditBox:SetText(SBM_outputHealMessage)
+        outputHealMessageEditBox:SetText(SvensBamAddon_outputHealMessage)
     end)
     outputHealMessageEditBox:SetScript("OnEnterPressed", function(...)
         outputHealMessageEditBox:ClearFocus()
-        SBM:saveHealOutputList()
+        SvensBamAddon:saveHealOutputList()
     end)
     outputHealMessageEditBox:SetScript("OnEnter", function(...)
         GameTooltip:SetOwner(outputHealMessageEditBox, "ANCHOR_BOTTOM");
@@ -307,18 +307,18 @@ function SBM:createOutputHealMessageEditBox(height, width, y)
     end)
 end
 
-function SBM:createThresholdEditBox(y)
-    thresholdEditBox = SBM:createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel, 32, 400)
+function SvensBamAddon:createThresholdEditBox(y)
+    thresholdEditBox = SvensBamAddon:createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel, 32, 400)
     thresholdEditBox:SetPoint("TOPLEFT", 40, y)
-    thresholdEditBox:Insert(SBM_threshold)
+    thresholdEditBox:Insert(SvensBamAddon_threshold)
     thresholdEditBox:SetCursorPosition(0)
     thresholdEditBox:SetScript("OnEscapePressed", function(...)
         thresholdEditBox:ClearFocus()
-        thresholdEditBox:SetText(SBM_threshold)
+        thresholdEditBox:SetText(SvensBamAddon_threshold)
     end)
     thresholdEditBox:SetScript("OnEnterPressed", function(...)
         thresholdEditBox:ClearFocus()
-        SBM:saveThreshold()
+        SvensBamAddon:saveThreshold()
     end)
     thresholdEditBox:SetScript("OnEnter", function(...)
         GameTooltip:SetOwner(thresholdEditBox, "ANCHOR_BOTTOM");
@@ -331,7 +331,7 @@ function SBM:createThresholdEditBox(y)
     end)
 end
 
-function SBM:createTriggerOnlyOnCritRecordCheckBox(x, y)
+function SvensBamAddon:createTriggerOnlyOnCritRecordCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "OnlyOnMaxCritCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -339,20 +339,20 @@ function SBM:createTriggerOnlyOnCritRecordCheckBox(x, y)
     OnlyOnMaxCritCheckBoxText:SetText("Only trigger on new crit record")
     OnlyOnMaxCritCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
 
-    if (SBM_onlyOnNewMaxCrits) then
+    if (SvensBamAddon_onlyOnNewMaxCrits) then
         OnlyOnMaxCritCheckBox:SetChecked(true)
     end
 
     OnlyOnMaxCritCheckBox:SetScript("OnClick", function()
         if OnlyOnMaxCritCheckBox:GetChecked() then
-            SBM_onlyOnNewMaxCrits = true
+            SvensBamAddon_onlyOnNewMaxCrits = true
         else
-            SBM_onlyOnNewMaxCrits = false
+            SvensBamAddon_onlyOnNewMaxCrits = false
         end
     end)
 end
 
-function SBM:createSeparateOffhandCritsCheckBox(x, y)
+function SvensBamAddon:createSeparateOffhandCritsCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "SeparateOffhandCritsCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -360,20 +360,20 @@ function SBM:createSeparateOffhandCritsCheckBox(x, y)
     SeparateOffhandCritsCheckBoxText:SetText("Show off-hand crits separately")
     SeparateOffhandCritsCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
 
-    if (SBM_separateOffhandCrits) then
+    if (SvensBamAddon_separateOffhandCrits) then
         SeparateOffhandCritsCheckBox:SetChecked(true)
     end
 
     SeparateOffhandCritsCheckBox:SetScript("OnClick", function()
         if SeparateOffhandCritsCheckBox:GetChecked() then
-            SBM_separateOffhandCrits = true
+            SvensBamAddon_separateOffhandCrits = true
         else
-            SBM_separateOffhandCrits = false
+            SvensBamAddon_separateOffhandCrits = false
         end
     end)
 end
 
-function SBM:createPostLinkCheckBox(x, y)
+function SvensBamAddon:createPostLinkCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "PostLinkCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -381,20 +381,20 @@ function SBM:createPostLinkCheckBox(x, y)
     PostLinkCheckBoxText:SetText("Post links of spells")
     PostLinkCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
 
-    if (SBM_Settings.postLinkOfSpell) then
+    if (SvensBamAddon_Settings.postLinkOfSpell) then
         PostLinkCheckBox:SetChecked(true)
     end
 
     PostLinkCheckBox:SetScript("OnClick", function()
         if PostLinkCheckBox:GetChecked() then
-            SBM_Settings.postLinkOfSpell = true
+            SvensBamAddon_Settings.postLinkOfSpell = true
         else
-            SBM_Settings.postLinkOfSpell = false
+            SvensBamAddon_Settings.postLinkOfSpell = false
         end
     end)
 end
 
-function SBM:createMinimapShowOptionCheckBox(x, y)
+function SvensBamAddon:createMinimapShowOptionCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "MinimapShowOptionButtonCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -402,38 +402,38 @@ function SBM:createMinimapShowOptionCheckBox(x, y)
     MinimapShowOptionButtonCheckBoxText:SetText("Show Minimap Button")
     MinimapShowOptionButtonCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
 
-    if (SBM_MinimapSettings.hide == false) then
+    if (SvensBamAddon_MinimapSettings.hide == false) then
         MinimapShowOptionButtonCheckBox:SetChecked(true)
-        SBM:createMinimapButton()
+        SvensBamAddon:createMinimapButton()
     end
 
     MinimapShowOptionButtonCheckBox:SetScript("OnClick", function()
         if MinimapShowOptionButtonCheckBox:GetChecked() then
-            SBM_MinimapSettings.hide = false
-            if (LibDBIcon10_SBM_dataObject == nil) then
-                SBM:createMinimapButton()
+            SvensBamAddon_MinimapSettings.hide = false
+            if (LibDBIcon10_SvensBamAddon_dataObject == nil) then
+                SvensBamAddon:createMinimapButton()
             else
-                LibDBIcon10_SBM_dataObject:Show()
+                LibDBIcon10_SvensBamAddon_dataObject:Show()
             end
         else
-            LibDBIcon10_SBM_dataObject:Hide()
-            SBM_MinimapSettings.hide = true
+            LibDBIcon10_SvensBamAddon_dataObject:Hide()
+            SvensBamAddon_MinimapSettings.hide = true
         end
     end)
 end
 
-function SBM:populateChannelSubmenu(channelButtonList, channelList)
+function SvensBamAddon:populateChannelSubmenu(channelButtonList, channelList)
     SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString("OutputChannelDescription", "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
     -- Checkboxes channels and Edit Box for whispers
     for i = 1, #channelList do
-        SBM:createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
+        SvensBamAddon:createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
     end
-    SBM:createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
+    SvensBamAddon:createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
 end
 
-function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
+function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
 
     local xOffset = x * 32
     local yOffset = y * -24
@@ -445,25 +445,25 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
 
     _G[checkButton:GetName() .. "Text"]:SetText(channelList[i])
     _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-    for j = 1, #SBM_outputChannelList do
-        if (SBM_outputChannelList[j] == channelList[i]) then
+    for j = 1, #SvensBamAddon_outputChannelList do
+        if (SvensBamAddon_outputChannelList[j] == channelList[i]) then
             checkButton:SetChecked(true)
         end
     end
 
     checkButton:SetScript("OnClick", function()
         if checkButton:GetChecked() then
-            table.insert(SBM_outputChannelList, channelList[i])
+            table.insert(SvensBamAddon_outputChannelList, channelList[i])
         else
             indexOfFoundValues = {}
-            for j = 1, #SBM_outputChannelList do
-                if (SBM_outputChannelList[j] == channelList[i]) then
+            for j = 1, #SvensBamAddon_outputChannelList do
+                if (SvensBamAddon_outputChannelList[j] == channelList[i]) then
                     table.insert(indexOfFoundValues, j)
                 end
             end
             j = #indexOfFoundValues
             while (j > 0) do
-                table.remove(SBM_outputChannelList, indexOfFoundValues[j])
+                table.remove(SvensBamAddon_outputChannelList, indexOfFoundValues[j])
                 j = j - 1;
             end
         end
@@ -471,9 +471,9 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
 
     -- Create Edit Box for whispers
     if (channelList[i] == "Whisper") then
-        whisperFrame = SBM:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel, 32, 400)
+        whisperFrame = SvensBamAddon:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel, 32, 400)
         whisperFrame:SetPoint("TOP", 50, yOffset)
-        for _, v in pairs(SBM_whisperList) do
+        for _, v in pairs(SvensBamAddon_whisperList) do
             whisperFrame:Insert(v .. " ")
         end
         whisperFrame:SetCursorPosition(0)
@@ -481,13 +481,13 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         whisperFrame:SetScript("OnEscapePressed", function(...)
             whisperFrame:ClearFocus()
             whisperFrame:SetText("")
-            for _, v in pairs(SBM_whisperList) do
+            for _, v in pairs(SvensBamAddon_whisperList) do
                 whisperFrame:Insert(v .. " ")
             end
         end)
         whisperFrame:SetScript("OnEnterPressed", function(...)
             whisperFrame:ClearFocus()
-            SBM:saveWhisperList()
+            SvensBamAddon:saveWhisperList()
         end)
         whisperFrame:SetScript("OnEnter", function(...)
             GameTooltip:SetOwner(whisperFrame, "ANCHOR_BOTTOM");
@@ -505,21 +505,21 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         local soundfileDamageFrameXOffset = 50
         local soundfileDamageFrameHeight = 32
         local soundfileDamageFrameWidth = 400
-        soundfileDamageFrame = SBM:createEditBox("SoundfileDamage", SvensBamAddonChannelOptions.panel, soundfileDamageFrameHeight, soundfileDamageFrameWidth)
+        soundfileDamageFrame = SvensBamAddon:createEditBox("SoundfileDamage", SvensBamAddonChannelOptions.panel, soundfileDamageFrameHeight, soundfileDamageFrameWidth)
         soundfileDamageFrame:SetPoint("TOP", soundfileDamageFrameXOffset, yOffset)
 
-        soundfileDamageFrame:Insert(SBM_soundfileDamage)
+        soundfileDamageFrame:Insert(SvensBamAddon_soundfileDamage)
 
         soundfileDamageFrame:SetCursorPosition(0)
 
         soundfileDamageFrame:SetScript("OnEscapePressed", function(...)
             soundfileDamageFrame:ClearFocus()
             soundfileDamageFrame:SetText("")
-            soundfileDamageFrame:Insert(SBM_soundfileDamage)
+            soundfileDamageFrame:Insert(SvensBamAddon_soundfileDamage)
         end)
         soundfileDamageFrame:SetScript("OnEnterPressed", function(...)
             soundfileDamageFrame:ClearFocus()
-            SBM:saveSoundfileDamage()
+            SvensBamAddon:saveSoundfileDamage()
         end)
         soundfileDamageFrame:SetScript("OnEnter", function(...)
             GameTooltip:SetOwner(soundfileDamageFrame, "ANCHOR_BOTTOM");
@@ -533,7 +533,7 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
             GameTooltip:Hide()
         end)
         local resetSoundfileButtonWidth = 56
-        SBM:createResetSoundfileDamageButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileDamageFrameWidth / 2 + soundfileDamageFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileDamageFrameHeight)
+        SvensBamAddon:createResetSoundfileDamageButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileDamageFrameWidth / 2 + soundfileDamageFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileDamageFrameHeight)
     end
 
     -- Create Edit Box for Heal Soundfile and reset button
@@ -541,21 +541,21 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
         local soundfileHealFrameXOffset = 50
         local soundfileHealFrameHeight = 32
         local soundfileHealFrameWidth = 400
-        soundfileHealFrame = SBM:createEditBox("SoundfileHeal", SvensBamAddonChannelOptions.panel, soundfileHealFrameHeight, soundfileHealFrameWidth)
+        soundfileHealFrame = SvensBamAddon:createEditBox("SoundfileHeal", SvensBamAddonChannelOptions.panel, soundfileHealFrameHeight, soundfileHealFrameWidth)
         soundfileHealFrame:SetPoint("TOP", soundfileHealFrameXOffset, yOffset)
 
-        soundfileHealFrame:Insert(SBM_soundfileHeal)
+        soundfileHealFrame:Insert(SvensBamAddon_soundfileHeal)
 
         soundfileHealFrame:SetCursorPosition(0)
 
         soundfileHealFrame:SetScript("OnEscapePressed", function(...)
             soundfileHealFrame:ClearFocus()
             soundfileHealFrame:SetText("")
-            soundfileHealFrame:Insert(SBM_soundfileHeal)
+            soundfileHealFrame:Insert(SvensBamAddon_soundfileHeal)
         end)
         soundfileHealFrame:SetScript("OnEnterPressed", function(...)
             soundfileHealFrame:ClearFocus()
-            SBM:saveSoundfileHeal()
+            SvensBamAddon:saveSoundfileHeal()
         end)
         soundfileHealFrame:SetScript("OnEnter", function(...)
             GameTooltip:SetOwner(soundfileHealFrame, "ANCHOR_BOTTOM");
@@ -569,24 +569,24 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
             GameTooltip:Hide()
         end)
         local resetSoundfileButtonWidth = 56
-        SBM:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth / 2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileHealFrameHeight)
+        SvensBamAddon:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth / 2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileHealFrameHeight)
     end
 
     -- Create Edit Box for Print
     if (channelList[i] == "Print") then
-        chatChannelFrame = SBM:createEditBox("ChatFrame", SvensBamAddonChannelOptions.panel, 32, 400)
+        chatChannelFrame = SvensBamAddon:createEditBox("ChatFrame", SvensBamAddonChannelOptions.panel, 32, 400)
         chatChannelFrame:SetPoint("TOP", 50, -24 * y)
-        chatChannelFrame:Insert(SBM_Settings.chatFrameName)
+        chatChannelFrame:Insert(SvensBamAddon_Settings.chatFrameName)
         chatChannelFrame:SetCursorPosition(0)
 
         chatChannelFrame:SetScript("OnEscapePressed", function(...)
             chatChannelFrame:ClearFocus()
             chatChannelFrame:SetText("")
-            chatChannelFrame:Insert(SBM_Settings.chatFrameName)
+            chatChannelFrame:Insert(SvensBamAddon_Settings.chatFrameName)
         end)
         chatChannelFrame:SetScript("OnEnterPressed", function(...)
             chatChannelFrame:ClearFocus()
-            SBM:saveChatFrame()
+            SvensBamAddon:saveChatFrame()
         end)
         chatChannelFrame:SetScript("OnEnter", function(...)
             GameTooltip:SetOwner(chatChannelFrame, "ANCHOR_BOTTOM");
@@ -600,7 +600,7 @@ function SBM:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
     end
 end
 
-function SBM:createResetSoundfileDamageButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
+function SvensBamAddon:createResetSoundfileDamageButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
     local resetSoundfileButtonHeight = 24
     resetChannelListButton = CreateFrame("Button", "ResetSoundfileDamage", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
@@ -608,12 +608,12 @@ function SBM:createResetSoundfileDamageButton(parentFrame, resetSoundfileButtonW
     resetChannelListButton:SetSize(resetSoundfileButtonWidth, resetSoundfileButtonHeight)
     resetChannelListButton:SetText("Reset")
     resetChannelListButton:SetScript("OnClick", function(...)
-        SBM_soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
-        soundfileDamageFrame:SetText(SBM_soundfileDamage)
+        SvensBamAddon_soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+        soundfileDamageFrame:SetText(SvensBamAddon_soundfileDamage)
     end)
 end
 
-function SBM:createResetSoundfileHealButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
+function SvensBamAddon:createResetSoundfileHealButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
     local resetSoundfileButtonHeight = 24
     resetChannelListButton = CreateFrame("Button", "ResetSoundfileHeal", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
@@ -621,12 +621,12 @@ function SBM:createResetSoundfileHealButton(parentFrame, resetSoundfileButtonWid
     resetChannelListButton:SetSize(resetSoundfileButtonWidth, resetSoundfileButtonHeight)
     resetChannelListButton:SetText("Reset")
     resetChannelListButton:SetScript("OnClick", function(...)
-        SBM_soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
-        soundfileHealFrame:SetText(SBM_soundfileHeal)
+        SvensBamAddon_soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
+        soundfileHealFrame:SetText(SvensBamAddon_soundfileHeal)
     end)
 end
 
-function SBM:createResetChannelListButton(parentFrame, channelList, channelButtonList)
+function SvensBamAddon:createResetChannelListButton(parentFrame, channelList, channelButtonList)
     resetChannelListButton = CreateFrame("Button", "ResetButtonChannels", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
     resetChannelListButton:SetPoint("TOPLEFT", 32, ((#channelList) + 1) * -24 - 8)
@@ -637,12 +637,12 @@ function SBM:createResetChannelListButton(parentFrame, channelList, channelButto
         for i = 1, #channelButtonList do
             channelButtonList[i]:SetChecked(false)
         end
-        SBM_outputChannelList = {}
+        SvensBamAddon_outputChannelList = {}
     end)
 end
 
-function SBM:createColorSlider(i, panel, rgb, yOffSet)
-    local slider = CreateFrame("Slider", "SBM_Slider" .. i, panel, "OptionsSliderTemplate")
+function SvensBamAddon:createColorSlider(i, panel, rgb, yOffSet)
+    local slider = CreateFrame("Slider", "SvensBamAddon_Slider" .. i, panel, "OptionsSliderTemplate")
     slider:ClearAllPoints()
     slider:SetPoint("TOPLEFT", 32, -16 * 2 * (i - 1) + yOffSet)
     slider:SetSize(256, 16)
@@ -654,62 +654,62 @@ function SBM:createColorSlider(i, panel, rgb, yOffSet)
         local value = floor(slider:GetValue())
         _G[slider:GetName() .. "Text"]:SetText("|c00ffcc00" .. rgb[i].color .. "|r " .. value)
         _G[slider:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-        rgb[i].value = SBM:convertRGBDecimalToRGBHex(value)
-        SBM_color = "|cff" .. rgb[1].value .. rgb[2].value .. rgb[3].value
-        SBM:setPanelTexts()
+        rgb[i].value = SvensBamAddon:convertRGBDecimalToRGBHex(value)
+        SvensBamAddon_color = "|cff" .. rgb[1].value .. rgb[2].value .. rgb[3].value
+        SvensBamAddon:setPanelTexts()
     end)
     slider:SetValue(tonumber("0x" .. rgb[i].value))
 
 end
 
-function SBM:saveWhisperList()
-    SBM_whisperList = {}
+function SvensBamAddon:saveWhisperList()
+    SvensBamAddon_whisperList = {}
     for arg in string.gmatch(whisperFrame:GetText(), "%S+") do
-        table.insert(SBM_whisperList, arg)
+        table.insert(SvensBamAddon_whisperList, arg)
     end
 end
 
-function SBM:saveSoundfileDamage()
-    SBM_soundfileDamage = soundfileDamageFrame:GetText()
+function SvensBamAddon:saveSoundfileDamage()
+    SvensBamAddon_soundfileDamage = soundfileDamageFrame:GetText()
 end
 
-function SBM:saveSoundfileHeal()
-    SBM_soundfileHeal = soundfileHealFrame:GetText()
+function SvensBamAddon:saveSoundfileHeal()
+    SvensBamAddon_soundfileHeal = soundfileHealFrame:GetText()
 end
 
-function SBM:saveDamageOutputList()
-    SBM_outputDamageMessage = outputDamageMessageEditBox:GetText()
+function SvensBamAddon:saveDamageOutputList()
+    SvensBamAddon_outputDamageMessage = outputDamageMessageEditBox:GetText()
 end
 
-function SBM:saveHealOutputList()
-    SBM_outputHealMessage = outputHealMessageEditBox:GetText()
+function SvensBamAddon:saveHealOutputList()
+    SvensBamAddon_outputHealMessage = outputHealMessageEditBox:GetText()
 end
 
-function SBM:saveThreshold()
-    SBM_threshold = thresholdEditBox:GetNumber()
+function SvensBamAddon:saveThreshold()
+    SvensBamAddon_threshold = thresholdEditBox:GetNumber()
 end
 
-function SBM:saveChatFrame()
+function SvensBamAddon:saveChatFrame()
     local channelToSave = chatChannelFrame:GetText()
-    local channelFound = SBM:setIndexOfChatFrame(channelToSave)
+    local channelFound = SvensBamAddon:setIndexOfChatFrame(channelToSave)
     if (channelFound == true) then
-        SBM_Settings.chatFrameName = channelToSave
+        SvensBamAddon_Settings.chatFrameName = channelToSave
     else
-        print(SBM_color .. "Cannot save channel " .. channelToSave .. ". Channel not found!")
+        print(SvensBamAddon_color .. "Cannot save channel " .. channelToSave .. ". Channel not found!")
     end
 end
 
-function SBM:saveAllStringInputs()
-    SBM:saveDamageOutputList()
-    SBM:saveHealOutputList()
-    SBM:saveSoundfileDamage()
-    SBM:saveSoundfileHeal()
-    SBM:saveThreshold()
-    SBM:saveWhisperList()
-    SBM:saveChatFrame()
+function SvensBamAddon:saveAllStringInputs()
+    SvensBamAddon:saveDamageOutputList()
+    SvensBamAddon:saveHealOutputList()
+    SvensBamAddon:saveSoundfileDamage()
+    SvensBamAddon:saveSoundfileHeal()
+    SvensBamAddon:saveThreshold()
+    SvensBamAddon:saveWhisperList()
+    SvensBamAddon:saveChatFrame()
 end
 
-function SBM:createEditBox(name, parentFrame, height, width)
+function SvensBamAddon:createEditBox(name, parentFrame, height, width)
     local eb = CreateFrame("EditBox", name, parentFrame, "InputBoxTemplate")
     eb:ClearAllPoints()
     eb:SetAutoFocus(false)
@@ -719,14 +719,14 @@ function SBM:createEditBox(name, parentFrame, height, width)
     return eb
 end
 
-function SBM:convertRGBDecimalToRGBHex(decimal)
+function SvensBamAddon:convertRGBDecimalToRGBHex(decimal)
     local result
     local numbers = "0123456789ABCDEF"
     result = numbers:sub(1 + (decimal / 16), 1 + (decimal / 16)) .. numbers:sub(1 + (decimal % 16), 1 + (decimal % 16))
     return result
 end
 
-function SBM:createMinimapButton()
+function SvensBamAddon:createMinimapButton()
 
     --Dropdown Menu
     local lib = LibStub("LibDropDownMenu");
@@ -737,19 +737,19 @@ function SBM:createMinimapButton()
           menuList = {
               { text = "List crits", isNotRadio = true, notCheckable = true,
                 func = function()
-                    SBM:listCrits();
+                    SvensBamAddon:listCrits();
                 end
               },
 
               { text = "Report crits", isNotRadio = true, notCheckable = true,
                 func = function()
-                    SBM:reportCrits();
+                    SvensBamAddon:reportCrits();
                 end
               },
 
               { text = "Clear crits", isNotRadio = true, notCheckable = true,
                 func = function()
-                    SBM:clearCritList();
+                    SvensBamAddon:clearCritList();
                 end
               },
           }
@@ -765,44 +765,44 @@ function SBM:createMinimapButton()
     };
 
     --Minimap Icon
-    SBM_icon = SBM_ldb:NewDataObject("SBM_dataObject", {
+    SvensBamAddon_icon = SvensBamAddon_ldb:NewDataObject("SvensBamAddon_dataObject", {
         type = "data source",
-        label = "SBM_MinimapButton",
-        text = "SBM Minimap Icon",
+        label = "SvensBamAddon_MinimapButton",
+        text = "SvensBamAddon Minimap Icon",
         icon = "Interface\\AddOns\\SvensBamAddon\\textures\\Bam_Icon",
         OnClick = function(_, button)
             if button == "LeftButton" or button == "RightButton" then
-                lib.EasyMenu(menuList, menuFrame, "LibDBIcon10_SBM_dataObject", 0, 0, "MENU");
+                lib.EasyMenu(menuList, menuFrame, "LibDBIcon10_SvensBamAddon_dataObject", 0, 0, "MENU");
             end
         end,
     })
     local icon = LibStub("LibDBIcon-1.0")
-    icon:Register("SBM_dataObject", SBM_icon, SBM_MinimapSettings)
+    icon:Register("SvensBamAddon_dataObject", SvensBamAddon_icon, SvensBamAddon_MinimapSettings)
 end
 
-function SBM:setPanelTexts()
-    GeneralOptionsDescription:SetText(SBM_color .. "Choose sub menu to change options.\n\n\nCommand line options:\n\n"
+function SvensBamAddon:setPanelTexts()
+    GeneralOptionsDescription:SetText(SvensBamAddon_color .. "Choose sub menu to change options.\n\n\nCommand line options:\n\n"
             .. "/bam list: lists highest crits of each spell.\n"
             .. "/bam report: report highest crits of each spell to channel list.\n"
             .. "/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
-    OutputDamageMessageDescription:SetText(SBM_color .. "Output Message Damage")
-    OutputHealMessageDescription:SetText(SBM_color .. "Output Message Heal")
-    EventTypeDescription:SetText(SBM_color .. "Event Types to Trigger")
-    SvensBamAddonGeneralOptions.panel.title:SetText(SBM_color .. "Change color of Font")
-    FontColorDescription:SetText(SBM_color .. "Change color of Font")
-    OutputChannelDescription:SetText(SBM_color .. "Output Channel")
-    ThresholdDescription:SetText(SBM_color .. "Least amount of damage/heal to trigger bam:")
-    TriggerOptionsDescription:SetText(SBM_color .. "Trigger options:")
-    OtherOptionsDescription:SetText(SBM_color .. "Other options:")
+    OutputDamageMessageDescription:SetText(SvensBamAddon_color .. "Output Message Damage")
+    OutputHealMessageDescription:SetText(SvensBamAddon_color .. "Output Message Heal")
+    EventTypeDescription:SetText(SvensBamAddon_color .. "Event Types to Trigger")
+    SvensBamAddonGeneralOptions.panel.title:SetText(SvensBamAddon_color .. "Change color of Font")
+    FontColorDescription:SetText(SvensBamAddon_color .. "Change color of Font")
+    OutputChannelDescription:SetText(SvensBamAddon_color .. "Output Channel")
+    ThresholdDescription:SetText(SvensBamAddon_color .. "Least amount of damage/heal to trigger bam:")
+    TriggerOptionsDescription:SetText(SvensBamAddon_color .. "Trigger options:")
+    OtherOptionsDescription:SetText(SvensBamAddon_color .. "Other options:")
 end
 
 -- Taken and edited from BamModRevived on WoWInterface. Thanks to Sylen
 -- We use this to get the index of our output channel
-function SBM:setIndexOfChatFrame(chatFrameName)
+function SvensBamAddon:setIndexOfChatFrame(chatFrameName)
     for i = 1, NUM_CHAT_WINDOWS do
         local chatWindowName = GetChatWindowInfo(i)
         if chatWindowName == chatFrameName then
-            SBM_Settings.chatFrameIndex = i
+            SvensBamAddon_Settings.chatFrameIndex = i
             return true
         end
     end

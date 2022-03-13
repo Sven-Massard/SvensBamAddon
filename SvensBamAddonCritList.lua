@@ -1,11 +1,11 @@
-﻿function SBM:addToCritList(spellName, val)
+﻿function SvensBamAddon:addToCritList(spellName, val)
     -- list was empty until now
-    if (SBM_critList.spellName == nil and SBM_critList.value == nil) then
-        SBM_critList = SBM:newNode(spellName, val)
+    if (SvensBamAddon_critList.spellName == nil and SvensBamAddon_critList.value == nil) then
+        SvensBamAddon_critList = SvensBamAddon:newNode(spellName, val)
         return true
 
     else
-        local it = SBM_critList
+        local it = SvensBamAddon_critList
         --compare with first value
         if (it.spellName == spellName) then
             -- Maybe later refactor to avoid duplicate code
@@ -33,13 +33,13 @@
         end
 
         --add spell if not found till now
-        it.nextNode = SBM:newNode(spellName, val)
+        it.nextNode = SvensBamAddon:newNode(spellName, val)
         return true
     end
 
 end
 
-function SBM:newNode(spellName, val)
+function SvensBamAddon:newNode(spellName, val)
     local newNode = {};
     newNode.spellName = spellName
     newNode.value = val
@@ -47,57 +47,57 @@ function SBM:newNode(spellName, val)
     return newNode
 end
 
-function SBM:clearCritList()
-    SBM_critList = {};
-    print(SBM_color .. "Critlist cleared");
+function SvensBamAddon:clearCritList()
+    SvensBamAddon_critList = {};
+    print(SvensBamAddon_color .. "Critlist cleared");
 end
 
-function SBM:listCrits()
-    if not (SBM_critList.value == nil) then
-        print(SBM_color .. "Highest crits:");
-        local it = SBM_critList
-        print(SBM_color .. it.spellName .. ": " .. it.value)
+function SvensBamAddon:listCrits()
+    if not (SvensBamAddon_critList.value == nil) then
+        print(SvensBamAddon_color .. "Highest crits:");
+        local it = SvensBamAddon_critList
+        print(SvensBamAddon_color .. it.spellName .. ": " .. it.value)
         while not (it.nextNode == nil) do
             it = it.nextNode
-            print(SBM_color .. it.spellName .. ": " .. it.value)
+            print(SvensBamAddon_color .. it.spellName .. ": " .. it.value)
         end
     else
-        print(SBM_color .. "No crits recorded");
+        print(SvensBamAddon_color .. "No crits recorded");
     end
 end
 
-function SBM:reportCrits()
-    if not (SBM_critList.value == nil) then
-        for _, v in pairs(SBM_outputChannelList) do
+function SvensBamAddon:reportCrits()
+    if not (SvensBamAddon_critList.value == nil) then
+        for _, v in pairs(SvensBamAddon_outputChannelList) do
             if v == "Print" then
-                print(SBM_color .. "Highest crits:");
-                local it = SBM_critList
-                print(SBM_color .. it.spellName .. ": " .. it.value)
+                print(SvensBamAddon_color .. "Highest crits:");
+                local it = SvensBamAddon_critList
+                print(SvensBamAddon_color .. it.spellName .. ": " .. it.value)
                 while not (it.nextNode == nil) do
                     it = it.nextNode
-                    print(SBM_color .. it.spellName .. ": " .. it.value)
+                    print(SvensBamAddon_color .. it.spellName .. ": " .. it.value)
                 end
             elseif (v == "Officer") then
                 if (CanEditOfficerNote()) then
-                    SBM:ReportToChannel(v)
+                    SvensBamAddon:ReportToChannel(v)
                 end
             elseif (v == "Battleground") then
                 inInstance, instanceType = IsInInstance()
                 if (instanceType == "pvp") then
-                    SBM:ReportToChannel("INSTANCE_CHAT")
+                    SvensBamAddon:ReportToChannel("INSTANCE_CHAT")
                 end
             elseif (v == "Party") then
                 if IsInGroup() then
-                    SBM:ReportToChannel(v);
+                    SvensBamAddon:ReportToChannel(v);
                 end
             elseif (v == "Raid" or v == "Raid_Warning") then
                 if IsInRaid() then
-                    SBM:ReportToChannel(v);
+                    SvensBamAddon:ReportToChannel(v);
                 end
             elseif (v == "Whisper") then
-                for _, w in pairs(SBM_whisperList) do
+                for _, w in pairs(SvensBamAddon_whisperList) do
                     SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
-                    local it = SBM_critList
+                    local it = SvensBamAddon_critList
                     SendChatMessage(it.spellName .. ": " .. it.value, "WHISPER", "COMMON", w)
                     while not (it.nextNode == nil) do
                         it = it.nextNode
@@ -107,17 +107,17 @@ function SBM:reportCrits()
             elseif (v == "Sound DMG" or v == "Sound Heal" or v == "Do Train Emote") then
                 -- do nothing
             else
-                SBM:ReportToChannel(v);
+                SvensBamAddon:ReportToChannel(v);
             end
         end
     else
-        print(SBM_color .. "No crits recorded");
+        print(SvensBamAddon_color .. "No crits recorded");
     end
 end
 
-function SBM:ReportToChannel(channelName)
+function SvensBamAddon:ReportToChannel(channelName)
     SendChatMessage("Highest crits:", channelName)
-    local it = SBM_critList
+    local it = SvensBamAddon_critList
     SendChatMessage(it.spellName .. ": " .. it.value, channelName)
     while not (it.nextNode == nil) do
         it = it.nextNode
