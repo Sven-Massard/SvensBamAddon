@@ -419,7 +419,7 @@ function localAddon:createMinimapShowOptionCheckBox(x, y)
             end
         else
             LibDBIcon10_SvensBamAddon_dataObject:Hide()
-            SvensBamAddon_MinimapSettings.hide = true
+            SvensBamAddon_MinimapSettings.hide = true -- TODO Does not hide for some reason. Check after moving everything
         end
     end)
 end

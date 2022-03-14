@@ -5,7 +5,6 @@ SvensBamAddon = LibStub("AceAddon-3.0"):NewAddon("SvensBamAddon", "AceConsole-3.
 local localAddon = SvensBamAddon
 
 function localAddon:OnEnable()
-    self:RegisterEvent("ADDON_LOADED")
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SvensBamAddon_suppressWhisperMessage)
 end
@@ -15,14 +14,10 @@ function localAddon:OnDisable()
 end
 
 function localAddon:OnInitialize()
-    self:RegisterChatCommand("bam", "SlashCommand")
-
-end
-
-function localAddon:ADDON_LOADED()
-    print("test")
     SvensBamAddon_icon = nil -- Needs to be initialized to be saved
     self:loadAddon() -- in SvensBamAddonConfig.lua
+    self:RegisterChatCommand("bam", "SlashCommand")
+
 end
 
 function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
