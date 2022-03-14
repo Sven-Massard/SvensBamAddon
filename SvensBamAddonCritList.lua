@@ -1,7 +1,9 @@
-﻿function SvensBamAddon:addToCritList(spellName, val)
+﻿local localAddon = SvensBamAddon
+
+function localAddon:addToCritList(spellName, val)
     -- list was empty until now
     if (SvensBamAddon_critList.spellName == nil and SvensBamAddon_critList.value == nil) then
-        SvensBamAddon_critList = SvensBamAddon:newNode(spellName, val)
+        SvensBamAddon_critList = self:newNode(spellName, val)
         return true
 
     else
@@ -33,13 +35,13 @@
         end
 
         --add spell if not found till now
-        it.nextNode = SvensBamAddon:newNode(spellName, val)
+        it.nextNode = self:newNode(spellName, val)
         return true
     end
 
 end
 
-function SvensBamAddon:newNode(spellName, val)
+function localAddon:newNode(spellName, val)
     local newNode = {};
     newNode.spellName = spellName
     newNode.value = val
@@ -47,12 +49,12 @@ function SvensBamAddon:newNode(spellName, val)
     return newNode
 end
 
-function SvensBamAddon:clearCritList()
+function localAddon:clearCritList()
     SvensBamAddon_critList = {};
     print(SvensBamAddon_color .. "Critlist cleared");
 end
 
-function SvensBamAddon:listCrits()
+function localAddon:listCrits()
     if not (SvensBamAddon_critList.value == nil) then
         print(SvensBamAddon_color .. "Highest crits:");
         local it = SvensBamAddon_critList
@@ -66,7 +68,7 @@ function SvensBamAddon:listCrits()
     end
 end
 
-function SvensBamAddon:reportCrits()
+function localAddon:reportCrits()
     if not (SvensBamAddon_critList.value == nil) then
         for _, v in pairs(SvensBamAddon_outputChannelList) do
             if v == "Print" then
@@ -79,20 +81,20 @@ function SvensBamAddon:reportCrits()
                 end
             elseif (v == "Officer") then
                 if (CanEditOfficerNote()) then
-                    SvensBamAddon:ReportToChannel(v)
+                    self:ReportToChannel(v)
                 end
             elseif (v == "Battleground") then
                 inInstance, instanceType = IsInInstance()
                 if (instanceType == "pvp") then
-                    SvensBamAddon:ReportToChannel("INSTANCE_CHAT")
+                    self:ReportToChannel("INSTANCE_CHAT")
                 end
             elseif (v == "Party") then
                 if IsInGroup() then
-                    SvensBamAddon:ReportToChannel(v);
+                    self:ReportToChannel(v);
                 end
             elseif (v == "Raid" or v == "Raid_Warning") then
                 if IsInRaid() then
-                    SvensBamAddon:ReportToChannel(v);
+                    self:ReportToChannel(v);
                 end
             elseif (v == "Whisper") then
                 for _, w in pairs(SvensBamAddon_whisperList) do
@@ -107,7 +109,7 @@ function SvensBamAddon:reportCrits()
             elseif (v == "Sound DMG" or v == "Sound Heal" or v == "Do Train Emote") then
                 -- do nothing
             else
-                SvensBamAddon:ReportToChannel(v);
+                self:ReportToChannel(v);
             end
         end
     else
@@ -115,7 +117,7 @@ function SvensBamAddon:reportCrits()
     end
 end
 
-function SvensBamAddon:ReportToChannel(channelName)
+function localAddon:ReportToChannel(channelName)
     SendChatMessage("Highest crits:", channelName)
     local it = SvensBamAddon_critList
     SendChatMessage(it.spellName .. ": " .. it.value, channelName)

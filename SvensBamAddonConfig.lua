@@ -1,6 +1,8 @@
 ﻿local SvensBamAddon_ldb = LibStub("LibDataBroker-1.1")
 
-function SvensBamAddon:loadAddon()
+local localAddon = SvensBamAddon
+
+function localAddon:loadAddon()
 
     local channelButtonList = {}
     local eventButtonList = {}
@@ -67,7 +69,7 @@ function SvensBamAddon:loadAddon()
 
     if (SvensBamAddon_Settings.chatFrameName == nil) then
         SvensBamAddon_Settings.chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME
-        SvensBamAddon:setIndexOfChatFrame(SvensBamAddon_Settings.chatFrameName)
+        self:setIndexOfChatFrame(SvensBamAddon_Settings.chatFrameName)
     end
 
     if (SvensBamAddon_Settings.postLinkOfSpell == nil) then
@@ -120,14 +122,14 @@ function SvensBamAddon:loadAddon()
     SvensBamAddonChannelOptions.panel = CreateFrame("Frame", "SvensBamAddonChannelOptions");
     SvensBamAddonChannelOptions.panel.name = "Channel options";
     SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
-    SvensBamAddon:populateChannelSubmenu(channelButtonList, channelList)
+    self:populateChannelSubmenu(channelButtonList, channelList)
 
     --General Options SubMenu NEEDS TO BE LAST BECAUSE SLIDERS CHANGE FONTSTRINGS OF ALL MENUS
     SvensBamAddonGeneralOptions = {}
     SvensBamAddonGeneralOptions.panel = CreateFrame("Frame", "SvensBamAddonGeneralOptions");
     SvensBamAddonGeneralOptions.panel.name = "General options";
     SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
-    SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eventList, rgb)
+    self:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eventList, rgb)
 
     --Set order of Menus here
     InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
@@ -135,13 +137,13 @@ function SvensBamAddon:loadAddon()
     InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
 
     --Leave these here else we get Null Pointer
-    SvensBamAddonConfig.panel.okay = SvensBamAddon:saveAllStringInputs() --TODO seems not to work
-    SvensBamAddonChannelOptions.panel.okay = SvensBamAddon:saveAllStringInputs() --TODO seems not to work
-    SvensBamAddonGeneralOptions.panel.okay = SvensBamAddon:saveAllStringInputs() --TODO seems not to work
+    SvensBamAddonConfig.panel.okay = self:saveAllStringInputs() --TODO seems not to work
+    SvensBamAddonChannelOptions.panel.okay = self:saveAllStringInputs() --TODO seems not to work
+    SvensBamAddonGeneralOptions.panel.okay = self:saveAllStringInputs() --TODO seems not to work
 
 end
 
-function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eventList, rgb)
+function localAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eventList, rgb)
 
     local lineHeight = 16
     local boxHeight = 32
@@ -160,7 +162,7 @@ function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eve
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SvensBamAddon:createOutputDamageMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    self:createOutputDamageMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
     categoryCounter = categoryCounter + 1
 
@@ -169,7 +171,7 @@ function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eve
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SvensBamAddon:createOutputHealMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    self:createOutputHealMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
     -- Damage Threshold
@@ -179,7 +181,7 @@ function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eve
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SvensBamAddon:createThresholdEditBox(-(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    self:createThresholdEditBox(-(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
     -- Event Types to Trigger
@@ -190,7 +192,7 @@ function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eve
     amountLinesWritten = amountLinesWritten + 1
 
     for i = 1, #SvensBamAddon_eventList do
-        SvensBamAddon:createEventTypeCheckBoxes(i, 1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing), eventButtonList, SvensBamAddon_eventList)
+        self:createEventTypeCheckBoxes(i, 1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing), eventButtonList, SvensBamAddon_eventList)
         boxesPlaced = boxesPlaced + 1
     end
 
@@ -201,10 +203,10 @@ function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eve
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SvensBamAddon:createTriggerOnlyOnCritRecordCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    self:createTriggerOnlyOnCritRecordCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
-    SvensBamAddon:createSeparateOffhandCritsCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    self:createSeparateOffhandCritsCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
     -- Minimap Button
@@ -214,10 +216,10 @@ function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eve
     SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
     amountLinesWritten = amountLinesWritten + 1
 
-    SvensBamAddon:createMinimapShowOptionCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    self:createMinimapShowOptionCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
 
-    SvensBamAddon:createPostLinkCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+    self:createPostLinkCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     boxesPlaced = boxesPlaced + 1
     categoryCounter = categoryCounter + 1
 
@@ -229,14 +231,14 @@ function SvensBamAddon:populateGeneralSubmenu(eventButtonList, SvensBamAddon_eve
     amountLinesWritten = amountLinesWritten + 1
     amountLinesWritten = amountLinesWritten + 1 --Another Time, because the Sliders have on line above
     for i = 1, 3 do
-        SvensBamAddon:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
+        self:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
     end
     categoryCounter = categoryCounter + 1
 
 
 end
 
-function SvensBamAddon:createEventTypeCheckBoxes(i, x, y, eventButtonList, SvensBamAddon_eventList)
+function localAddon:createEventTypeCheckBoxes(i, x, y, eventButtonList, SvensBamAddon_eventList)
     local checkButton = CreateFrame("CheckButton", "SvensBamAddon_EventTypeCheckButton" .. i, SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     eventButtonList[i] = checkButton
     checkButton:ClearAllPoints()
@@ -259,8 +261,8 @@ function SvensBamAddon:createEventTypeCheckBoxes(i, x, y, eventButtonList, Svens
 
 end
 
-function SvensBamAddon:createOutputDamageMessageEditBox(height, width, y)
-    outputDamageMessageEditBox = SvensBamAddon:createEditBox("OutputDamageMessage", SvensBamAddonGeneralOptions.panel, height, width)
+function localAddon:createOutputDamageMessageEditBox(height, width, y)
+    outputDamageMessageEditBox = self:createEditBox("OutputDamageMessage", SvensBamAddonGeneralOptions.panel, height, width)
     outputDamageMessageEditBox:SetPoint("TOPLEFT", 40, y)
     outputDamageMessageEditBox:Insert(SvensBamAddon_outputDamageMessage)
     outputDamageMessageEditBox:SetCursorPosition(0)
@@ -270,7 +272,7 @@ function SvensBamAddon:createOutputDamageMessageEditBox(height, width, y)
     end)
     outputDamageMessageEditBox:SetScript("OnEnterPressed", function(...)
         outputDamageMessageEditBox:ClearFocus()
-        SvensBamAddon:saveDamageOutputList()
+        self:saveDamageOutputList()
     end)
     outputDamageMessageEditBox:SetScript("OnEnter", function(...)
         GameTooltip:SetOwner(outputDamageMessageEditBox, "ANCHOR_BOTTOM");
@@ -283,8 +285,8 @@ function SvensBamAddon:createOutputDamageMessageEditBox(height, width, y)
     end)
 end
 
-function SvensBamAddon:createOutputHealMessageEditBox(height, width, y)
-    outputHealMessageEditBox = SvensBamAddon:createEditBox("OutputHealMessage", SvensBamAddonGeneralOptions.panel, height, width)
+function localAddon:createOutputHealMessageEditBox(height, width, y)
+    outputHealMessageEditBox = self:createEditBox("OutputHealMessage", SvensBamAddonGeneralOptions.panel, height, width)
     outputHealMessageEditBox:SetPoint("TOPLEFT", 40, y)
     outputHealMessageEditBox:Insert(SvensBamAddon_outputHealMessage)
     outputHealMessageEditBox:SetCursorPosition(0)
@@ -294,7 +296,7 @@ function SvensBamAddon:createOutputHealMessageEditBox(height, width, y)
     end)
     outputHealMessageEditBox:SetScript("OnEnterPressed", function(...)
         outputHealMessageEditBox:ClearFocus()
-        SvensBamAddon:saveHealOutputList()
+        self:saveHealOutputList()
     end)
     outputHealMessageEditBox:SetScript("OnEnter", function(...)
         GameTooltip:SetOwner(outputHealMessageEditBox, "ANCHOR_BOTTOM");
@@ -307,8 +309,8 @@ function SvensBamAddon:createOutputHealMessageEditBox(height, width, y)
     end)
 end
 
-function SvensBamAddon:createThresholdEditBox(y)
-    thresholdEditBox = SvensBamAddon:createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel, 32, 400)
+function localAddon:createThresholdEditBox(y)
+    thresholdEditBox = self:createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel, 32, 400)
     thresholdEditBox:SetPoint("TOPLEFT", 40, y)
     thresholdEditBox:Insert(SvensBamAddon_threshold)
     thresholdEditBox:SetCursorPosition(0)
@@ -318,7 +320,7 @@ function SvensBamAddon:createThresholdEditBox(y)
     end)
     thresholdEditBox:SetScript("OnEnterPressed", function(...)
         thresholdEditBox:ClearFocus()
-        SvensBamAddon:saveThreshold()
+        self:saveThreshold()
     end)
     thresholdEditBox:SetScript("OnEnter", function(...)
         GameTooltip:SetOwner(thresholdEditBox, "ANCHOR_BOTTOM");
@@ -331,7 +333,7 @@ function SvensBamAddon:createThresholdEditBox(y)
     end)
 end
 
-function SvensBamAddon:createTriggerOnlyOnCritRecordCheckBox(x, y)
+function localAddon:createTriggerOnlyOnCritRecordCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "OnlyOnMaxCritCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -352,7 +354,7 @@ function SvensBamAddon:createTriggerOnlyOnCritRecordCheckBox(x, y)
     end)
 end
 
-function SvensBamAddon:createSeparateOffhandCritsCheckBox(x, y)
+function localAddon:createSeparateOffhandCritsCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "SeparateOffhandCritsCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -373,7 +375,7 @@ function SvensBamAddon:createSeparateOffhandCritsCheckBox(x, y)
     end)
 end
 
-function SvensBamAddon:createPostLinkCheckBox(x, y)
+function localAddon:createPostLinkCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "PostLinkCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -394,7 +396,7 @@ function SvensBamAddon:createPostLinkCheckBox(x, y)
     end)
 end
 
-function SvensBamAddon:createMinimapShowOptionCheckBox(x, y)
+function localAddon:createMinimapShowOptionCheckBox(x, y)
     local checkButton = CreateFrame("CheckButton", "MinimapShowOptionButtonCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
     checkButton:ClearAllPoints()
     checkButton:SetPoint("TOPLEFT", x * 32, y)
@@ -404,14 +406,14 @@ function SvensBamAddon:createMinimapShowOptionCheckBox(x, y)
 
     if (SvensBamAddon_MinimapSettings.hide == false) then
         MinimapShowOptionButtonCheckBox:SetChecked(true)
-        SvensBamAddon:createMinimapButton()
+        self:createMinimapButton()
     end
 
     MinimapShowOptionButtonCheckBox:SetScript("OnClick", function()
         if MinimapShowOptionButtonCheckBox:GetChecked() then
             SvensBamAddon_MinimapSettings.hide = false
             if (LibDBIcon10_SvensBamAddon_dataObject == nil) then
-                SvensBamAddon:createMinimapButton()
+                self:createMinimapButton()
             else
                 LibDBIcon10_SvensBamAddon_dataObject:Show()
             end
@@ -422,18 +424,18 @@ function SvensBamAddon:createMinimapShowOptionCheckBox(x, y)
     end)
 end
 
-function SvensBamAddon:populateChannelSubmenu(channelButtonList, channelList)
+function localAddon:populateChannelSubmenu(channelButtonList, channelList)
     SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString("OutputChannelDescription", "OVERLAY");
     SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
     SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
     -- Checkboxes channels and Edit Box for whispers
     for i = 1, #channelList do
-        SvensBamAddon:createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
+        self:createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
     end
-    SvensBamAddon:createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
+    self:createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
 end
 
-function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
+function localAddon:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
 
     local xOffset = x * 32
     local yOffset = y * -24
@@ -471,7 +473,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
 
     -- Create Edit Box for whispers
     if (channelList[i] == "Whisper") then
-        whisperFrame = SvensBamAddon:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel, 32, 400)
+        whisperFrame = self:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel, 32, 400)
         whisperFrame:SetPoint("TOP", 50, yOffset)
         for _, v in pairs(SvensBamAddon_whisperList) do
             whisperFrame:Insert(v .. " ")
@@ -487,7 +489,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
         end)
         whisperFrame:SetScript("OnEnterPressed", function(...)
             whisperFrame:ClearFocus()
-            SvensBamAddon:saveWhisperList()
+            self:saveWhisperList()
         end)
         whisperFrame:SetScript("OnEnter", function(...)
             GameTooltip:SetOwner(whisperFrame, "ANCHOR_BOTTOM");
@@ -505,7 +507,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
         local soundfileDamageFrameXOffset = 50
         local soundfileDamageFrameHeight = 32
         local soundfileDamageFrameWidth = 400
-        soundfileDamageFrame = SvensBamAddon:createEditBox("SoundfileDamage", SvensBamAddonChannelOptions.panel, soundfileDamageFrameHeight, soundfileDamageFrameWidth)
+        soundfileDamageFrame = self:createEditBox("SoundfileDamage", SvensBamAddonChannelOptions.panel, soundfileDamageFrameHeight, soundfileDamageFrameWidth)
         soundfileDamageFrame:SetPoint("TOP", soundfileDamageFrameXOffset, yOffset)
 
         soundfileDamageFrame:Insert(SvensBamAddon_soundfileDamage)
@@ -519,7 +521,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
         end)
         soundfileDamageFrame:SetScript("OnEnterPressed", function(...)
             soundfileDamageFrame:ClearFocus()
-            SvensBamAddon:saveSoundfileDamage()
+            self:saveSoundfileDamage()
         end)
         soundfileDamageFrame:SetScript("OnEnter", function(...)
             GameTooltip:SetOwner(soundfileDamageFrame, "ANCHOR_BOTTOM");
@@ -533,7 +535,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
             GameTooltip:Hide()
         end)
         local resetSoundfileButtonWidth = 56
-        SvensBamAddon:createResetSoundfileDamageButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileDamageFrameWidth / 2 + soundfileDamageFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileDamageFrameHeight)
+        self:createResetSoundfileDamageButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileDamageFrameWidth / 2 + soundfileDamageFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileDamageFrameHeight)
     end
 
     -- Create Edit Box for Heal Soundfile and reset button
@@ -541,7 +543,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
         local soundfileHealFrameXOffset = 50
         local soundfileHealFrameHeight = 32
         local soundfileHealFrameWidth = 400
-        soundfileHealFrame = SvensBamAddon:createEditBox("SoundfileHeal", SvensBamAddonChannelOptions.panel, soundfileHealFrameHeight, soundfileHealFrameWidth)
+        soundfileHealFrame = self:createEditBox("SoundfileHeal", SvensBamAddonChannelOptions.panel, soundfileHealFrameHeight, soundfileHealFrameWidth)
         soundfileHealFrame:SetPoint("TOP", soundfileHealFrameXOffset, yOffset)
 
         soundfileHealFrame:Insert(SvensBamAddon_soundfileHeal)
@@ -555,7 +557,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
         end)
         soundfileHealFrame:SetScript("OnEnterPressed", function(...)
             soundfileHealFrame:ClearFocus()
-            SvensBamAddon:saveSoundfileHeal()
+            self:saveSoundfileHeal()
         end)
         soundfileHealFrame:SetScript("OnEnter", function(...)
             GameTooltip:SetOwner(soundfileHealFrame, "ANCHOR_BOTTOM");
@@ -569,12 +571,12 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
             GameTooltip:Hide()
         end)
         local resetSoundfileButtonWidth = 56
-        SvensBamAddon:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth / 2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileHealFrameHeight)
+        self:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth / 2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileHealFrameHeight)
     end
 
     -- Create Edit Box for Print
     if (channelList[i] == "Print") then
-        chatChannelFrame = SvensBamAddon:createEditBox("ChatFrame", SvensBamAddonChannelOptions.panel, 32, 400)
+        chatChannelFrame = self:createEditBox("ChatFrame", SvensBamAddonChannelOptions.panel, 32, 400)
         chatChannelFrame:SetPoint("TOP", 50, -24 * y)
         chatChannelFrame:Insert(SvensBamAddon_Settings.chatFrameName)
         chatChannelFrame:SetCursorPosition(0)
@@ -586,7 +588,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
         end)
         chatChannelFrame:SetScript("OnEnterPressed", function(...)
             chatChannelFrame:ClearFocus()
-            SvensBamAddon:saveChatFrame()
+            self:saveChatFrame()
         end)
         chatChannelFrame:SetScript("OnEnter", function(...)
             GameTooltip:SetOwner(chatChannelFrame, "ANCHOR_BOTTOM");
@@ -600,7 +602,7 @@ function SvensBamAddon:createCheckButtonChannel(i, x, y, channelButtonList, chan
     end
 end
 
-function SvensBamAddon:createResetSoundfileDamageButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
+function localAddon:createResetSoundfileDamageButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
     local resetSoundfileButtonHeight = 24
     resetChannelListButton = CreateFrame("Button", "ResetSoundfileDamage", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
@@ -613,7 +615,7 @@ function SvensBamAddon:createResetSoundfileDamageButton(parentFrame, resetSoundf
     end)
 end
 
-function SvensBamAddon:createResetSoundfileHealButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
+function localAddon:createResetSoundfileHealButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
     local resetSoundfileButtonHeight = 24
     resetChannelListButton = CreateFrame("Button", "ResetSoundfileHeal", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
@@ -626,7 +628,7 @@ function SvensBamAddon:createResetSoundfileHealButton(parentFrame, resetSoundfil
     end)
 end
 
-function SvensBamAddon:createResetChannelListButton(parentFrame, channelList, channelButtonList)
+function localAddon:createResetChannelListButton(parentFrame, channelList, channelButtonList)
     resetChannelListButton = CreateFrame("Button", "ResetButtonChannels", parentFrame, "UIPanelButtonTemplate");
     resetChannelListButton:ClearAllPoints()
     resetChannelListButton:SetPoint("TOPLEFT", 32, ((#channelList) + 1) * -24 - 8)
@@ -641,7 +643,7 @@ function SvensBamAddon:createResetChannelListButton(parentFrame, channelList, ch
     end)
 end
 
-function SvensBamAddon:createColorSlider(i, panel, rgb, yOffSet)
+function localAddon:createColorSlider(i, panel, rgb, yOffSet)
     local slider = CreateFrame("Slider", "SvensBamAddon_Slider" .. i, panel, "OptionsSliderTemplate")
     slider:ClearAllPoints()
     slider:SetPoint("TOPLEFT", 32, -16 * 2 * (i - 1) + yOffSet)
@@ -654,44 +656,44 @@ function SvensBamAddon:createColorSlider(i, panel, rgb, yOffSet)
         local value = floor(slider:GetValue())
         _G[slider:GetName() .. "Text"]:SetText("|c00ffcc00" .. rgb[i].color .. "|r " .. value)
         _G[slider:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-        rgb[i].value = SvensBamAddon:convertRGBDecimalToRGBHex(value)
+        rgb[i].value = self:convertRGBDecimalToRGBHex(value)
         SvensBamAddon_color = "|cff" .. rgb[1].value .. rgb[2].value .. rgb[3].value
-        SvensBamAddon:setPanelTexts()
+        self:setPanelTexts()
     end)
     slider:SetValue(tonumber("0x" .. rgb[i].value))
 
 end
 
-function SvensBamAddon:saveWhisperList()
+function localAddon:saveWhisperList()
     SvensBamAddon_whisperList = {}
     for arg in string.gmatch(whisperFrame:GetText(), "%S+") do
         table.insert(SvensBamAddon_whisperList, arg)
     end
 end
 
-function SvensBamAddon:saveSoundfileDamage()
+function localAddon:saveSoundfileDamage()
     SvensBamAddon_soundfileDamage = soundfileDamageFrame:GetText()
 end
 
-function SvensBamAddon:saveSoundfileHeal()
+function localAddon:saveSoundfileHeal()
     SvensBamAddon_soundfileHeal = soundfileHealFrame:GetText()
 end
 
-function SvensBamAddon:saveDamageOutputList()
+function localAddon:saveDamageOutputList()
     SvensBamAddon_outputDamageMessage = outputDamageMessageEditBox:GetText()
 end
 
-function SvensBamAddon:saveHealOutputList()
+function localAddon:saveHealOutputList()
     SvensBamAddon_outputHealMessage = outputHealMessageEditBox:GetText()
 end
 
-function SvensBamAddon:saveThreshold()
+function localAddon:saveThreshold()
     SvensBamAddon_threshold = thresholdEditBox:GetNumber()
 end
 
-function SvensBamAddon:saveChatFrame()
+function localAddon:saveChatFrame()
     local channelToSave = chatChannelFrame:GetText()
-    local channelFound = SvensBamAddon:setIndexOfChatFrame(channelToSave)
+    local channelFound = self:setIndexOfChatFrame(channelToSave)
     if (channelFound == true) then
         SvensBamAddon_Settings.chatFrameName = channelToSave
     else
@@ -699,17 +701,17 @@ function SvensBamAddon:saveChatFrame()
     end
 end
 
-function SvensBamAddon:saveAllStringInputs()
-    SvensBamAddon:saveDamageOutputList()
-    SvensBamAddon:saveHealOutputList()
-    SvensBamAddon:saveSoundfileDamage()
-    SvensBamAddon:saveSoundfileHeal()
-    SvensBamAddon:saveThreshold()
-    SvensBamAddon:saveWhisperList()
-    SvensBamAddon:saveChatFrame()
+function localAddon:saveAllStringInputs()
+    self:saveDamageOutputList()
+    self:saveHealOutputList()
+    self:saveSoundfileDamage()
+    self:saveSoundfileHeal()
+    self:saveThreshold()
+    self:saveWhisperList()
+    self:saveChatFrame()
 end
 
-function SvensBamAddon:createEditBox(name, parentFrame, height, width)
+function localAddon:createEditBox(name, parentFrame, height, width)
     local eb = CreateFrame("EditBox", name, parentFrame, "InputBoxTemplate")
     eb:ClearAllPoints()
     eb:SetAutoFocus(false)
@@ -719,14 +721,14 @@ function SvensBamAddon:createEditBox(name, parentFrame, height, width)
     return eb
 end
 
-function SvensBamAddon:convertRGBDecimalToRGBHex(decimal)
+function localAddon:convertRGBDecimalToRGBHex(decimal)
     local result
     local numbers = "0123456789ABCDEF"
     result = numbers:sub(1 + (decimal / 16), 1 + (decimal / 16)) .. numbers:sub(1 + (decimal % 16), 1 + (decimal % 16))
     return result
 end
 
-function SvensBamAddon:createMinimapButton()
+function localAddon:createMinimapButton()
 
     --Dropdown Menu
     local lib = LibStub("LibDropDownMenu");
@@ -737,19 +739,19 @@ function SvensBamAddon:createMinimapButton()
           menuList = {
               { text = "List crits", isNotRadio = true, notCheckable = true,
                 func = function()
-                    SvensBamAddon:listCrits();
+                    self:listCrits();
                 end
               },
 
               { text = "Report crits", isNotRadio = true, notCheckable = true,
                 func = function()
-                    SvensBamAddon:reportCrits();
+                    self:reportCrits();
                 end
               },
 
               { text = "Clear crits", isNotRadio = true, notCheckable = true,
                 func = function()
-                    SvensBamAddon:clearCritList();
+                    self:clearCritList();
                 end
               },
           }
@@ -780,7 +782,7 @@ function SvensBamAddon:createMinimapButton()
     icon:Register("SvensBamAddon_dataObject", SvensBamAddon_icon, SvensBamAddon_MinimapSettings)
 end
 
-function SvensBamAddon:setPanelTexts()
+function localAddon:setPanelTexts()
     GeneralOptionsDescription:SetText(SvensBamAddon_color .. "Choose sub menu to change options.\n\n\nCommand line options:\n\n"
             .. "/bam list: lists highest crits of each spell.\n"
             .. "/bam report: report highest crits of each spell to channel list.\n"
@@ -798,7 +800,7 @@ end
 
 -- Taken and edited from BamModRevived on WoWInterface. Thanks to Sylen
 -- We use this to get the index of our output channel
-function SvensBamAddon:setIndexOfChatFrame(chatFrameName)
+function localAddon:setIndexOfChatFrame(chatFrameName)
     for i = 1, NUM_CHAT_WINDOWS do
         local chatWindowName = GetChatWindowInfo(i)
         if chatWindowName == chatFrameName then

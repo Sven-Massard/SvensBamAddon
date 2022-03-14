@@ -2,27 +2,30 @@
 
 SvensBamAddon = LibStub("AceAddon-3.0"):NewAddon("SvensBamAddon", "AceConsole-3.0", "AceEvent-3.0")
 
-function SvensBamAddon:OnEnable()
+local localAddon = SvensBamAddon
+
+function localAddon:OnEnable()
     self:RegisterEvent("ADDON_LOADED")
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SvensBamAddon_suppressWhisperMessage)
 end
 
-function SvensBamAddon:OnDisable()
+function localAddon:OnDisable()
     -- Called when the addon is disabled
 end
 
-function SvensBamAddon:OnInitialize()
+function localAddon:OnInitialize()
     self:RegisterChatCommand("bam", "SlashCommand")
 
 end
 
-function SvensBamAddon:ADDON_LOADED()
+function localAddon:ADDON_LOADED()
+    print("test")
     SvensBamAddon_icon = nil -- Needs to be initialized to be saved
-    SvensBamAddon:loadAddon() -- in SvensBamAddonConfig.lua
+    self:loadAddon() -- in SvensBamAddonConfig.lua
 end
 
-function SvensBamAddon:COMBAT_LOG_EVENT_UNFILTERED()
+function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
     local name, _ = UnitName("player");
     local eventType, _, _, eventSource, _, _, _, enemyName = select(2, CombatLogGetCurrentEventInfo())
     if not (eventSource == name) then
@@ -61,7 +64,7 @@ function SvensBamAddon:COMBAT_LOG_EVENT_UNFILTERED()
 
     for i = 1, #SvensBamAddon_eventList do
         if (eventType == SvensBamAddon_eventList[i].eventType and SvensBamAddon_eventList[i].boolean and critical == true) then
-            newMaxCrit = SvensBamAddon:addToCritList(spellName, amount);
+            newMaxCrit = self:addToCritList(spellName, amount);
             if (SvensBamAddon_onlyOnNewMaxCrits and not newMaxCrit) then
                 do
                     return
@@ -108,11 +111,11 @@ function SvensBamAddon:COMBAT_LOG_EVENT_UNFILTERED()
                     end
                 elseif (v == "Sound DMG") then
                     if (eventType ~= "SPELL_HEAL") then
-                        SvensBamAddon:playRandomSoundFromList(SvensBamAddon_soundfileDamage)
+                        self:playRandomSoundFromList(SvensBamAddon_soundfileDamage)
                     end
                 elseif (v == "Sound Heal") then
                     if (eventType == "SPELL_HEAL") then
-                        SvensBamAddon:playRandomSoundFromList(SvensBamAddon_soundfileHeal)
+                        self:playRandomSoundFromList(SvensBamAddon_soundfileHeal)
                     end
                 elseif (v == "Do Train Emote") then
                     DoEmote("train");
@@ -124,7 +127,7 @@ function SvensBamAddon:COMBAT_LOG_EVENT_UNFILTERED()
     end
 end
 
-function SvensBamAddon:playRandomSoundFromList(listOfFilesAsString)
+function localAddon:playRandomSoundFromList(listOfFilesAsString)
     SvensBamAddon_soundFileList = {}
     for arg in string.gmatch(listOfFilesAsString, "%S+") do
         table.insert(SvensBamAddon_soundFileList, arg)
@@ -167,7 +170,7 @@ function SvensBamAddon_suppressWhisperMessage(_, _, msg, _, ...)
 
 end
 
-function SvensBamAddon:SlashCommand(msg)
+function localAddon:SlashCommand(msg)
     if (msg == "help" or msg == "") then
         print(SvensBamAddon_color .. "Possible parameters:")
         print(SvensBamAddon_color .. "list: lists highest crits of each spell")
@@ -175,11 +178,11 @@ function SvensBamAddon:SlashCommand(msg)
         print(SvensBamAddon_color .. "clear: delete list of highest crits")
         print(SvensBamAddon_color .. "config: Opens config page")
     elseif (msg == "list") then
-        SvensBamAddon:listCrits();
+        self:listCrits();
     elseif (msg == "report") then
-        SvensBamAddon:reportCrits();
+        self:reportCrits();
     elseif (msg == "clear") then
-        SvensBamAddon:clearCritList();
+        self:clearCritList();
     elseif (msg == "config") then
         -- For some reason, needs to be called twice to function correctly on first call
         InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
