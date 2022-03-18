@@ -1,12 +1,10 @@
-﻿-- TODO Make Ace Minimap button because our current one throws lua error since migrations
-
-SvensBamAddon = LibStub("AceAddon-3.0"):NewAddon("SvensBamAddon", "AceConsole-3.0", "AceEvent-3.0")
+﻿SvensBamAddon = LibStub("AceAddon-3.0"):NewAddon("SvensBamAddon", "AceConsole-3.0", "AceEvent-3.0")
 
 local localAddon = SvensBamAddon
 
 function localAddon:OnEnable()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SvensBamAddon_suppressWhisperMessage)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", self.suppressWhisperMessage) -- TODO Test
 end
 
 function localAddon:OnDisable()
@@ -14,10 +12,9 @@ function localAddon:OnDisable()
 end
 
 function localAddon:OnInitialize()
-    SvensBamAddon_icon = nil -- Needs to be initialized to be saved
+    MinimapIcon = nil -- Needs to be initialized to be saved
     self:loadAddon() -- in SvensBamAddonConfig.lua
     self:RegisterChatCommand("bam", "SlashCommand")
-
 end
 
 function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
@@ -40,27 +37,33 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
         spellId, spellName, _, amount, _, _, _, _, _, critical, _, _ = select(12, CombatLogGetCurrentEventInfo())
     elseif (eventType == "SWING_DAMAGE") then
         amount, _, _, _, _, _, critical, _, _, isOffHand = select(12, CombatLogGetCurrentEventInfo())
-        if (SvensBamAddon_separateOffhandCrits and isOffHand) then
+        if (self.db.profile.separateOffhandCrits and isOffHand) then
             spellName = "Off-Hand Autohit"
         else
             spellName = "Autohit"
         end
     end
 
-    if (spellId and SvensBamAddon_Settings.postLinkOfSpell) then
+    if (spellId and self.db.profile.postLinkOfSpell) then
         spellLink = GetSpellLink(spellId)
     end
 
-    if (amount ~= nil and amount < SvensBamAddon_threshold and SvensBamAddon_threshold ~= 0) then
+    if (amount ~= nil and amount < self.db.profile.threshold and self.db.profile.threshold ~= 0) then
+        do
+            return
+        end
+    end
+    if (critical ~= true) then
         do
             return
         end
     end
 
-    for i = 1, #SvensBamAddon_eventList do
-        if (eventType == SvensBamAddon_eventList[i].eventType and SvensBamAddon_eventList[i].boolean and critical == true) then
+    for i = 1, #self.db.profile.eventList do
+        if (eventType == self.db.profile.eventList[i].eventType and self.db.profile.eventList[i].boolean) then
+
             newMaxCrit = self:addToCritList(spellName, amount);
-            if (SvensBamAddon_onlyOnNewMaxCrits and not newMaxCrit) then
+            if (self.db.profile.onlyOnNewMaxCrits and not newMaxCrit) then
                 do
                     return
                 end
@@ -69,15 +72,14 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
             if (spellLink) then
                 spellName = spellLink
             end
-
             if eventType == "SPELL_HEAL" then
-                output = SvensBamAddon_outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+                output = self.db.profile.outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
             else
-                output = SvensBamAddon_outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+                output = self.db.profile.outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
             end
-            for _, v in pairs(SvensBamAddon_outputChannelList) do
+            for _, v in pairs(self.db.profile.outputChannelList) do
                 if v == "Print" then
-                    _G["ChatFrame" .. SvensBamAddon_Settings.chatFrameIndex]:AddMessage(SvensBamAddon_color .. output)
+                    _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. output)
                 elseif (v == "Say" or v == "Yell") then
                     local inInstance, _ = IsInInstance()
                     if (inInstance) then
@@ -101,16 +103,16 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                         SendChatMessage(output, v);
                     end
                 elseif (v == "Whisper") then
-                    for _, w in pairs(SvensBamAddon_whisperList) do
+                    for _, w in pairs(self.db.profile.whisperList) do
                         SendChatMessage(output, "WHISPER", "COMMON", w)
                     end
                 elseif (v == "Sound DMG") then
                     if (eventType ~= "SPELL_HEAL") then
-                        self:playRandomSoundFromList(SvensBamAddon_soundfileDamage)
+                        self:playRandomSoundFromList(self.db.profile.soundfileDamage)
                     end
                 elseif (v == "Sound Heal") then
                     if (eventType == "SPELL_HEAL") then
-                        self:playRandomSoundFromList(SvensBamAddon_soundfileHeal)
+                        self:playRandomSoundFromList(self.db.profile.soundfileHeal)
                     end
                 elseif (v == "Do Train Emote") then
                     DoEmote("train");
@@ -123,16 +125,16 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
 end
 
 function localAddon:playRandomSoundFromList(listOfFilesAsString)
-    SvensBamAddon_soundFileList = {}
+    local soundFileList = {}
     for arg in string.gmatch(listOfFilesAsString, "%S+") do
-        table.insert(SvensBamAddon_soundFileList, arg)
+        table.insert(soundFileList, arg)
     end
-    local randomIndex = random(1, #SvensBamAddon_soundFileList)
-    PlaySoundFile(SvensBamAddon_soundFileList[randomIndex])
+    local randomIndex = random(1, #soundFileList)
+    PlaySoundFile(soundFileList[randomIndex])
 end
 
 -- Function for event filter for CHAT_MSG_SYSTEM to suppress message of player on whisper list being offline when being whispered to
-function SvensBamAddon_suppressWhisperMessage(_, _, msg, _, ...)
+function localAddon:suppressWhisperMessage(_, _, msg, _, ...)
     -- TODO Suppression only works for Portuguese, English, German and French because they have the same naming format.
     -- See https://www.townlong-yak.com/framexml/live/GlobalStrings.lua
     local textWithoutName = msg:gsub("%'%a+%'", ""):gsub("  ", " ")
@@ -156,7 +158,7 @@ function SvensBamAddon_suppressWhisperMessage(_, _, msg, _, ...)
     end
 
     local isNameInWhisperList = false
-    for _, w in pairs(SvensBamAddon_whisperList) do
+    for _, w in pairs(self.db.profile.whisperList) do
         if (w == name) then
             isNameInWhisperList = true
         end
@@ -167,11 +169,11 @@ end
 
 function localAddon:SlashCommand(msg)
     if (msg == "help" or msg == "") then
-        print(SvensBamAddon_color .. "Possible parameters:")
-        print(SvensBamAddon_color .. "list: lists highest crits of each spell")
-        print(SvensBamAddon_color .. "report: report highest crits of each spell to channel list")
-        print(SvensBamAddon_color .. "clear: delete list of highest crits")
-        print(SvensBamAddon_color .. "config: Opens config page")
+        print(self.db.profile.color .. "Possible parameters:")
+        print(self.db.profile.color .. "list: lists highest crits of each spell")
+        print(self.db.profile.color .. "report: report highest crits of each spell to channel list")
+        print(self.db.profile.color .. "clear: delete list of highest crits")
+        print(self.db.profile.color .. "config: Opens config page")
     elseif (msg == "list") then
         self:listCrits();
     elseif (msg == "report") then
@@ -183,9 +185,9 @@ function localAddon:SlashCommand(msg)
         InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
         InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
     elseif (msg == "test") then
-        print(SvensBamAddon_color .. "Function not implemented")
+        print(self.db.profile.color .. "Function not implemented")
     else
-        print(SvensBamAddon_color .. "Bam Error: Unknown command")
+        print(self.db.profile.color .. "Bam Error: Unknown command")
     end
 end
 

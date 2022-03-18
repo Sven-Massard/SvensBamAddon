@@ -2,12 +2,13 @@
 
 function localAddon:addToCritList(spellName, val)
     -- list was empty until now
-    if (SvensBamAddon_critList.spellName == nil and SvensBamAddon_critList.value == nil) then
-        SvensBamAddon_critList = self:newNode(spellName, val)
+    if (self.db.profile.critList.spellName == nil and self.db.profile.critList.value == nil) then
+
+        self.db.profile.critList = self:newNode(spellName, val)
         return true
 
     else
-        local it = SvensBamAddon_critList
+        local it = self.db.profile.critList
         --compare with first value
         if (it.spellName == spellName) then
             -- Maybe later refactor to avoid duplicate code
@@ -50,34 +51,34 @@ function localAddon:newNode(spellName, val)
 end
 
 function localAddon:clearCritList()
-    SvensBamAddon_critList = {};
-    print(SvensBamAddon_color .. "Critlist cleared");
+    self.db.profile.critList = {};
+    print(self.db.profile.color .. "Critlist cleared"); -- TODO replace all prints
 end
 
 function localAddon:listCrits()
-    if not (SvensBamAddon_critList.value == nil) then
-        print(SvensBamAddon_color .. "Highest crits:");
-        local it = SvensBamAddon_critList
-        print(SvensBamAddon_color .. it.spellName .. ": " .. it.value)
+    if not (self.db.profile.critList.value == nil) then
+        print(self.db.profile.color .. "Highest crits:");
+        local it = self.db.profile.critList
+        print(self.db.profile.color .. it.spellName .. ": " .. it.value)
         while not (it.nextNode == nil) do
             it = it.nextNode
-            print(SvensBamAddon_color .. it.spellName .. ": " .. it.value)
+            print(self.db.profile.color .. it.spellName .. ": " .. it.value)
         end
     else
-        print(SvensBamAddon_color .. "No crits recorded");
+        print(self.db.profile.color .. "No crits recorded");
     end
 end
 
 function localAddon:reportCrits()
-    if not (SvensBamAddon_critList.value == nil) then
-        for _, v in pairs(SvensBamAddon_outputChannelList) do
+    if not (self.db.profile.critList.value == nil) then
+        for _, v in pairs(self.db.profile.outputChannelList) do
             if v == "Print" then
-                print(SvensBamAddon_color .. "Highest crits:");
-                local it = SvensBamAddon_critList
-                print(SvensBamAddon_color .. it.spellName .. ": " .. it.value)
+                print(self.db.profile.color .. "Highest crits:");
+                local it = self.db.profile.critList
+                print(self.db.profile.color .. it.spellName .. ": " .. it.value)
                 while not (it.nextNode == nil) do
                     it = it.nextNode
-                    print(SvensBamAddon_color .. it.spellName .. ": " .. it.value)
+                    print(self.db.profile.color .. it.spellName .. ": " .. it.value)
                 end
             elseif (v == "Officer") then
                 if (CanEditOfficerNote()) then
@@ -97,9 +98,9 @@ function localAddon:reportCrits()
                     self:ReportToChannel(v);
                 end
             elseif (v == "Whisper") then
-                for _, w in pairs(SvensBamAddon_whisperList) do
+                for _, w in pairs(self.db.profile.whisperList) do
                     SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
-                    local it = SvensBamAddon_critList
+                    local it = self.db.profile.critList
                     SendChatMessage(it.spellName .. ": " .. it.value, "WHISPER", "COMMON", w)
                     while not (it.nextNode == nil) do
                         it = it.nextNode
@@ -113,13 +114,13 @@ function localAddon:reportCrits()
             end
         end
     else
-        print(SvensBamAddon_color .. "No crits recorded");
+        print(self.db.profile.color .. "No crits recorded");
     end
 end
 
 function localAddon:ReportToChannel(channelName)
     SendChatMessage("Highest crits:", channelName)
-    local it = SvensBamAddon_critList
+    local it = self.db.profile.critList
     SendChatMessage(it.spellName .. ": " .. it.value, channelName)
     while not (it.nextNode == nil) do
         it = it.nextNode
