@@ -347,8 +347,12 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 return localAddon.db.profile.chatFrameName
             end,
             set = function(_, value)
-                localAddon.db.profile.chatFrameName = value
-                localAddon:setIndexOfChatFrame(localAddon.db.profile.chatFrameName)
+                local isValidName = localAddon:setIndexOfChatFrame(value)
+                if (isValidName) then
+                    localAddon.db.profile.chatFrameName = value
+                else
+                    _G["ChatFrame" .. localAddon.db.profile.chatFrameIndex]:AddMessage(localAddon.db.profile.color .. "Could not find channel name!")
+                end
             end
         },
         guildCheckbox = {
