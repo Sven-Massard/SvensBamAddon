@@ -524,10 +524,8 @@ function localAddon:loadAddon()
 
     icon:Register("SvensBamAddon_dataObject", MinimapIcon, self.db.profile.minimap)
     if (not self.db.profile.minimap.hide) then
-        self:Print("Show Minimap")
         icon:Show("SvensBamAddon_dataObject")
     else
-        self:Print("Hide Minimap")
         icon:Hide("SvensBamAddon_dataObject")
     end
 
