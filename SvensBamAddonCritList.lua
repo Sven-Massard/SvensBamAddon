@@ -52,52 +52,52 @@ end
 
 function localAddon:clearCritList()
     self.db.profile.critList = {};
-    print(self.db.profile.color .. "Critlist cleared"); -- TODO replace all prints
+    _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Crit list cleared");
 end
 
 function localAddon:listCrits()
     if not (self.db.profile.critList.value == nil) then
-        print(self.db.profile.color .. "Highest crits:");
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Highest crits:");
         local it = self.db.profile.critList
-        print(self.db.profile.color .. it.spellName .. ": " .. it.value)
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. it.spellName .. ": " .. it.value)
         while not (it.nextNode == nil) do
             it = it.nextNode
-            print(self.db.profile.color .. it.spellName .. ": " .. it.value)
+            _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. it.spellName .. ": " .. it.value)
         end
     else
-        print(self.db.profile.color .. "No crits recorded");
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "No crits recorded");
     end
 end
 
 function localAddon:reportCrits()
     if not (self.db.profile.critList.value == nil) then
-        for _, v in pairs(self.db.profile.outputChannelList) do
-            if v == "Print" then
-                print(self.db.profile.color .. "Highest crits:");
+        for k, v in pairs(self.db.profile.outputChannelList) do
+            if (k == "Print" and v == true) then
+                _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Highest crits:");
                 local it = self.db.profile.critList
-                print(self.db.profile.color .. it.spellName .. ": " .. it.value)
+                _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. it.spellName .. ": " .. it.value)
                 while not (it.nextNode == nil) do
                     it = it.nextNode
-                    print(self.db.profile.color .. it.spellName .. ": " .. it.value)
+                    _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. it.spellName .. ": " .. it.value)
                 end
-            elseif (v == "Officer") then
+            elseif (k == "Officer" and v == true) then
                 if (CanEditOfficerNote()) then
-                    self:ReportToChannel(v)
+                    self:ReportToChannel(k)
                 end
-            elseif (v == "Battleground") then
+            elseif (k == "Battleground" and v == true) then
                 inInstance, instanceType = IsInInstance()
                 if (instanceType == "pvp") then
                     self:ReportToChannel("INSTANCE_CHAT")
                 end
-            elseif (v == "Party") then
+            elseif (k == "Party" and v == true) then
                 if IsInGroup() then
-                    self:ReportToChannel(v);
+                    self:ReportToChannel(k);
                 end
-            elseif (v == "Raid" or v == "Raid_Warning") then
+            elseif ((k == "Raid" or k == "Raid_Warning") and v == true) then
                 if IsInRaid() then
-                    self:ReportToChannel(v);
+                    self:ReportToChannel(k);
                 end
-            elseif (v == "Whisper") then
+            elseif (k == "Whisper" and v == true) then
                 for _, w in pairs(self.db.profile.whisperList) do
                     SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
                     local it = self.db.profile.critList
@@ -107,14 +107,14 @@ function localAddon:reportCrits()
                         SendChatMessage(it.spellName .. ": " .. it.value, "WHISPER", "COMMON", w)
                     end
                 end
-            elseif (v == "Sound DMG" or v == "Sound Heal" or v == "Do Train Emote") then
+            elseif (k == "Sound_damage" or k == "Sound_heal" or k == "Train_emote") then
                 -- do nothing
-            else
-                self:ReportToChannel(v);
+            elseif (v == true) then
+                self:ReportToChannel(k);
             end
         end
     else
-        print(self.db.profile.color .. "No crits recorded");
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "No crits recorded");
     end
 end
 

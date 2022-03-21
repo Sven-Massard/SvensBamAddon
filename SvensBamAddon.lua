@@ -4,7 +4,7 @@ local localAddon = SvensBamAddon
 
 function localAddon:OnEnable()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", self.suppressWhisperMessage) -- TODO Test
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SBM_suppressWhisperMessage)
 end
 
 function localAddon:OnDisable()
@@ -44,23 +44,24 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     end
 
-    if (spellId and self.db.profile.postLinkOfSpell) then
-        spellLink = GetSpellLink(spellId)
-    end
-
-    if (amount ~= nil and amount < self.db.profile.threshold and self.db.profile.threshold ~= 0) then
-        do
-            return
-        end
-    end
     if (critical ~= true) then
         do
             return
         end
     end
+    if (spellId and self.db.profile.postLinkOfSpell) then
+        spellLink = GetSpellLink(spellId)
+    end
 
-    for i = 1, #self.db.profile.eventList do
-        if (eventType == self.db.profile.eventList[i].eventType and self.db.profile.eventList[i].boolean) then
+    if (amount ~= nil and amount < tonumber(self.db.profile.threshold) and tonumber(self.db.profile.threshold ~= 0)) then
+        do
+            return
+        end
+    end
+
+    --for i = 1, #self.db.profile.eventList do
+    for _, event in pairs(self.db.profile.eventList) do
+        if (eventType == event.eventType and event.boolean) then
 
             newMaxCrit = self:addToCritList(spellName, amount);
             if (self.db.profile.onlyOnNewMaxCrits and not newMaxCrit) then
@@ -77,47 +78,45 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
             else
                 output = self.db.profile.outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
             end
-            for _, v in pairs(self.db.profile.outputChannelList) do
-                if v == "Print" then
-                    _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. output)
-                elseif (v == "Say" or v == "Yell") then
-                    local inInstance, _ = IsInInstance()
-                    if (inInstance) then
-                        SendChatMessage(output, v);
-                    end
-                elseif (v == "Battleground") then
-                    local _, instanceType = IsInInstance()
-                    if (instanceType == "pvp") then
-                        SendChatMessage(output, "INSTANCE_CHAT")
-                    end
-                elseif (v == "Officer") then
-                    if (CanEditOfficerNote()) then
-                        SendChatMessage(output, v)
-                    end
-                elseif (v == "Raid" or v == "Raid_Warning") then
-                    if IsInRaid() then
-                        SendChatMessage(output, v);
-                    end
-                elseif (v == "Party") then
-                    if IsInGroup() then
-                        SendChatMessage(output, v);
-                    end
-                elseif (v == "Whisper") then
-                    for _, w in pairs(self.db.profile.whisperList) do
-                        SendChatMessage(output, "WHISPER", "COMMON", w)
-                    end
-                elseif (v == "Sound DMG") then
-                    if (eventType ~= "SPELL_HEAL") then
+            for k, v in pairs(self.db.profile.outputChannelList) do
+                if v == true then
+                    if k == "Print" then
+                        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. output)
+                    elseif (k == "Say" or k == "Yell") then
+                        local inInstance, _ = IsInInstance()
+                        if (inInstance) then
+                            SendChatMessage(output, v);
+                        end
+                    elseif (k == "Battleground") then
+                        local _, instanceType = IsInInstance()
+                        if (instanceType == "pvp") then
+                            SendChatMessage(output, "INSTANCE_CHAT")
+                        end
+                    elseif (k == "Officer") then
+                        if (CanEditOfficerNote()) then
+                            SendChatMessage(output, v)
+                        end
+                    elseif (k == "Raid" or v == "Raid_Warning") then
+                        if IsInRaid() then
+                            SendChatMessage(output, v);
+                        end
+                    elseif (k == "Party") then
+                        if IsInGroup() then
+                            SendChatMessage(output, v);
+                        end
+                    elseif (k == "Whisper") then
+                        for _, w in pairs(self.db.profile.whisperList) do
+                            SendChatMessage(output, "WHISPER", "COMMON", w)
+                        end
+                    elseif (k == "Sound_damage") then
                         self:playRandomSoundFromList(self.db.profile.soundfileDamage)
-                    end
-                elseif (v == "Sound Heal") then
-                    if (eventType == "SPELL_HEAL") then
+                    elseif (k == "Sound_heal") then
                         self:playRandomSoundFromList(self.db.profile.soundfileHeal)
+                    elseif (k == "Do Train Emote") then
+                        DoEmote("train");
+                    else
+                        SendChatMessage(output, v);
                     end
-                elseif (v == "Do Train Emote") then
-                    DoEmote("train");
-                else
-                    SendChatMessage(output, v);
                 end
             end
         end
@@ -134,13 +133,12 @@ function localAddon:playRandomSoundFromList(listOfFilesAsString)
 end
 
 -- Function for event filter for CHAT_MSG_SYSTEM to suppress message of player on whisper list being offline when being whispered to
-function localAddon:suppressWhisperMessage(_, _, msg, _, ...)
+function SBM_suppressWhisperMessage(_, _, msg, _, ...)
     -- TODO Suppression only works for Portuguese, English, German and French because they have the same naming format.
     -- See https://www.townlong-yak.com/framexml/live/GlobalStrings.lua
     local textWithoutName = msg:gsub("%'%a+%'", ""):gsub("  ", " ")
 
     localizedPlayerNotFoundStringWithoutName = ERR_CHAT_PLAYER_NOT_FOUND_S:gsub("%'%%s%'", ""):gsub("  ", " ")
-
     if not (textWithoutName == localizedPlayerNotFoundStringWithoutName) then
         return false
     end
@@ -158,7 +156,7 @@ function localAddon:suppressWhisperMessage(_, _, msg, _, ...)
     end
 
     local isNameInWhisperList = false
-    for _, w in pairs(self.db.profile.whisperList) do
+    for _, w in pairs(localAddon.db.profile.whisperList) do
         if (w == name) then
             isNameInWhisperList = true
         end
@@ -169,11 +167,11 @@ end
 
 function localAddon:SlashCommand(msg)
     if (msg == "help" or msg == "") then
-        print(self.db.profile.color .. "Possible parameters:")
-        print(self.db.profile.color .. "list: lists highest crits of each spell")
-        print(self.db.profile.color .. "report: report highest crits of each spell to channel list")
-        print(self.db.profile.color .. "clear: delete list of highest crits")
-        print(self.db.profile.color .. "config: Opens config page")
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Possible parameters:")
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "list: lists highest crits of each spell")
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "report: report highest crits of each spell to channel list")
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "clear: delete list of highest crits")
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "config: Opens config page")
     elseif (msg == "list") then
         self:listCrits();
     elseif (msg == "report") then
@@ -182,12 +180,12 @@ function localAddon:SlashCommand(msg)
         self:clearCritList();
     elseif (msg == "config") then
         -- For some reason, needs to be called twice to function correctly on first call
-        InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
-        InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
+        InterfaceOptionsFrame_OpenToCategory(self.mainOptionsFrame)
+        InterfaceOptionsFrame_OpenToCategory(self.mainOptionsFrame)
     elseif (msg == "test") then
-        print(self.db.profile.color .. "Function not implemented")
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Function not implemented")
     else
-        print(self.db.profile.color .. "Bam Error: Unknown command")
+        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Bam Error: Unknown command")
     end
 end
 

@@ -2,679 +2,535 @@
 
 local localAddon = SvensBamAddon
 
+local AceConfig = LibStub("AceConfig-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceDatabase = LibStub("AceDB-3.0")
+local icon = LibStub("LibDBIcon-1.0")
+local lib = LibStub("LibDropDownMenu");
+
+local menuFrame = lib.Create_DropDownMenu("MyAddOn_DropDownMenu");
+local menuList = {
+    { text = "Crit List options", isNotRadio = true, notCheckable = true, hasArrow = true,
+      menuList = {
+          { text = "List crits", isNotRadio = true, notCheckable = true,
+            func = function()
+                localAddon:listCrits();
+            end
+          },
+
+          { text = "Report crits", isNotRadio = true, notCheckable = true,
+            func = function()
+                localAddon:reportCrits();
+            end
+          },
+
+          { text = "Clear crits", isNotRadio = true, notCheckable = true,
+            func = function()
+                localAddon:clearCritList();
+            end
+          },
+      }
+    },
+
+    { text = "Open config", isNotRadio = true, notCheckable = true,
+      func = function()
+          InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
+          InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
+      end
+    },
+    { text = "Close menu", isNotRadio = true, notCheckable = true },
+};
+local MinimapIcon = SvensBamAddon_ldb:NewDataObject("SvensBamAddon_dataObject", {
+    type = "data source",
+    label = "SvensBamAddon_MinimapButton",
+    text = "SvensBamAddon Minimap Icon",
+    icon = "Interface\\AddOns\\SvensBamAddon\\textures\\Bam_Icon",
+    OnClick = function(_, button)
+        if button == "LeftButton" or button == "RightButton" then
+            lib.EasyMenu(menuList, menuFrame, "LibDBIcon10_SvensBamAddon_dataObject", 0, 0, "MENU");
+        end
+    end,
+})
+
 local defaults = {
     profile = {
         outputDamageMessage = "BAM! SN SD!",
         outputHealMessage = "BAM! SN SD!",
-        outputChannelList = { "Print", "Sound DMG", "Sound Heal" },
-
+        outputChannelList = {
+            Say = false,
+            Yell = false,
+            Print = true,
+            Guild = false,
+            Raid = false,
+            Emote = false,
+            Party = false,
+            Officer = false,
+            Raid_Warning = false,
+            Battleground = false,
+            Whisper = false,
+            Sound_damage = true,
+            Sound_heal = true,
+            Train_emote = true,
+        },
         onlyOnNewMaxCrits = false,
         separateOffhandCrits = false,
         damageThreshold = 0,
         postLinkOfSpell = false,
         eventList = {
-            { name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true },
-            { name = "Ranged", eventType = "RANGE_DAMAGE", boolean = true },
-            { name = "Melee Autohit", eventType = "SWING_DAMAGE", boolean = true },
-            { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
+            spellDamage = { name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true },
+            ranged = { name = "Ranged", eventType = "RANGE_DAMAGE", boolean = true },
+            melee = { name = "Melee Autohit", eventType = "SWING_DAMAGE", boolean = true },
+            heal = { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
         },
         whisperList = {},
         chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME,
-        chatFrameIndex = nil,
+        chatFrameIndex = 1,
         soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg",
         soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg",
         color = "|cff" .. "94" .. "CF" .. "00",
-        hideMiniMapButton = false,
+        minimap = { hide = false, },
         critList = {}
 
     }
 }
 
-function localAddon:loadAddon()
-    self.db = LibStub("AceDB-3.0"):New("SvensBamAddonDB", defaults, "char")
-
-    local channelButtonList = {}
-    local eventButtonList = {}
-    local channelList = {
-        "Say",
-        "Yell",
-        "Print",
-        "Guild",
-        "Raid",
-        "Emote",
-        "Party",
-        "Officer",
-        "Raid_Warning",
-        "Battleground",
-        "Whisper",
-        "Sound DMG",
-        "Sound Heal",
-        "Do Train Emote"
+local mainOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables
+    name = "will be replaced",
+    type = "group",
+    args = {
+        mainDescription = {
+            type = "description",
+            fontSize = "medium",
+            name = "will be replaced"
+        },
     }
-
-    if (self.db.profile.chatFrameIndex == nil) then
-        self:setIndexOfChatFrame(self.db.profile.chatFrameName)
-    end
-
-    local rgb = {
-        { color = "Red", value = self.db.profile.color:sub(5, 6) },
-        { color = "Green", value = self.db.profile.color:sub(7, 8) },
-        { color = "Blue", value = self.db.profile.color:sub(9, 10) }
-    }
-
-    ----Good Guide https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/FrameXML/InterfaceOptionsFrame.lua
-    ----Options Main Menu
-    SvensBamAddonConfig = {};
-    SvensBamAddonConfig.panel = CreateFrame("Frame", "SvensBamAddonConfig", UIParent);
-    SvensBamAddonConfig.panel.name = "Svens Bam Addon";
-    SvensBamAddonConfig.panel.title = SvensBamAddonConfig.panel:CreateFontString("GeneralOptionsDescription", "OVERLAY");
-    SvensBamAddonConfig.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonConfig.panel.title:SetPoint("TOPLEFT", 5, -5);
-    SvensBamAddonConfig.panel.title:SetJustifyH("LEFT")
-
-
-    --Channel Options SubMenu
-    SvensBamAddonChannelOptions = {}
-    SvensBamAddonChannelOptions.panel = CreateFrame("Frame", "SvensBamAddonChannelOptions");
-    SvensBamAddonChannelOptions.panel.name = "Channel options";
-    SvensBamAddonChannelOptions.panel.parent = "Svens Bam Addon"
-    self:populateChannelSubmenu(channelButtonList, channelList)
-
-    --General Options SubMenu NEEDS TO BE LAST BECAUSE SLIDERS CHANGE FONTSTRINGS OF ALL MENUS
-    SvensBamAddonGeneralOptions = {}
-    SvensBamAddonGeneralOptions.panel = CreateFrame("Frame", "SvensBamAddonGeneralOptions");
-    SvensBamAddonGeneralOptions.panel.name = "General options";
-    SvensBamAddonGeneralOptions.panel.parent = "Svens Bam Addon"
-    self:populateGeneralSubmenu(eventButtonList, self.db.profile.eventList, rgb)
-
-    --Set order of Menus here
-    InterfaceOptions_AddCategory(SvensBamAddonConfig.panel);
-    InterfaceOptions_AddCategory(SvensBamAddonGeneralOptions.panel);
-    InterfaceOptions_AddCategory(SvensBamAddonChannelOptions.panel);
-
-    --Leave these here else we get Null Pointer
-    SvensBamAddonConfig.panel.okay = self:saveAllStringInputs() --TODO seems not to work
-    SvensBamAddonChannelOptions.panel.okay = self:saveAllStringInputs() --TODO seems not to work
-    SvensBamAddonGeneralOptions.panel.okay = self:saveAllStringInputs() --TODO seems not to work
-
-end
-
-function localAddon:populateGeneralSubmenu(eventButtonList, eventList, rgb)
-
-    local lineHeight = 16
-    local boxHeight = 32
-    local boxSpacing = 24 -- Even though a box is 32 high, it somehow takes only 24 of space
-    local editBoxWidth = 400
-    local categoryPadding = 16
-    local baseYOffSet = 5
-
-    local categoryCounter = 0 -- increase after each category
-    local amountLinesWritten = 0 -- increase after each Font String
-    local boxesPlaced = 0 -- increase after each edit box or check box placed
-
-    -- Output Messages
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputDamageMessageDescription", "OVERLAY");
-    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
-    amountLinesWritten = amountLinesWritten + 1
-
-    self:createOutputDamageMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
-    boxesPlaced = boxesPlaced + 1
-    categoryCounter = categoryCounter + 1
-
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OutputHealMessageDescription", "OVERLAY");
-    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
-    amountLinesWritten = amountLinesWritten + 1
-
-    self:createOutputHealMessageEditBox(boxHeight, editBoxWidth, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
-    boxesPlaced = boxesPlaced + 1
-
-    -- Damage Threshold
-    categoryCounter = categoryCounter + 1
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("ThresholdDescription", "OVERLAY");
-    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
-    amountLinesWritten = amountLinesWritten + 1
-
-    self:createThresholdEditBox(-(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
-    boxesPlaced = boxesPlaced + 1
-
-    -- Event Types to Trigger
-    categoryCounter = categoryCounter + 1
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("EventTypeDescription", "OVERLAY");
-    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
-    amountLinesWritten = amountLinesWritten + 1
-
-    for i = 1, #eventList do
-        self:createEventTypeCheckBoxes(i, 1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing), eventButtonList, eventList)
-        boxesPlaced = boxesPlaced + 1
-    end
-
-    -- Trigger Options
-    categoryCounter = categoryCounter + 1
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("TriggerOptionsDescription", "OVERLAY");
-    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
-    amountLinesWritten = amountLinesWritten + 1
-
-    self:createTriggerOnlyOnCritRecordCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
-    boxesPlaced = boxesPlaced + 1
-
-    self:createSeparateOffhandCritsCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
-    boxesPlaced = boxesPlaced + 1
-
-    -- Minimap Button
-    categoryCounter = categoryCounter + 1
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("OtherOptionsDescription", "OVERLAY");
-    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
-    amountLinesWritten = amountLinesWritten + 1
-
-    self:createMinimapShowOptionCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
-    boxesPlaced = boxesPlaced + 1
-
-    self:createPostLinkCheckBox(1, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
-    boxesPlaced = boxesPlaced + 1
-    categoryCounter = categoryCounter + 1
-
-    -- Color changer
-    yOffSet = 3
-    SvensBamAddonGeneralOptions.panel.title = SvensBamAddonGeneralOptions.panel:CreateFontString("FontColorDescription", "OVERLAY");
-    SvensBamAddonGeneralOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonGeneralOptions.panel.title:SetPoint("TOPLEFT", 5, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing));
-    amountLinesWritten = amountLinesWritten + 1
-    amountLinesWritten = amountLinesWritten + 1 --Another Time, because the Sliders have on line above
-    for i = 1, 3 do
-        self:createColorSlider(i, SvensBamAddonGeneralOptions.panel, rgb, -(baseYOffSet + categoryCounter * categoryPadding + amountLinesWritten * lineHeight + boxesPlaced * boxSpacing))
-    end
-    categoryCounter = categoryCounter + 1
-
-
-end
-
-function localAddon:createEventTypeCheckBoxes(i, x, y, eventButtonList, eventList)
-    local checkButton = CreateFrame("CheckButton", "EventTypeCheckButton" .. i, SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
-    eventButtonList[i] = checkButton
-    checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, y)
-    checkButton:SetSize(32, 32)
-
-    _G[checkButton:GetName() .. "Text"]:SetText(eventList[i].name)
-    _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-    if (eventList[i].boolean) then
-        eventButtonList[i]:SetChecked(true)
-    end
-
-    eventButtonList[i]:SetScript("OnClick", function()
-        if eventButtonList[i]:GetChecked() then
-            eventList[i].boolean = true
-        else
-            eventList[i].boolean = false
-        end
-    end)
-
-end
-
-function localAddon:createOutputDamageMessageEditBox(height, width, y)
-    outputDamageMessageEditBox = self:createEditBox("OutputDamageMessage", SvensBamAddonGeneralOptions.panel, height, width)
-    outputDamageMessageEditBox:SetPoint("TOPLEFT", 40, y)
-    outputDamageMessageEditBox:Insert(self.db.profile.outputDamageMessage)
-    outputDamageMessageEditBox:SetCursorPosition(0)
-    outputDamageMessageEditBox:SetScript("OnEscapePressed", function(...)
-        outputDamageMessageEditBox:ClearFocus()
-        outputDamageMessageEditBox:SetText(self.db.profile.outputDamageMessage)
-    end)
-    outputDamageMessageEditBox:SetScript("OnEnterPressed", function(...)
-        outputDamageMessageEditBox:ClearFocus()
-        self:saveDamageOutputList()
-    end)
-    outputDamageMessageEditBox:SetScript("OnEnter", function(...)
-        GameTooltip:SetOwner(outputDamageMessageEditBox, "ANCHOR_BOTTOM");
-        GameTooltip:SetText("Insert your damage message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!")
-        GameTooltip:ClearAllPoints()
-        GameTooltip:Show()
-    end)
-    outputDamageMessageEditBox:SetScript("OnLeave", function()
-        GameTooltip:Hide()
-    end)
-end
-
-function localAddon:createOutputHealMessageEditBox(height, width, y)
-    outputHealMessageEditBox = self:createEditBox("OutputHealMessage", SvensBamAddonGeneralOptions.panel, height, width)
-    outputHealMessageEditBox:SetPoint("TOPLEFT", 40, y)
-    outputHealMessageEditBox:Insert(self.db.profile.outputHealMessage)
-    outputHealMessageEditBox:SetCursorPosition(0)
-    outputHealMessageEditBox:SetScript("OnEscapePressed", function(...)
-        outputHealMessageEditBox:ClearFocus()
-        outputHealMessageEditBox:SetText(self.db.profile.outputHealMessage)
-    end)
-    outputHealMessageEditBox:SetScript("OnEnterPressed", function(...)
-        outputHealMessageEditBox:ClearFocus()
-        self:saveHealOutputList()
-    end)
-    outputHealMessageEditBox:SetScript("OnEnter", function(...)
-        GameTooltip:SetOwner(outputHealMessageEditBox, "ANCHOR_BOTTOM");
-        GameTooltip:SetText("Insert your heal message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!")
-        GameTooltip:ClearAllPoints()
-        GameTooltip:Show()
-    end)
-    outputHealMessageEditBox:SetScript("OnLeave", function()
-        GameTooltip:Hide()
-    end)
-end
-
-function localAddon:createThresholdEditBox(y)
-    thresholdEditBox = self:createEditBox("ThresholdEditBox", SvensBamAddonGeneralOptions.panel, 32, 400)
-    thresholdEditBox:SetPoint("TOPLEFT", 40, y)
-    thresholdEditBox:Insert(self.db.profile.threshold)
-    thresholdEditBox:SetCursorPosition(0)
-    thresholdEditBox:SetScript("OnEscapePressed", function(...)
-        thresholdEditBox:ClearFocus()
-        thresholdEditBox:SetText(self.db.profile.threshold)
-    end)
-    thresholdEditBox:SetScript("OnEnterPressed", function(...)
-        thresholdEditBox:ClearFocus()
-        self:saveThreshold()
-    end)
-    thresholdEditBox:SetScript("OnEnter", function(...)
-        GameTooltip:SetOwner(thresholdEditBox, "ANCHOR_BOTTOM");
-        GameTooltip:SetText("Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything.")
-        GameTooltip:ClearAllPoints()
-        GameTooltip:Show()
-    end)
-    thresholdEditBox:SetScript("OnLeave", function()
-        GameTooltip:Hide()
-    end)
-end
-
-function localAddon:createTriggerOnlyOnCritRecordCheckBox(x, y)
-    local checkButton = CreateFrame("CheckButton", "OnlyOnMaxCritCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
-    checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, y)
-    checkButton:SetSize(32, 32)
-    OnlyOnMaxCritCheckBoxText:SetText("Only trigger on new crit record")
-    OnlyOnMaxCritCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-
-    if (self.db.profile.onlyOnNewMaxCrits) then
-        OnlyOnMaxCritCheckBox:SetChecked(true)
-    end
-
-    OnlyOnMaxCritCheckBox:SetScript("OnClick", function()
-        if OnlyOnMaxCritCheckBox:GetChecked() then
-            self.db.profile.onlyOnNewMaxCrits = true
-        else
-            self.db.profile.onlyOnNewMaxCrits = false
-        end
-    end)
-end
-
-function localAddon:createSeparateOffhandCritsCheckBox(x, y)
-    local checkButton = CreateFrame("CheckButton", "SeparateOffhandCritsCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
-    checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, y)
-    checkButton:SetSize(32, 32)
-    SeparateOffhandCritsCheckBoxText:SetText("Show off-hand crits separately")
-    SeparateOffhandCritsCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-
-    if (self.db.profile.separateOffhandCrits) then
-        SeparateOffhandCritsCheckBox:SetChecked(true)
-    end
-
-    SeparateOffhandCritsCheckBox:SetScript("OnClick", function()
-        if SeparateOffhandCritsCheckBox:GetChecked() then
-            self.db.profile.separateOffhandCrits = true
-        else
-            self.db.profile.separateOffhandCrits = false
-        end
-    end)
-end
-
-function localAddon:createPostLinkCheckBox(x, y)
-    local checkButton = CreateFrame("CheckButton", "PostLinkCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
-    checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, y)
-    checkButton:SetSize(32, 32)
-    PostLinkCheckBoxText:SetText("Post links of spells")
-    PostLinkCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-
-    if (self.db.profile.postLinkOfSpell) then
-        PostLinkCheckBox:SetChecked(true)
-    end
-
-    PostLinkCheckBox:SetScript("OnClick", function()
-        if PostLinkCheckBox:GetChecked() then
-            self.db.profile.postLinkOfSpell = true
-        else
-            self.db.profile.postLinkOfSpell = false
-        end
-    end)
-end
-
-function localAddon:createMinimapShowOptionCheckBox(x, y)
-    local checkButton = CreateFrame("CheckButton", "MinimapShowOptionButtonCheckBox", SvensBamAddonGeneralOptions.panel, "UICheckButtonTemplate")
-    checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", x * 32, y)
-    checkButton:SetSize(32, 32)
-    MinimapShowOptionButtonCheckBoxText:SetText("Show Minimap Button")
-    MinimapShowOptionButtonCheckBoxText:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-
-    if (self.db.profile.hideMiniMapButton == false) then
-        MinimapShowOptionButtonCheckBox:SetChecked(true)
-        self:createMinimapButton()
-    end
-
-    MinimapShowOptionButtonCheckBox:SetScript("OnClick", function()
-        if MinimapShowOptionButtonCheckBox:GetChecked() then
-            self.db.profile.hideMiniMapButton = false
-            if (LibDBIcon10_SvensBamAddon_dataObject == nil) then
-                self:createMinimapButton()
-            else
-                LibDBIcon10_SvensBamAddon_dataObject:Show()
+}
+local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables
+    name = "",
+    type = "group",
+    args = {
+        outputMessageDamageOption = {
+            type = "input",
+            name = "will be replaced",
+            desc = "Insert your damage message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
+            get = function(_)
+                return localAddon.db.profile.outputDamageMessage
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputDamageMessage = value
             end
-        else
-            LibDBIcon10_SvensBamAddon_dataObject:Hide()
-            self.db.profile.hideMiniMapButton = true -- TODO Does not hide for some reason. Check after moving everything
-        end
-    end)
-end
-
-function localAddon:populateChannelSubmenu(channelButtonList, channelList)
-    SvensBamAddonChannelOptions.panel.title = SvensBamAddonChannelOptions.panel:CreateFontString("OutputChannelDescription", "OVERLAY");
-    SvensBamAddonChannelOptions.panel.title:SetFont(GameFontNormal:GetFont(), 14, "NONE");
-    SvensBamAddonChannelOptions.panel.title:SetPoint("TOPLEFT", 5, -5);
-    -- Checkboxes channels and Edit Box for whispers
-    for i = 1, #channelList do
-        self:createCheckButtonChannel(i, 1, i, channelButtonList, channelList)
-    end
-    self:createResetChannelListButton(SvensBamAddonChannelOptions.panel, channelList, channelButtonList)
-end
-
-function localAddon:createCheckButtonChannel(i, x, y, channelButtonList, channelList)
-
-    local xOffset = x * 32
-    local yOffset = y * -24
-    local checkButton = CreateFrame("CheckButton", "ChannelCheckButton" .. i, SvensBamAddonChannelOptions.panel, "UICheckButtonTemplate")
-    channelButtonList[i] = checkButton
-    checkButton:ClearAllPoints()
-    checkButton:SetPoint("TOPLEFT", xOffset, yOffset)
-    checkButton:SetSize(32, 32)
-
-    _G[checkButton:GetName() .. "Text"]:SetText(channelList[i])
-    _G[checkButton:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-    for j = 1, #self.db.profile.outputChannelList do
-        if (self.db.profile.outputChannelList[j] == channelList[i]) then
-            checkButton:SetChecked(true)
-        end
-    end
-
-    checkButton:SetScript("OnClick", function()
-        if checkButton:GetChecked() then
-            table.insert(self.db.profile.outputChannelList, channelList[i])
-        else
-            indexOfFoundValues = {}
-            for j = 1, #self.db.profile.outputChannelList do
-                if (self.db.profile.outputChannelList[j] == channelList[i]) then
-                    table.insert(indexOfFoundValues, j)
+        },
+        outputMessageHealOption = {
+            type = "input",
+            name = "will be replaced",
+            desc = "Insert your heal message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
+            get = function(_)
+                return localAddon.db.profile.outputHealMessage
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputHealMessage = value
+            end
+        },
+        thresholdOption = {
+            type = "input",
+            name = "will be replaced",
+            desc = "Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything.",
+            get = function(_)
+                return localAddon.db.profile.threshold
+            end,
+            set = function(_, value)
+                localAddon.db.profile.threshold = value
+            end
+        },
+        eventTypesToTriggerDescription = {
+            type = "description",
+            name = "will be replaced"
+        },
+        SpellDamageCheckbox = {
+            type = "toggle",
+            name = "Spell Damage",
+            get = function(_)
+                return localAddon.db.profile.eventList.spellDamage.boolean
+            end,
+            set = function(_, value)
+                localAddon.db.profile.eventList.spellDamage.boolean = value
+            end
+        },
+        healCheckbox = {
+            type = "toggle",
+            name = "Heal",
+            get = function(_)
+                return localAddon.db.profile.eventList.heal.boolean
+            end,
+            set = function(_, value)
+                localAddon.db.profile.eventList.heal.boolean = value
+            end
+        },
+        rangedCheckbox = {
+            type = "toggle",
+            name = "Ranged",
+            get = function(_)
+                return localAddon.db.profile.eventList.ranged.boolean
+            end,
+            set = function(_, value)
+                localAddon.db.profile.eventList.ranged.boolean = value
+            end
+        },
+        meleeCheckbox = {
+            type = "toggle",
+            name = "Melee Autohit",
+            get = function(_)
+                return localAddon.db.profile.eventList.melee.boolean
+            end,
+            set = function(_, value)
+                localAddon.db.profile.eventList.melee.boolean = value
+            end
+        },
+        triggerOptionsDescription = {
+            type = "description",
+            name = "will be replaced"
+        },
+        triggerOnCritRecordCheckbox = {
+            type = "toggle",
+            name = "Only trigger on new crit record",
+            get = function(_)
+                return localAddon.db.profile.onlyOnNewMaxCrits
+            end,
+            set = function(_, value)
+                localAddon.db.profile.onlyOnNewMaxCrits = value
+            end
+        },
+        showOffHandCritsSeparately = {
+            type = "toggle",
+            name = "Show off-hand crits separately",
+            get = function(_)
+                return localAddon.db.profile.showOffHandCritsSeparately
+            end,
+            set = function(_, value)
+                localAddon.db.profile.showOffHandCritsSeparately = value
+            end
+        },
+        otherOptionsDescription = {
+            type = "description",
+            name = "will be replaced"
+        },
+        miniMapButtonCheckbox = {
+            type = "toggle",
+            name = "Show Minimap Button",
+            get = function(_)
+                return not localAddon.db.profile.minimap.hide
+            end,
+            set = function(_, value)
+                localAddon.db.profile.minimap.hide = not value
+                if (value) then
+                    icon:Show("SvensBamAddon_dataObject")
+                else
+                    icon:Hide("SvensBamAddon_dataObject")
                 end
             end
-            j = #indexOfFoundValues
-            while (j > 0) do
-                table.remove(self.db.profile.outputChannelList, indexOfFoundValues[j])
-                j = j - 1;
+        },
+        postLinkOfSpellCheckbox = {
+            type = "toggle",
+            name = "Show off-hand crits separately",
+            get = function(_)
+                return localAddon.db.profile.postLinkOfSpell
+            end,
+            set = function(_, value)
+                localAddon.db.profile.postLinkOfSpell = value
             end
-        end
-    end)
-
-    -- Create Edit Box for whispers
-    if (channelList[i] == "Whisper") then
-        whisperFrame = self:createEditBox("WhisperList", SvensBamAddonChannelOptions.panel, 32, 400)
-        whisperFrame:SetPoint("TOP", 50, yOffset)
-        for _, v in pairs(self.db.profile.whisperList) do
-            whisperFrame:Insert(v .. " ")
-        end
-        whisperFrame:SetCursorPosition(0)
-
-        whisperFrame:SetScript("OnEscapePressed", function(...)
-            whisperFrame:ClearFocus()
-            whisperFrame:SetText("")
-            for _, v in pairs(self.db.profile.whisperList) do
-                whisperFrame:Insert(v .. " ")
+        },
+        fontColorDescription = {
+            type = "description",
+            name = "will be replaced"
+        },
+        redColorSlider = {
+            type = "range",
+            name = "Red",
+            min = 0,
+            max = 255,
+            step = 1,
+            get = function(_)
+                return tonumber("0x" .. localAddon.db.profile.color:sub(5, 6))
+            end,
+            set = function(_, value)
+                local rgb = {
+                    { color = "Red", value = localAddon.db.profile.color:sub(5, 6) },
+                    { color = "Green", value = localAddon.db.profile.color:sub(7, 8) },
+                    { color = "Blue", value = localAddon.db.profile.color:sub(9, 10) }
+                }
+                rgbValue = localAddon:convertRGBDecimalToRGBHex(value)
+                localAddon.db.profile.color = "|cff" .. rgbValue .. rgb[2].value .. rgb[3].value
+                localAddon:setPanelTexts()
             end
-        end)
-        whisperFrame:SetScript("OnEnterPressed", function(...)
-            whisperFrame:ClearFocus()
-            self:saveWhisperList()
-        end)
-        whisperFrame:SetScript("OnEnter", function(...)
-            GameTooltip:SetOwner(whisperFrame, "ANCHOR_BOTTOM");
-            GameTooltip:SetText("Separate names of people you want to whisper to with spaces.")
-            GameTooltip:ClearAllPoints()
-            GameTooltip:Show()
-        end)
-        whisperFrame:SetScript("OnLeave", function()
-            GameTooltip:Hide()
-        end)
-    end
+        },
+        greenColorSlider = {
+            type = "range",
+            name = "Green",
+            min = 0,
+            max = 255,
+            step = 1,
+            get = function(_)
+                return tonumber("0x" .. localAddon.db.profile.color:sub(7, 8))
+            end,
+            set = function(_, value)
+                local rgb = {
+                    { color = "Red", value = localAddon.db.profile.color:sub(5, 6) },
+                    { color = "Green", value = localAddon.db.profile.color:sub(7, 8) },
+                    { color = "Blue", value = localAddon.db.profile.color:sub(9, 10) }
+                }
+                rgbValue = localAddon:convertRGBDecimalToRGBHex(value)
+                localAddon.db.profile.color = "|cff" .. rgb[1].value .. rgbValue .. rgb[3].value
+                localAddon:setPanelTexts()
+            end
+        },
+        blueColorSlider = {
+            type = "range",
+            name = "Blue",
+            min = 0,
+            max = 255,
+            step = 1,
+            get = function(_)
+                return tonumber("0x" .. localAddon.db.profile.color:sub(9, 10))
+            end,
+            set = function(_, value)
+                local rgb = {
+                    { color = "Red", value = localAddon.db.profile.color:sub(5, 6) },
+                    { color = "Green", value = localAddon.db.profile.color:sub(7, 8) },
+                    { color = "Blue", value = localAddon.db.profile.color:sub(9, 10) }
+                }
+                rgbValue = localAddon:convertRGBDecimalToRGBHex(value)
+                localAddon.db.profile.color = "|cff" .. rgb[1].value .. rgb[2].value .. rgbValue
+                localAddon:setPanelTexts()
+            end
+        }
+    },
+}
+local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables
+    name = "replacedByColorString",
+    type = "group",
+    args = {
+        sayCheckbox = {
+            type = "toggle",
+            name = "Say",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Say
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Say = value
+            end
+        },
+        yellCheckbox = {
+            type = "toggle",
+            name = "Yell",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Yell
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Yell = value
+            end
+        },
+        printCheckbox = {
+            type = "toggle",
+            name = "Print",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Print
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Print = value
+            end
+        },
+        printChannelInput = {
+            type = "input",
+            name = "",
+            desc = "Define Channel Frame you want SvensBamAddon to print to",
+            get = function(_)
+                return localAddon.db.profile.chatFrameName
+            end,
+            set = function(_, value)
+                localAddon.db.profile.chatFrameName = value
+                localAddon:setIndexOfChatFrame(localAddon.db.profile.chatFrameName)
+            end
+        },
+        guildCheckbox = {
+            type = "toggle",
+            name = "Guild",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Guild
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Guild = value
+            end
+        },
+        raidCheckbox = {
+            type = "toggle",
+            name = "Raid",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Raid
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Raid = value
+            end
+        },
+        emoteCheckbox = {
+            type = "toggle",
+            name = "Emote",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Emote
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Emote = value
+            end
+        },
+        partyCheckbox = {
+            type = "toggle",
+            name = "Party",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Party
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Party = value
+            end
+        },
+        officerCheckbox = {
+            type = "toggle",
+            name = "Officer",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Officer
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Officer = value
+            end
+        },
+        raidWarningCheckbox = {
+            type = "toggle",
+            name = "Raid Warning",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Raid_Warning
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Raid_Warning = value
+            end
+        },
+        battlegroundCheckbox = {
+            type = "toggle",
+            name = "Battleground",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Battleground
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Battleground = value
+            end
+        },
+        whisperCheckbox = {
+            type = "toggle",
+            name = "Whisper",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Whisper
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Whisper = value
+            end
+        },
+        whisperListInput = {
+            type = "input",
+            name = "",
+            desc = "Separate names of people you want to whisper to with spaces.",
+            get = function(_)
+                local listAsString = ""
+                for _, v in pairs(localAddon.db.profile.whisperList) do
+                    listAsString = listAsString .. " " .. v
+                end
+                return listAsString
+            end,
+            set = function(_, value)
+                localAddon.db.profile.whisperList = {}
+                for arg in string.gmatch(value, "%S+") do
+                    table.insert(localAddon.db.profile.whisperList, arg)
+                end
+            end
+        },
 
-    -- Create Edit Box for Damage Soundfile and reset button
-    if (channelList[i] == "Sound DMG") then
-        local soundfileDamageFrameXOffset = 50
-        local soundfileDamageFrameHeight = 32
-        local soundfileDamageFrameWidth = 400
-        soundfileDamageFrame = self:createEditBox("SoundfileDamage", SvensBamAddonChannelOptions.panel, soundfileDamageFrameHeight, soundfileDamageFrameWidth)
-        soundfileDamageFrame:SetPoint("TOP", soundfileDamageFrameXOffset, yOffset)
-
-        soundfileDamageFrame:Insert(self.db.profile.soundfileDamage)
-
-        soundfileDamageFrame:SetCursorPosition(0)
-
-        soundfileDamageFrame:SetScript("OnEscapePressed", function(...)
-            soundfileDamageFrame:ClearFocus()
-            soundfileDamageFrame:SetText("")
-            soundfileDamageFrame:Insert(self.db.profile.soundfileDamage)
-        end)
-        soundfileDamageFrame:SetScript("OnEnterPressed", function(...)
-            soundfileDamageFrame:ClearFocus()
-            self:saveSoundfileDamage()
-        end)
-        soundfileDamageFrame:SetScript("OnEnter", function(...)
-            GameTooltip:SetOwner(soundfileDamageFrame, "ANCHOR_BOTTOM");
-            GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\n"
+        soundDamageCheckbox = {
+            type = "toggle",
+            name = "Sound DMG",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Sound_damage
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Sound_damage = value
+            end
+        },
+        soundDamageFileInput = {
+            type = "input",
+            name = "",
+            desc = "Specify sound file path, beginning from your WoW _classic_ folder.\n"
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
-                    .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.")
-            GameTooltip:ClearAllPoints()
-            GameTooltip:Show()
-        end)
-        soundfileDamageFrame:SetScript("OnLeave", function()
-            GameTooltip:Hide()
-        end)
-        local resetSoundfileButtonWidth = 56
-        self:createResetSoundfileDamageButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileDamageFrameWidth / 2 + soundfileDamageFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileDamageFrameHeight)
-    end
-
-    -- Create Edit Box for Heal Soundfile and reset button
-    if (channelList[i] == "Sound Heal") then
-        local soundfileHealFrameXOffset = 50
-        local soundfileHealFrameHeight = 32
-        local soundfileHealFrameWidth = 400
-        soundfileHealFrame = self:createEditBox("SoundfileHeal", SvensBamAddonChannelOptions.panel, soundfileHealFrameHeight, soundfileHealFrameWidth)
-        soundfileHealFrame:SetPoint("TOP", soundfileHealFrameXOffset, yOffset)
-
-        soundfileHealFrame:Insert(self.db.profile.soundfileHeal)
-
-        soundfileHealFrame:SetCursorPosition(0)
-
-        soundfileHealFrame:SetScript("OnEscapePressed", function(...)
-            soundfileHealFrame:ClearFocus()
-            soundfileHealFrame:SetText("")
-            soundfileHealFrame:Insert(self.db.profile.soundfileHeal)
-        end)
-        soundfileHealFrame:SetScript("OnEnterPressed", function(...)
-            soundfileHealFrame:ClearFocus()
-            self:saveSoundfileHeal()
-        end)
-        soundfileHealFrame:SetScript("OnEnter", function(...)
-            GameTooltip:SetOwner(soundfileHealFrame, "ANCHOR_BOTTOM");
-            GameTooltip:SetText("Specify sound file path, beginning from your WoW _classic_ folder.\n"
+                    .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
+            get = function(_)
+                return localAddon.db.profile.soundfileDamage
+            end,
+            set = function(_, value)
+                localAddon.db.profile.soundfileDamage = value
+            end
+        },
+        soundHealCheckbox = {
+            type = "toggle",
+            name = "Sound Heal",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Sound_heal
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Sound_heal = value
+            end
+        },
+        soundHealFileInput = {
+            type = "input",
+            name = "",
+            desc = "Specify sound file path, beginning from your WoW _classic_ folder.\n"
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
-                    .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.")
-            GameTooltip:ClearAllPoints()
-            GameTooltip:Show()
-        end)
-        soundfileHealFrame:SetScript("OnLeave", function()
-            GameTooltip:Hide()
-        end)
-        local resetSoundfileButtonWidth = 56
-        self:createResetSoundfileHealButton(SvensBamAddonChannelOptions.panel, resetSoundfileButtonWidth, soundfileHealFrameWidth / 2 + soundfileHealFrameXOffset + resetSoundfileButtonWidth / 2, yOffset, soundfileHealFrameHeight)
-    end
+                    .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
+            get = function(_)
+                return localAddon.db.profile.soundfileHeal
+            end,
+            set = function(_, value)
+                localAddon.db.profile.soundfileHeal = value
+            end
+        },
+        trainEmoteCheckbox = {
+            type = "toggle",
+            name = "Do Train Emote",
+            get = function(_)
+                return localAddon.db.profile.outputChannelList.Train_emote
+            end,
+            set = function(_, value)
+                localAddon.db.profile.outputChannelList.Train_emote = value
+            end
+        },
 
-    -- Create Edit Box for Print
-    if (channelList[i] == "Print") then
-        chatChannelFrame = self:createEditBox("ChatFrame", SvensBamAddonChannelOptions.panel, 32, 400)
-        chatChannelFrame:SetPoint("TOP", 50, -24 * y)
-        chatChannelFrame:Insert(self.db.profile.chatFrameName)
-        chatChannelFrame:SetCursorPosition(0)
 
-        chatChannelFrame:SetScript("OnEscapePressed", function(...)
-            chatChannelFrame:ClearFocus()
-            chatChannelFrame:SetText("")
-            chatChannelFrame:Insert(self.db.profile.Settings.chatFrameName)
-        end)
-        chatChannelFrame:SetScript("OnEnterPressed", function(...)
-            chatChannelFrame:ClearFocus()
-            self:saveChatFrame()
-        end)
-        chatChannelFrame:SetScript("OnEnter", function(...)
-            GameTooltip:SetOwner(chatChannelFrame, "ANCHOR_BOTTOM");
-            GameTooltip:SetText("Define Channel Frame you want SvensBamAddon to print to")
-            GameTooltip:ClearAllPoints()
-            GameTooltip:Show()
-        end)
-        chatChannelFrame:SetScript("OnLeave", function()
-            GameTooltip:Hide()
-        end)
-    end
-end
+    }
+}
 
-function localAddon:createResetSoundfileDamageButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
-    local resetSoundfileButtonHeight = 24
-    resetChannelListButton = CreateFrame("Button", "ResetSoundfileDamage", parentFrame, "UIPanelButtonTemplate");
-    resetChannelListButton:ClearAllPoints()
-    resetChannelListButton:SetPoint("TOP", x, y - (soundfileDamageFrameHeight - resetSoundfileButtonHeight) / 2)
-    resetChannelListButton:SetSize(resetSoundfileButtonWidth, resetSoundfileButtonHeight)
-    resetChannelListButton:SetText("Reset")
-    resetChannelListButton:SetScript("OnClick", function(...)
-        self.db.profile.soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
-        soundfileDamageFrame:SetText(self.db.profile.soundfileDamage)
-    end)
-end
+function localAddon:loadAddon()
+    self.db = AceDatabase:New("SvensBamAddonDB", defaults, "char")
+    AceConfig:RegisterOptionsTable("SvensBamAddon_MainOptions", mainOptions)
+    AceConfig:RegisterOptionsTable("SvensBamAddon_GeneralOptions", generalOptions)
+    AceConfig:RegisterOptionsTable("SvensBamAddon_ChannelOptions", channelOptions)
+    self.mainOptionsFrame = AceConfigDialog:AddToBlizOptions("SvensBamAddon_MainOptions", "Svens Bam Addon")   -- https://www.wowace.com/projects/ace3/pages/api/ace-config-dialog-3-0
+    AceConfigDialog:AddToBlizOptions("SvensBamAddon_GeneralOptions", "General options", "Svens Bam Addon")
+    AceConfigDialog:AddToBlizOptions("SvensBamAddon_ChannelOptions", "Channel options", "Svens Bam Addon")
 
-function localAddon:createResetSoundfileHealButton(parentFrame, resetSoundfileButtonWidth, x, y, soundfileDamageFrameHeight)
-    local resetSoundfileButtonHeight = 24
-    resetChannelListButton = CreateFrame("Button", "ResetSoundfileHeal", parentFrame, "UIPanelButtonTemplate");
-    resetChannelListButton:ClearAllPoints()
-    resetChannelListButton:SetPoint("TOP", x, y - (soundfileDamageFrameHeight - resetSoundfileButtonHeight) / 2)
-    resetChannelListButton:SetSize(resetSoundfileButtonWidth, resetSoundfileButtonHeight)
-    resetChannelListButton:SetText("Reset")
-    resetChannelListButton:SetScript("OnClick", function(...)
-        self.db.profile.soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg"
-        soundfileHealFrame:SetText(self.db.profile.soundfileHeal)
-    end)
-end
+    self:setPanelTexts()
 
-function localAddon:createResetChannelListButton(parentFrame, channelList, channelButtonList)
-    resetChannelListButton = CreateFrame("Button", "ResetButtonChannels", parentFrame, "UIPanelButtonTemplate");
-    resetChannelListButton:ClearAllPoints()
-    resetChannelListButton:SetPoint("TOPLEFT", 32, ((#channelList) + 1) * -24 - 8)
-    resetChannelListButtonText = "Clear Channel List (May fix bugs after updating)"
-    resetChannelListButton:SetSize(resetChannelListButtonText:len() * 7, 32)
-    resetChannelListButton:SetText(resetChannelListButtonText)
-    resetChannelListButton:SetScript("OnClick", function(...)
-        for i = 1, #channelButtonList do
-            channelButtonList[i]:SetChecked(false)
-        end
-        self.db.profile.outputChannelList = {}
-    end)
-end
-
-function localAddon:createColorSlider(i, panel, rgb, yOffSet)
-    local slider = CreateFrame("Slider", "ColorSlider" .. i, panel, "OptionsSliderTemplate")
-    slider:ClearAllPoints()
-    slider:SetPoint("TOPLEFT", 32, -16 * 2 * (i - 1) + yOffSet)
-    slider:SetSize(256, 16)
-    slider:SetMinMaxValues(0, 255)
-    slider:SetValueStep(1)
-    _G[slider:GetName() .. "Low"]:SetText("|c00ffcc00Min:|r 0")
-    _G[slider:GetName() .. "High"]:SetText("|c00ffcc00Max:|r 255")
-    slider:SetScript("OnValueChanged", function()
-        local value = floor(slider:GetValue())
-        _G[slider:GetName() .. "Text"]:SetText("|c00ffcc00" .. rgb[i].color .. "|r " .. value)
-        _G[slider:GetName() .. "Text"]:SetFont(GameFontNormal:GetFont(), 14, "NONE")
-        rgb[i].value = self:convertRGBDecimalToRGBHex(value)
-        self.db.profile.color = "|cff" .. rgb[1].value .. rgb[2].value .. rgb[3].value
-        self:setPanelTexts()
-    end)
-    slider:SetValue(tonumber("0x" .. rgb[i].value))
-
-end
-
-function localAddon:saveWhisperList()
-    self.db.profile.whisperList = {}
-    for arg in string.gmatch(whisperFrame:GetText(), "%S+") do
-        table.insert(self.db.profile.whisperList, arg)
-    end
-end
-
-function localAddon:saveSoundfileDamage()
-    self.db.profile.soundfileDamage = soundfileDamageFrame:GetText()
-end
-
-function localAddon:saveSoundfileHeal()
-    self.db.profile.soundfileHeal = soundfileHealFrame:GetText()
-end
-
-function localAddon:saveDamageOutputList()
-    self.db.profile.outputDamageMessage = outputDamageMessageEditBox:GetText()
-end
-
-function localAddon:saveHealOutputList()
-    self.db.profile.outputHealMessage = outputHealMessageEditBox:GetText()
-end
-
-function localAddon:saveThreshold()
-    self.db.profile.threshold = thresholdEditBox:GetNumber()
-end
-
-function localAddon:saveChatFrame()
-    local channelToSave = chatChannelFrame:GetText()
-    local channelFound = self:setIndexOfChatFrame(channelToSave)
-    if (channelFound == true) then
-        self.db.profile.chatFrameName = channelToSave
+    icon:Register("SvensBamAddon_dataObject", MinimapIcon, self.db.profile.minimap)
+    if (not self.db.profile.minimap.hide) then
+        self:Print("Show Minimap")
+        icon:Show("SvensBamAddon_dataObject")
     else
-        print(self.db.profile.color .. "Cannot save channel " .. channelToSave .. ". Channel not found!")
+        self:Print("Hide Minimap")
+        icon:Hide("SvensBamAddon_dataObject")
     end
-end
 
-function localAddon:saveAllStringInputs()
-    self:saveDamageOutputList()
-    self:saveHealOutputList()
-    self:saveSoundfileDamage()
-    self:saveSoundfileHeal()
-    self:saveThreshold()
-    self:saveWhisperList()
-    self:saveChatFrame()
-end
-
-function localAddon:createEditBox(name, parentFrame, height, width)
-    local eb = CreateFrame("EditBox", name, parentFrame, "InputBoxTemplate")
-    eb:ClearAllPoints()
-    eb:SetAutoFocus(false)
-    eb:SetHeight(height)
-    eb:SetWidth(width)
-    eb:SetFontObject("ChatFontNormal")
-    return eb
 end
 
 function localAddon:convertRGBDecimalToRGBHex(decimal)
@@ -684,74 +540,21 @@ function localAddon:convertRGBDecimalToRGBHex(decimal)
     return result
 end
 
-function localAddon:createMinimapButton()
-
-    --Dropdown Menu
-    local lib = LibStub("LibDropDownMenu");
-    local menuFrame = lib.Create_DropDownMenu("MyAddOn_DropDownMenu");
-    -- instead of template UIDropDownMenuTemplate
-    local menuList = {
-        { text = "Crit List options", isNotRadio = true, notCheckable = true, hasArrow = true,
-          menuList = {
-              { text = "List crits", isNotRadio = true, notCheckable = true,
-                func = function()
-                    self:listCrits();
-                end
-              },
-
-              { text = "Report crits", isNotRadio = true, notCheckable = true,
-                func = function()
-                    self:reportCrits();
-                end
-              },
-
-              { text = "Clear crits", isNotRadio = true, notCheckable = true,
-                func = function()
-                    self:clearCritList();
-                end
-              },
-          }
-        },
-
-        { text = "Open config", isNotRadio = true, notCheckable = true,
-          func = function()
-              InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
-              InterfaceOptionsFrame_OpenToCategory(SvensBamAddonConfig.panel)
-          end
-        },
-        { text = "Close menu", isNotRadio = true, notCheckable = true },
-    };
-
-    --Minimap Icon
-    MinimapIcon = SvensBamAddon_ldb:NewDataObject("SvensBamAddon_dataObject", { -- TODO Try to set local
-        type = "data source",
-        label = "SvensBamAddon_MinimapButton",
-        text = "SvensBamAddon Minimap Icon",
-        icon = "Interface\\AddOns\\SvensBamAddon\\textures\\Bam_Icon",
-        OnClick = function(_, button)
-            if button == "LeftButton" or button == "RightButton" then
-                lib.EasyMenu(menuList, menuFrame, "LibDBIcon10_SvensBamAddon_dataObject", 0, 0, "MENU");
-            end
-        end,
-    })
-    local icon = LibStub("LibDBIcon-1.0")
-    icon:Register("SvensBamAddon_dataObject", MinimapIcon, SvensBamAddon_MinimapSettings)
-end
-
 function localAddon:setPanelTexts()
-    GeneralOptionsDescription:SetText(self.db.profile.color .. "Choose sub menu to change options.\n\n\nCommand line options:\n\n"
+    mainOptions.name = self.db.profile.color .. "Choose sub menu to change options."
+    mainOptions.args.mainDescription.name = self.db.profile.color .. "Command line options:\n\n"
             .. "/bam list: lists highest crits of each spell.\n"
             .. "/bam report: report highest crits of each spell to channel list.\n"
-            .. "/bam clear: delete list of highest crits.\n/bam config: Opens this config page.")
-    OutputDamageMessageDescription:SetText(self.db.profile.color .. "Output Message Damage")
-    OutputHealMessageDescription:SetText(self.db.profile.color .. "Output Message Heal")
-    EventTypeDescription:SetText(self.db.profile.color .. "Event Types to Trigger")
-    SvensBamAddonGeneralOptions.panel.title:SetText(self.db.profile.color .. "Change color of Font")
-    FontColorDescription:SetText(self.db.profile.color .. "Change color of Font")
-    OutputChannelDescription:SetText(self.db.profile.color .. "Output Channel")
-    ThresholdDescription:SetText(self.db.profile.color .. "Least amount of damage/heal to trigger bam:")
-    TriggerOptionsDescription:SetText(self.db.profile.color .. "Trigger options:")
-    OtherOptionsDescription:SetText(self.db.profile.color .. "Other options:")
+            .. "/bam clear: delete list of highest crits.\n/bam config: Opens this config page."
+
+    generalOptions.args.outputMessageDamageOption.name = self.db.profile.color .. "Output Message Damage"
+    generalOptions.args.outputMessageHealOption.name = self.db.profile.color .. "Output Message Heal"
+    generalOptions.args.thresholdOption.name = self.db.profile.color .. "Least amount of damage/heal to trigger bam"
+    generalOptions.args.eventTypesToTriggerDescription.name = self.db.profile.color .. "Event Types to Trigger"
+    generalOptions.args.triggerOptionsDescription.name = self.db.profile.color .. "Trigger Options"
+    generalOptions.args.otherOptionsDescription.name = self.db.profile.color .. "Other Options"
+    generalOptions.args.fontColorDescription.name = self.db.profile.color .. "Change Color of Font"
+    channelOptions.name = self.db.profile.color .. "Output Channel"
 end
 
 -- Taken and edited from BamModRevived on WoWInterface. Thanks to Sylen
