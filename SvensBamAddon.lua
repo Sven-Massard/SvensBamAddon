@@ -19,7 +19,7 @@ end
 
 function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
     local name, _ = UnitName("player");
-    local eventType, _, _, eventSource, _, _, _, enemyName = select(2, CombatLogGetCurrentEventInfo())
+    local eventType, _, _, eventSource, _, _, _, targetName = select(2, CombatLogGetCurrentEventInfo())
     if not (eventSource == name) then
         do
             return
@@ -53,17 +53,15 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
         spellLink = GetSpellLink(spellId)
     end
 
-    if (amount ~= nil and amount < tonumber(self.db.char.threshold) and tonumber(self.db.char.threshold ~= 0)) then
+    if (amount ~= nil and tonumber(amount) < self.db.char.threshold and self.db.char.threshold ~= 0) then
         do
             return
         end
     end
-
     --for i = 1, #self.db.char.eventList do
     for _, event in pairs(self.db.char.eventList) do
         if (eventType == event.eventType and event.boolean) then
-
-            newMaxCrit = self:addToCritList(spellName, amount);
+            newMaxCrit = self:addToCritList(spellName, amount, targetName);
             if (self.db.char.onlyOnNewMaxCrits and not newMaxCrit) then
                 do
                     return
@@ -74,9 +72,9 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                 spellName = spellLink
             end
             if eventType == "SPELL_HEAL" then
-                output = self.db.char.outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+                output = self.db.char.outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", targetName)
             else
-                output = self.db.char.outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+                output = self.db.char.outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", targetName)
             end
             for k, v in pairs(self.db.char.outputChannelList) do
                 if v == true then

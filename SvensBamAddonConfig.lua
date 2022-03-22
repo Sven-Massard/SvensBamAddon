@@ -136,10 +136,10 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "will be replaced",
             desc = "Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything.",
             get = function(_)
-                return localAddon.db.char.threshold
+                return tostring(localAddon.db.char.threshold)
             end,
             set = function(_, value)
-                localAddon.db.char.threshold = value
+                localAddon.db.char.threshold = tonumber(value)
             end
         },
         eventTypesToTriggerDescription = {
