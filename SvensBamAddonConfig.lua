@@ -310,8 +310,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
     type = "group",
     args = {
         sayCheckbox = {
+            order = 0,
             type = "toggle",
             name = "Say",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Say
             end,
@@ -319,9 +321,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Say = value
             end
         },
+        placeholderDescription1 = {
+            order = 1,
+            type = "description",
+            name = ""
+        },
         yellCheckbox = {
+            order = 2,
             type = "toggle",
             name = "Yell",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Yell
             end,
@@ -329,9 +338,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Yell = value
             end
         },
+        placeholderDescription2 = {
+            order = 3,
+            type = "description",
+            name = ""
+        },
         printCheckbox = {
+            order = 4,
             type = "toggle",
             name = "Print",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Print
             end,
@@ -340,8 +356,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         printChannelInput = {
+            order = 6,
             type = "input",
             name = "",
+            width = double,
             desc = "Define Channel Frame you want SvensBamAddon to print to",
             get = function(_)
                 return localAddon.db.profile.chatFrameName
@@ -355,9 +373,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 end
             end
         },
+        placeholderDescription4 = {
+            order = 7,
+            type = "description",
+            name = ""
+        },
         guildCheckbox = {
+            order = 8,
             type = "toggle",
             name = "Guild",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Guild
             end,
@@ -365,9 +390,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Guild = value
             end
         },
+        placeholderDescription5 = {
+            order = 9,
+            type = "description",
+            name = ""
+        },
         raidCheckbox = {
+            order = 10,
             type = "toggle",
             name = "Raid",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Raid
             end,
@@ -375,9 +407,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Raid = value
             end
         },
+        placeholderDescription6 = {
+            order = 11,
+            type = "description",
+            name = ""
+        },
         emoteCheckbox = {
+            order = 12,
             type = "toggle",
             name = "Emote",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Emote
             end,
@@ -385,9 +424,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Emote = value
             end
         },
+        placeholderDescription7 = {
+            order = 13,
+            type = "description",
+            name = ""
+        },
         partyCheckbox = {
+            order = 14,
             type = "toggle",
             name = "Party",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Party
             end,
@@ -395,9 +441,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Party = value
             end
         },
+        placeholderDescription8 = {
+            order = 15,
+            type = "description",
+            name = ""
+        },
         officerCheckbox = {
+            order = 16,
             type = "toggle",
             name = "Officer",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Officer
             end,
@@ -405,9 +458,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Officer = value
             end
         },
+        placeholderDescription9 = {
+            order = 17,
+            type = "description",
+            name = ""
+        },
         raidWarningCheckbox = {
+            order = 18,
             type = "toggle",
             name = "Raid Warning",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Raid_Warning
             end,
@@ -415,9 +475,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Raid_Warning = value
             end
         },
+        placeholderDescription10 = {
+            order = 19,
+            type = "description",
+            name = ""
+        },
         battlegroundCheckbox = {
+            order = 20,
             type = "toggle",
             name = "Battleground",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Battleground
             end,
@@ -425,9 +492,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.outputChannelList.Battleground = value
             end
         },
+        placeholderDescription11 = {
+            order = 21,
+            type = "description",
+            name = ""
+        },
         whisperCheckbox = {
+            order = 22,
             type = "toggle",
             name = "Whisper",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Whisper
             end,
@@ -436,8 +510,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         whisperListInput = {
+            order = 23,
             type = "input",
             name = "",
+            width = "double",
             desc = "Separate names of people you want to whisper to with spaces.",
             get = function(_)
                 local listAsString = ""
@@ -453,10 +529,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 end
             end
         },
-
+        placeholderDescription12 = {
+            order = 24,
+            type = "description",
+            name = ""
+        },
         soundDamageCheckbox = {
+            order = 25,
             type = "toggle",
             name = "Sound DMG",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Sound_damage
             end,
@@ -465,8 +547,11 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         soundDamageFileInput = {
+            order = 26,
             type = "input",
             name = "",
+            width = "double",
+            multiline = true,
             desc = "Specify sound file path, beginning from your WoW _classic_ folder.\n"
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
@@ -477,9 +562,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.soundFilesDamage = value
             end
         },
+        placeholderDescription13 = {
+            order = 27,
+            type = "description",
+            name = ""
+        },
         soundHealCheckbox = {
+            order = 28,
             type = "toggle",
             name = "Sound Heal",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Sound_heal
             end,
@@ -488,8 +580,11 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         soundHealFileInput = {
+            order = 29,
             type = "input",
+            width = "double",
             name = "",
+            multiline = true,
             desc = "Specify sound file path, beginning from your WoW _classic_ folder.\n"
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
@@ -500,9 +595,16 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.profile.soundFilesHeal = value
             end
         },
+        placeholderDescription14 = {
+            order = 30,
+            type = "description",
+            name = ""
+        },
         trainEmoteCheckbox = {
+            order = 31,
             type = "toggle",
             name = "Do Train Emote",
+            descStyle = "",
             get = function(_)
                 return localAddon.db.profile.outputChannelList.Train_emote
             end,
