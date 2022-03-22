@@ -85,7 +85,7 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                     elseif (k == "Say" or k == "Yell") then
                         local inInstance, _ = IsInInstance()
                         if (inInstance) then
-                            SendChatMessage(output, v);
+                            SendChatMessage(output, k);
                         end
                     elseif (k == "Battleground") then
                         local _, instanceType = IsInInstance()
@@ -94,28 +94,33 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                         end
                     elseif (k == "Officer") then
                         if (CanEditOfficerNote()) then
-                            SendChatMessage(output, v)
+                            SendChatMessage(output, k)
                         end
                     elseif (k == "Raid" or v == "Raid_Warning") then
                         if IsInRaid() then
-                            SendChatMessage(output, v);
+                            SendChatMessage(output, k);
                         end
                     elseif (k == "Party") then
                         if IsInGroup() then
-                            SendChatMessage(output, v);
+                            SendChatMessage(output, k);
                         end
                     elseif (k == "Whisper") then
                         for _, w in pairs(self.db.profile.whisperList) do
                             SendChatMessage(output, "WHISPER", "COMMON", w)
                         end
-                    elseif (k == "Sound_damage" and eventType ~= "SPELL_HEAL") then
-                        self:playRandomSoundFromList(self.db.profile.soundFilesDamage)
-                    elseif (k == "Sound_heal" and eventType == "SPELL_HEAL") then
-                        self:playRandomSoundFromList(self.db.profile.soundFilesHeal)
-                    elseif (k == "Do Train Emote") then
+                    elseif (k == "Sound_damage") then
+                        if (eventType == "SPELL_DAMAGE") then
+                            self:playRandomSoundFromList(self.db.profile.soundFilesDamage)
+                        end
+                    elseif (k == "Sound_heal") then
+                        if (eventType == "SPELL_HEAL") then
+                            self:playRandomSoundFromList(self.db.profile.soundFilesHeal)
+                        end
+                    elseif (k == "Train_emote") then
                         DoEmote("train");
                     else
-                        SendChatMessage(output, v);
+                        self:Print("Key: " .. k)
+                        SendChatMessage(output, k);
                     end
                 end
             end
