@@ -37,7 +37,7 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
         spellId, spellName, _, amount, _, _, _, _, _, critical, _, _ = select(12, CombatLogGetCurrentEventInfo())
     elseif (eventType == "SWING_DAMAGE") then
         amount, _, _, _, _, _, critical, _, _, isOffHand = select(12, CombatLogGetCurrentEventInfo())
-        if (self.db.profile.separateOffhandCrits and isOffHand) then
+        if (self.db.char.separateOffhandCrits and isOffHand) then
             spellName = "Off-Hand Autohit"
         else
             spellName = "Autohit"
@@ -49,22 +49,22 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
             return
         end
     end
-    if (spellId and self.db.profile.postLinkOfSpell) then
+    if (spellId and self.db.char.postLinkOfSpell) then
         spellLink = GetSpellLink(spellId)
     end
 
-    if (amount ~= nil and amount < tonumber(self.db.profile.threshold) and tonumber(self.db.profile.threshold ~= 0)) then
+    if (amount ~= nil and amount < tonumber(self.db.char.threshold) and tonumber(self.db.char.threshold ~= 0)) then
         do
             return
         end
     end
 
-    --for i = 1, #self.db.profile.eventList do
-    for _, event in pairs(self.db.profile.eventList) do
+    --for i = 1, #self.db.char.eventList do
+    for _, event in pairs(self.db.char.eventList) do
         if (eventType == event.eventType and event.boolean) then
 
             newMaxCrit = self:addToCritList(spellName, amount);
-            if (self.db.profile.onlyOnNewMaxCrits and not newMaxCrit) then
+            if (self.db.char.onlyOnNewMaxCrits and not newMaxCrit) then
                 do
                     return
                 end
@@ -74,14 +74,14 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                 spellName = spellLink
             end
             if eventType == "SPELL_HEAL" then
-                output = self.db.profile.outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+                output = self.db.char.outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
             else
-                output = self.db.profile.outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
+                output = self.db.char.outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", enemyName)
             end
-            for k, v in pairs(self.db.profile.outputChannelList) do
+            for k, v in pairs(self.db.char.outputChannelList) do
                 if v == true then
                     if k == "Print" then
-                        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. output)
+                        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. output)
                     elseif (k == "Say" or k == "Yell") then
                         local inInstance, _ = IsInInstance()
                         if (inInstance) then
@@ -105,16 +105,16 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                             SendChatMessage(output, k);
                         end
                     elseif (k == "Whisper") then
-                        for _, w in pairs(self.db.profile.whisperList) do
+                        for _, w in pairs(self.db.char.whisperList) do
                             SendChatMessage(output, "WHISPER", "COMMON", w)
                         end
                     elseif (k == "Sound_damage") then
                         if (eventType == "SPELL_DAMAGE") then
-                            self:playRandomSoundFromList(self.db.profile.soundFilesDamage)
+                            self:playRandomSoundFromList(self.db.char.soundFilesDamage)
                         end
                     elseif (k == "Sound_heal") then
                         if (eventType == "SPELL_HEAL") then
-                            self:playRandomSoundFromList(self.db.profile.soundFilesHeal)
+                            self:playRandomSoundFromList(self.db.char.soundFilesHeal)
                         end
                     elseif (k == "Train_emote") then
                         DoEmote("train");
@@ -161,7 +161,7 @@ function SBM_suppressWhisperMessage(_, _, msg, _, ...)
     end
 
     local isNameInWhisperList = false
-    for _, w in pairs(localAddon.db.profile.whisperList) do
+    for _, w in pairs(localAddon.db.char.whisperList) do
         if (w == name) then
             isNameInWhisperList = true
         end
@@ -172,11 +172,11 @@ end
 
 function localAddon:SlashCommand(msg)
     if (msg == "help" or msg == "") then
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Possible parameters:")
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "list: lists highest crits of each spell")
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "report: report highest crits of each spell to channel list")
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "clear: delete list of highest crits")
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "config: Opens config page")
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Possible parameters:")
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "list: lists highest crits of each spell")
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "report: report highest crits of each spell to channel list")
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "clear: delete list of highest crits")
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "config: Opens config page")
     elseif (msg == "list") then
         self:listCrits();
     elseif (msg == "report") then
@@ -188,9 +188,9 @@ function localAddon:SlashCommand(msg)
         InterfaceOptionsFrame_OpenToCategory(self.mainOptionsFrame)
         InterfaceOptionsFrame_OpenToCategory(self.mainOptionsFrame)
     elseif (msg == "test") then
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Function not implemented")
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Function not implemented")
     else
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Bam Error: Unknown command")
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Bam Error: Unknown command")
     end
 end
 

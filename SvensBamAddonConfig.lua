@@ -53,7 +53,7 @@ local MinimapIcon = SvensBamAddon_ldb:NewDataObject("SvensBamAddon_dataObject", 
 })
 
 local defaults = {
-    profile = {
+    char = {
         outputDamageMessage = "BAM! SN SD!",
         outputHealMessage = "BAM! SN SD!",
         outputChannelList = {
@@ -114,10 +114,10 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "will be replaced",
             desc = "Insert your damage message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
             get = function(_)
-                return localAddon.db.profile.outputDamageMessage
+                return localAddon.db.char.outputDamageMessage
             end,
             set = function(_, value)
-                localAddon.db.profile.outputDamageMessage = value
+                localAddon.db.char.outputDamageMessage = value
             end
         },
         outputMessageHealOption = {
@@ -125,10 +125,10 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "will be replaced",
             desc = "Insert your heal message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
             get = function(_)
-                return localAddon.db.profile.outputHealMessage
+                return localAddon.db.char.outputHealMessage
             end,
             set = function(_, value)
-                localAddon.db.profile.outputHealMessage = value
+                localAddon.db.char.outputHealMessage = value
             end
         },
         thresholdOption = {
@@ -136,10 +136,10 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "will be replaced",
             desc = "Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything.",
             get = function(_)
-                return localAddon.db.profile.threshold
+                return localAddon.db.char.threshold
             end,
             set = function(_, value)
-                localAddon.db.profile.threshold = value
+                localAddon.db.char.threshold = value
             end
         },
         eventTypesToTriggerDescription = {
@@ -150,40 +150,40 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "toggle",
             name = "Spell Damage",
             get = function(_)
-                return localAddon.db.profile.eventList.spellDamage.boolean
+                return localAddon.db.char.eventList.spellDamage.boolean
             end,
             set = function(_, value)
-                localAddon.db.profile.eventList.spellDamage.boolean = value
+                localAddon.db.char.eventList.spellDamage.boolean = value
             end
         },
         healCheckbox = {
             type = "toggle",
             name = "Heal",
             get = function(_)
-                return localAddon.db.profile.eventList.heal.boolean
+                return localAddon.db.char.eventList.heal.boolean
             end,
             set = function(_, value)
-                localAddon.db.profile.eventList.heal.boolean = value
+                localAddon.db.char.eventList.heal.boolean = value
             end
         },
         rangedCheckbox = {
             type = "toggle",
             name = "Ranged",
             get = function(_)
-                return localAddon.db.profile.eventList.ranged.boolean
+                return localAddon.db.char.eventList.ranged.boolean
             end,
             set = function(_, value)
-                localAddon.db.profile.eventList.ranged.boolean = value
+                localAddon.db.char.eventList.ranged.boolean = value
             end
         },
         meleeCheckbox = {
             type = "toggle",
             name = "Melee Autohit",
             get = function(_)
-                return localAddon.db.profile.eventList.melee.boolean
+                return localAddon.db.char.eventList.melee.boolean
             end,
             set = function(_, value)
-                localAddon.db.profile.eventList.melee.boolean = value
+                localAddon.db.char.eventList.melee.boolean = value
             end
         },
         triggerOptionsDescription = {
@@ -194,20 +194,20 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "toggle",
             name = "Only trigger on new crit record",
             get = function(_)
-                return localAddon.db.profile.onlyOnNewMaxCrits
+                return localAddon.db.char.onlyOnNewMaxCrits
             end,
             set = function(_, value)
-                localAddon.db.profile.onlyOnNewMaxCrits = value
+                localAddon.db.char.onlyOnNewMaxCrits = value
             end
         },
         showOffHandCritsSeparately = {
             type = "toggle",
             name = "Show off-hand crits separately",
             get = function(_)
-                return localAddon.db.profile.showOffHandCritsSeparately
+                return localAddon.db.char.showOffHandCritsSeparately
             end,
             set = function(_, value)
-                localAddon.db.profile.showOffHandCritsSeparately = value
+                localAddon.db.char.showOffHandCritsSeparately = value
             end
         },
         otherOptionsDescription = {
@@ -218,10 +218,10 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "toggle",
             name = "Show Minimap Button",
             get = function(_)
-                return not localAddon.db.profile.minimap.hide
+                return not localAddon.db.char.minimap.hide
             end,
             set = function(_, value)
-                localAddon.db.profile.minimap.hide = not value
+                localAddon.db.char.minimap.hide = not value
                 if (value) then
                     icon:Show("SvensBamAddon_dataObject")
                 else
@@ -233,10 +233,10 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "toggle",
             name = "Show off-hand crits separately",
             get = function(_)
-                return localAddon.db.profile.postLinkOfSpell
+                return localAddon.db.char.postLinkOfSpell
             end,
             set = function(_, value)
-                localAddon.db.profile.postLinkOfSpell = value
+                localAddon.db.char.postLinkOfSpell = value
             end
         },
         fontColorDescription = {
@@ -250,16 +250,16 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             max = 255,
             step = 1,
             get = function(_)
-                return tonumber("0x" .. localAddon.db.profile.color:sub(5, 6))
+                return tonumber("0x" .. localAddon.db.char.color:sub(5, 6))
             end,
             set = function(_, value)
                 local rgb = {
-                    { color = "Red", value = localAddon.db.profile.color:sub(5, 6) },
-                    { color = "Green", value = localAddon.db.profile.color:sub(7, 8) },
-                    { color = "Blue", value = localAddon.db.profile.color:sub(9, 10) }
+                    { color = "Red", value = localAddon.db.char.color:sub(5, 6) },
+                    { color = "Green", value = localAddon.db.char.color:sub(7, 8) },
+                    { color = "Blue", value = localAddon.db.char.color:sub(9, 10) }
                 }
                 rgbValue = localAddon:convertRGBDecimalToRGBHex(value)
-                localAddon.db.profile.color = "|cff" .. rgbValue .. rgb[2].value .. rgb[3].value
+                localAddon.db.char.color = "|cff" .. rgbValue .. rgb[2].value .. rgb[3].value
                 localAddon:setPanelTexts()
             end
         },
@@ -270,16 +270,16 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             max = 255,
             step = 1,
             get = function(_)
-                return tonumber("0x" .. localAddon.db.profile.color:sub(7, 8))
+                return tonumber("0x" .. localAddon.db.char.color:sub(7, 8))
             end,
             set = function(_, value)
                 local rgb = {
-                    { color = "Red", value = localAddon.db.profile.color:sub(5, 6) },
-                    { color = "Green", value = localAddon.db.profile.color:sub(7, 8) },
-                    { color = "Blue", value = localAddon.db.profile.color:sub(9, 10) }
+                    { color = "Red", value = localAddon.db.char.color:sub(5, 6) },
+                    { color = "Green", value = localAddon.db.char.color:sub(7, 8) },
+                    { color = "Blue", value = localAddon.db.char.color:sub(9, 10) }
                 }
                 rgbValue = localAddon:convertRGBDecimalToRGBHex(value)
-                localAddon.db.profile.color = "|cff" .. rgb[1].value .. rgbValue .. rgb[3].value
+                localAddon.db.char.color = "|cff" .. rgb[1].value .. rgbValue .. rgb[3].value
                 localAddon:setPanelTexts()
             end
         },
@@ -290,16 +290,16 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             max = 255,
             step = 1,
             get = function(_)
-                return tonumber("0x" .. localAddon.db.profile.color:sub(9, 10))
+                return tonumber("0x" .. localAddon.db.char.color:sub(9, 10))
             end,
             set = function(_, value)
                 local rgb = {
-                    { color = "Red", value = localAddon.db.profile.color:sub(5, 6) },
-                    { color = "Green", value = localAddon.db.profile.color:sub(7, 8) },
-                    { color = "Blue", value = localAddon.db.profile.color:sub(9, 10) }
+                    { color = "Red", value = localAddon.db.char.color:sub(5, 6) },
+                    { color = "Green", value = localAddon.db.char.color:sub(7, 8) },
+                    { color = "Blue", value = localAddon.db.char.color:sub(9, 10) }
                 }
                 rgbValue = localAddon:convertRGBDecimalToRGBHex(value)
-                localAddon.db.profile.color = "|cff" .. rgb[1].value .. rgb[2].value .. rgbValue
+                localAddon.db.char.color = "|cff" .. rgb[1].value .. rgb[2].value .. rgbValue
                 localAddon:setPanelTexts()
             end
         }
@@ -315,10 +315,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Say",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Say
+                return localAddon.db.char.outputChannelList.Say
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Say = value
+                localAddon.db.char.outputChannelList.Say = value
             end
         },
         placeholderDescription1 = {
@@ -332,10 +332,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Yell",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Yell
+                return localAddon.db.char.outputChannelList.Yell
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Yell = value
+                localAddon.db.char.outputChannelList.Yell = value
             end
         },
         placeholderDescription2 = {
@@ -349,10 +349,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Print",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Print
+                return localAddon.db.char.outputChannelList.Print
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Print = value
+                localAddon.db.char.outputChannelList.Print = value
             end
         },
         printChannelInput = {
@@ -362,14 +362,14 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             width = double,
             desc = "Define Channel Frame you want SvensBamAddon to print to",
             get = function(_)
-                return localAddon.db.profile.chatFrameName
+                return localAddon.db.char.chatFrameName
             end,
             set = function(_, value)
                 local isValidName = localAddon:setIndexOfChatFrame(value)
                 if (isValidName) then
-                    localAddon.db.profile.chatFrameName = value
+                    localAddon.db.char.chatFrameName = value
                 else
-                    _G["ChatFrame" .. localAddon.db.profile.chatFrameIndex]:AddMessage(localAddon.db.profile.color .. "Could not find channel name!")
+                    _G["ChatFrame" .. localAddon.db.char.chatFrameIndex]:AddMessage(localAddon.db.char.color .. "Could not find channel name!")
                 end
             end
         },
@@ -384,10 +384,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Guild",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Guild
+                return localAddon.db.char.outputChannelList.Guild
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Guild = value
+                localAddon.db.char.outputChannelList.Guild = value
             end
         },
         placeholderDescription5 = {
@@ -401,10 +401,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Raid",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Raid
+                return localAddon.db.char.outputChannelList.Raid
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Raid = value
+                localAddon.db.char.outputChannelList.Raid = value
             end
         },
         placeholderDescription6 = {
@@ -418,10 +418,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Emote",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Emote
+                return localAddon.db.char.outputChannelList.Emote
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Emote = value
+                localAddon.db.char.outputChannelList.Emote = value
             end
         },
         placeholderDescription7 = {
@@ -435,10 +435,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Party",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Party
+                return localAddon.db.char.outputChannelList.Party
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Party = value
+                localAddon.db.char.outputChannelList.Party = value
             end
         },
         placeholderDescription8 = {
@@ -452,10 +452,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Officer",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Officer
+                return localAddon.db.char.outputChannelList.Officer
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Officer = value
+                localAddon.db.char.outputChannelList.Officer = value
             end
         },
         placeholderDescription9 = {
@@ -469,10 +469,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Raid Warning",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Raid_Warning
+                return localAddon.db.char.outputChannelList.Raid_Warning
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Raid_Warning = value
+                localAddon.db.char.outputChannelList.Raid_Warning = value
             end
         },
         placeholderDescription10 = {
@@ -486,10 +486,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Battleground",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Battleground
+                return localAddon.db.char.outputChannelList.Battleground
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Battleground = value
+                localAddon.db.char.outputChannelList.Battleground = value
             end
         },
         placeholderDescription11 = {
@@ -503,10 +503,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Whisper",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Whisper
+                return localAddon.db.char.outputChannelList.Whisper
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Whisper = value
+                localAddon.db.char.outputChannelList.Whisper = value
             end
         },
         whisperListInput = {
@@ -517,15 +517,15 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             desc = "Separate names of people you want to whisper to with spaces.",
             get = function(_)
                 local listAsString = ""
-                for _, v in pairs(localAddon.db.profile.whisperList) do
+                for _, v in pairs(localAddon.db.char.whisperList) do
                     listAsString = listAsString .. " " .. v
                 end
                 return listAsString
             end,
             set = function(_, value)
-                localAddon.db.profile.whisperList = {}
+                localAddon.db.char.whisperList = {}
                 for arg in string.gmatch(value, "%S+") do
-                    table.insert(localAddon.db.profile.whisperList, arg)
+                    table.insert(localAddon.db.char.whisperList, arg)
                 end
             end
         },
@@ -540,10 +540,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Sound DMG",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Sound_damage
+                return localAddon.db.char.outputChannelList.Sound_damage
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Sound_damage = value
+                localAddon.db.char.outputChannelList.Sound_damage = value
             end
         },
         soundDamageFileInput = {
@@ -556,10 +556,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
             get = function(_)
-                return localAddon.db.profile.soundFilesDamage
+                return localAddon.db.char.soundFilesDamage
             end,
             set = function(_, value)
-                localAddon.db.profile.soundFilesDamage = value
+                localAddon.db.char.soundFilesDamage = value
             end
         },
         placeholderDescription13 = {
@@ -573,10 +573,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Sound Heal",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Sound_heal
+                return localAddon.db.char.outputChannelList.Sound_heal
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Sound_heal = value
+                localAddon.db.char.outputChannelList.Sound_heal = value
             end
         },
         soundHealFileInput = {
@@ -589,10 +589,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
             get = function(_)
-                return localAddon.db.profile.soundFilesHeal
+                return localAddon.db.char.soundFilesHeal
             end,
             set = function(_, value)
-                localAddon.db.profile.soundFilesHeal = value
+                localAddon.db.char.soundFilesHeal = value
             end
         },
         placeholderDescription14 = {
@@ -606,10 +606,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Do Train Emote",
             descStyle = "",
             get = function(_)
-                return localAddon.db.profile.outputChannelList.Train_emote
+                return localAddon.db.char.outputChannelList.Train_emote
             end,
             set = function(_, value)
-                localAddon.db.profile.outputChannelList.Train_emote = value
+                localAddon.db.char.outputChannelList.Train_emote = value
             end
         },
 
@@ -618,7 +618,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
 }
 
 function localAddon:loadAddon()
-    self.db = AceDatabase:New("SvensBamAddonDB", defaults, "char")
+    self.db = AceDatabase:New("SvensBamAddonDB", defaults)
     AceConfig:RegisterOptionsTable("SvensBamAddon_MainOptions", mainOptions)
     AceConfig:RegisterOptionsTable("SvensBamAddon_GeneralOptions", generalOptions)
     AceConfig:RegisterOptionsTable("SvensBamAddon_ChannelOptions", channelOptions)
@@ -628,8 +628,8 @@ function localAddon:loadAddon()
 
     self:setPanelTexts()
 
-    icon:Register("SvensBamAddon_dataObject", MinimapIcon, self.db.profile.minimap)
-    if (not self.db.profile.minimap.hide) then
+    icon:Register("SvensBamAddon_dataObject", MinimapIcon, self.db.char.minimap)
+    if (not self.db.char.minimap.hide) then
         icon:Show("SvensBamAddon_dataObject")
     else
         icon:Hide("SvensBamAddon_dataObject")
@@ -645,20 +645,20 @@ function localAddon:convertRGBDecimalToRGBHex(decimal)
 end
 
 function localAddon:setPanelTexts()
-    mainOptions.name = self.db.profile.color .. "Choose sub menu to change options."
-    mainOptions.args.mainDescription.name = self.db.profile.color .. "Command line options:\n\n"
+    mainOptions.name = self.db.char.color .. "Choose sub menu to change options."
+    mainOptions.args.mainDescription.name = self.db.char.color .. "Command line options:\n\n"
             .. "/bam list: lists highest crits of each spell.\n"
             .. "/bam report: report highest crits of each spell to channel list.\n"
             .. "/bam clear: delete list of highest crits.\n/bam config: Opens this config page."
 
-    generalOptions.args.outputMessageDamageOption.name = self.db.profile.color .. "Output Message Damage"
-    generalOptions.args.outputMessageHealOption.name = self.db.profile.color .. "Output Message Heal"
-    generalOptions.args.thresholdOption.name = self.db.profile.color .. "Least amount of damage/heal to trigger bam"
-    generalOptions.args.eventTypesToTriggerDescription.name = self.db.profile.color .. "Event Types to Trigger"
-    generalOptions.args.triggerOptionsDescription.name = self.db.profile.color .. "Trigger Options"
-    generalOptions.args.otherOptionsDescription.name = self.db.profile.color .. "Other Options"
-    generalOptions.args.fontColorDescription.name = self.db.profile.color .. "Change Color of Font"
-    channelOptions.name = self.db.profile.color .. "Output Channel"
+    generalOptions.args.outputMessageDamageOption.name = self.db.char.color .. "Output Message Damage"
+    generalOptions.args.outputMessageHealOption.name = self.db.char.color .. "Output Message Heal"
+    generalOptions.args.thresholdOption.name = self.db.char.color .. "Least amount of damage/heal to trigger bam"
+    generalOptions.args.eventTypesToTriggerDescription.name = self.db.char.color .. "Event Types to Trigger"
+    generalOptions.args.triggerOptionsDescription.name = self.db.char.color .. "Trigger Options"
+    generalOptions.args.otherOptionsDescription.name = self.db.char.color .. "Other Options"
+    generalOptions.args.fontColorDescription.name = self.db.char.color .. "Change Color of Font"
+    channelOptions.name = self.db.char.color .. "Output Channel"
 end
 
 -- Taken and edited from BamModRevived on WoWInterface. Thanks to Sylen
@@ -667,7 +667,7 @@ function localAddon:setIndexOfChatFrame(chatFrameName)
     for i = 1, NUM_CHAT_WINDOWS do
         local chatWindowName = GetChatWindowInfo(i)
         if chatWindowName == chatFrameName then
-            self.db.profile.chatFrameIndex = i
+            self.db.char.chatFrameIndex = i
             return true
         end
     end

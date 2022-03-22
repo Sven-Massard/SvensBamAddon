@@ -2,13 +2,13 @@
 
 function localAddon:addToCritList(spellName, val)
     -- list was empty until now
-    if (self.db.profile.critList.spellName == nil and self.db.profile.critList.value == nil) then
+    if (self.db.char.critList.spellName == nil and self.db.char.critList.value == nil) then
 
-        self.db.profile.critList = self:newNode(spellName, val)
+        self.db.char.critList = self:newNode(spellName, val)
         return true
 
     else
-        local it = self.db.profile.critList
+        local it = self.db.char.critList
         --compare with first value
         if (it.spellName == spellName) then
             -- Maybe later refactor to avoid duplicate code
@@ -51,34 +51,34 @@ function localAddon:newNode(spellName, val)
 end
 
 function localAddon:clearCritList()
-    self.db.profile.critList = {};
-    _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Crit list cleared");
+    self.db.char.critList = {};
+    _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Crit list cleared");
 end
 
 function localAddon:listCrits()
-    if not (self.db.profile.critList.value == nil) then
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Highest crits:");
-        local it = self.db.profile.critList
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. it.spellName .. ": " .. it.value)
+    if not (self.db.char.critList.value == nil) then
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Highest crits:");
+        local it = self.db.char.critList
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. it.spellName .. ": " .. it.value)
         while not (it.nextNode == nil) do
             it = it.nextNode
-            _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. it.spellName .. ": " .. it.value)
+            _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. it.spellName .. ": " .. it.value)
         end
     else
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "No crits recorded");
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "No crits recorded");
     end
 end
 
 function localAddon:reportCrits()
-    if not (self.db.profile.critList.value == nil) then
-        for k, v in pairs(self.db.profile.outputChannelList) do
+    if not (self.db.char.critList.value == nil) then
+        for k, v in pairs(self.db.char.outputChannelList) do
             if (k == "Print" and v == true) then
-                _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "Highest crits:");
-                local it = self.db.profile.critList
-                _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. it.spellName .. ": " .. it.value)
+                _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Highest crits:");
+                local it = self.db.char.critList
+                _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. it.spellName .. ": " .. it.value)
                 while not (it.nextNode == nil) do
                     it = it.nextNode
-                    _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. it.spellName .. ": " .. it.value)
+                    _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. it.spellName .. ": " .. it.value)
                 end
             elseif (k == "Officer" and v == true) then
                 if (CanEditOfficerNote()) then
@@ -98,9 +98,9 @@ function localAddon:reportCrits()
                     self:ReportToChannel(k);
                 end
             elseif (k == "Whisper" and v == true) then
-                for _, w in pairs(self.db.profile.whisperList) do
+                for _, w in pairs(self.db.char.whisperList) do
                     SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
-                    local it = self.db.profile.critList
+                    local it = self.db.char.critList
                     SendChatMessage(it.spellName .. ": " .. it.value, "WHISPER", "COMMON", w)
                     while not (it.nextNode == nil) do
                         it = it.nextNode
@@ -114,13 +114,13 @@ function localAddon:reportCrits()
             end
         end
     else
-        _G["ChatFrame" .. self.db.profile.chatFrameIndex]:AddMessage(self.db.profile.color .. "No crits recorded");
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "No crits recorded");
     end
 end
 
 function localAddon:ReportToChannel(channelName)
     SendChatMessage("Highest crits:", channelName)
-    local it = self.db.profile.critList
+    local it = self.db.char.critList
     SendChatMessage(it.spellName .. ": " .. it.value, channelName)
     while not (it.nextNode == nil) do
         it = it.nextNode
