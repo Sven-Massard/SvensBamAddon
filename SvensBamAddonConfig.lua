@@ -85,8 +85,8 @@ local defaults = {
         whisperList = {},
         chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME,
         chatFrameIndex = 1,
-        soundfileDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg",
-        soundfileHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg",
+        soundFilesDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg",
+        soundFilesHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg",
         color = "|cff" .. "94" .. "CF" .. "00",
         minimap = { hide = false, },
         critList = {}
@@ -471,10 +471,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
             get = function(_)
-                return localAddon.db.profile.soundfileDamage
+                return localAddon.db.profile.soundFilesDamage
             end,
             set = function(_, value)
-                localAddon.db.profile.soundfileDamage = value
+                localAddon.db.profile.soundFilesDamage = value
             end
         },
         soundHealCheckbox = {
@@ -494,10 +494,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
             get = function(_)
-                return localAddon.db.profile.soundfileHeal
+                return localAddon.db.profile.soundFilesHeal
             end,
             set = function(_, value)
-                localAddon.db.profile.soundfileHeal = value
+                localAddon.db.profile.soundFilesHeal = value
             end
         },
         trainEmoteCheckbox = {

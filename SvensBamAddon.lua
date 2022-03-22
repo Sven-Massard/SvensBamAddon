@@ -108,10 +108,10 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                         for _, w in pairs(self.db.profile.whisperList) do
                             SendChatMessage(output, "WHISPER", "COMMON", w)
                         end
-                    elseif (k == "Sound_damage") then
-                        self:playRandomSoundFromList(self.db.profile.soundfileDamage)
-                    elseif (k == "Sound_heal") then
-                        self:playRandomSoundFromList(self.db.profile.soundfileHeal)
+                    elseif (k == "Sound_damage" and eventType ~= "SPELL_HEAL") then
+                        self:playRandomSoundFromList(self.db.profile.soundFilesDamage)
+                    elseif (k == "Sound_heal" and eventType == "SPELL_HEAL") then
+                        self:playRandomSoundFromList(self.db.profile.soundFilesHeal)
                     elseif (k == "Do Train Emote") then
                         DoEmote("train");
                     else
@@ -125,7 +125,7 @@ end
 
 function localAddon:playRandomSoundFromList(listOfFilesAsString)
     local soundFileList = {}
-    for arg in string.gmatch(listOfFilesAsString, "%S+") do
+    for arg in string.gmatch(listOfFilesAsString, "[^\r\n]+") do
         table.insert(soundFileList, arg)
     end
     local randomIndex = random(1, #soundFileList)
