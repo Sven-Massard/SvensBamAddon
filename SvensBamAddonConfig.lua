@@ -70,11 +70,11 @@ local defaults = {
             Whisper = false,
             Sound_damage = true,
             Sound_heal = true,
-            Train_emote = true,
+            Train_emote = false,
         },
         onlyOnNewMaxCrits = false,
         separateOffhandCrits = false,
-        damageThreshold = 0,
+        threshold = 0,
         postLinkOfSpell = false,
         eventList = {
             spellDamage = { name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true },
