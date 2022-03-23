@@ -85,8 +85,8 @@ local defaults = {
         whisperList = {},
         chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME,
         chatFrameIndex = 1,
-        soundFilesDamage = "Interface\\AddOns\\SvensBamAddon\\bam.ogg",
-        soundFilesHeal = "Interface\\AddOns\\SvensBamAddon\\bam.ogg",
+        soundFilesDamage = { "Interface\\AddOns\\SvensBamAddon\\bam.ogg" },
+        soundFilesHeal = { "Interface\\AddOns\\SvensBamAddon\\bam.ogg" },
         color = "|cff" .. "94" .. "CF" .. "00",
         minimap = { hide = false, },
         critList = {}
@@ -626,7 +626,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             get = function(_)
                 local listAsString = ""
                 for _, v in pairs(localAddon.db.char.whisperList) do
-                    listAsString = listAsString .. " " .. v
+                    listAsString = listAsString .. v .. "\n"
                 end
                 return listAsString
             end,
@@ -664,10 +664,17 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths. Put each file on a new line. Bam Addon will then play a random sound of that list.",
             get = function(_)
-                return localAddon.db.char.soundFilesDamage
+                local listAsString = ""
+                for _, v in pairs(localAddon.db.char.soundFilesDamage) do
+                    listAsString = listAsString .. v .. "\n"
+                end
+                return listAsString
             end,
             set = function(_, value)
-                localAddon.db.char.soundFilesDamage = value
+                localAddon.db.char.soundFilesDamage = {}
+                for arg in string.gmatch(value, "[^\r\n]+") do
+                    table.insert(localAddon.db.char.soundFilesDamage, arg)
+                end
             end
         },
         placeholderDescription13 = {
@@ -697,10 +704,17 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths. Put each file on a new line. Bam Addon will then play a random sound of that list.",
             get = function(_)
-                return localAddon.db.char.soundFilesHeal
+                local listAsString = ""
+                for _, v in pairs(localAddon.db.char.soundFilesHeal) do
+                    listAsString = listAsString .. v .. "\n"
+                end
+                return listAsString
             end,
             set = function(_, value)
-                localAddon.db.char.soundFilesHeal = value
+                localAddon.db.char.soundFilesHeal = {}
+                for arg in string.gmatch(value, "[^\r\n]+") do
+                    table.insert(localAddon.db.char.soundFilesHeal, arg)
+                end
             end
         },
         placeholderDescription14 = {

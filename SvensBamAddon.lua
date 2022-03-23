@@ -126,13 +126,9 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
     end
 end
 
-function localAddon:playRandomSoundFromList(listOfFilesAsString)
-    local soundFileList = {}
-    for arg in string.gmatch(listOfFilesAsString, "[^\r\n]+") do
-        table.insert(soundFileList, arg)
-    end
-    local randomIndex = random(1, #soundFileList)
-    PlaySoundFile(soundFileList[randomIndex])
+function localAddon:playRandomSoundFromList(tableWithSoundFileNames)
+    local randomIndex = random(1, #tableWithSoundFileNames)
+    PlaySoundFile(tableWithSoundFileNames[randomIndex])
 end
 
 -- Function for event filter for CHAT_MSG_SYSTEM to suppress message of player on whisper list being offline when being whispered to
