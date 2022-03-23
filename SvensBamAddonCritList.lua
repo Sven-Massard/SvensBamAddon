@@ -38,7 +38,11 @@ function localAddon:listCrits()
     else
         _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Highest crits:");
         for _, v in ipairs(critList) do
-            _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. v.spellName .. " " .. v.amount .. " to " .. v.target)
+            local target = v.target
+            if target == nil then
+                target = "unknown"
+            end
+            _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. v.spellName .. " " .. v.amount .. " to " .. target)
         end
     end
 end
@@ -52,7 +56,11 @@ function localAddon:reportCrits()
             if (k == "Print" and v == true) then
                 _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Highest crits:");
                 for _, c in ipairs(critList) do
-                    _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. c.spellName .. " " .. c.amount .. " to " .. c.target)
+                    local target = c.target
+                    if target == nil then
+                        target = "unknown"
+                    end
+                    _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. c.spellName .. " " .. c.amount .. " to " .. target)
                 end
             elseif (k == "Officer" and v == true) then
                 if (CanEditOfficerNote()) then
@@ -75,7 +83,11 @@ function localAddon:reportCrits()
                 for _, w in pairs(self.db.char.whisperList) do
                     SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
                     for _, c in ipairs(critList) do
-                        SendChatMessage(c.spellName .. " " .. c.amount .. " to " .. c.target, "WHISPER", "COMMON", w)
+                        local target = c.target
+                        if target == nil then
+                            target = "unknown"
+                        end
+                        SendChatMessage(c.spellName .. " " .. c.amount .. " to " .. target, "WHISPER", "COMMON", w)
                     end
                 end
             elseif (k == "Sound_damage" or k == "Sound_heal" or k == "Train_emote") then
@@ -91,7 +103,11 @@ function localAddon:ReportToChannel(channelName)
     local critList = self.db.char.critList
     SendChatMessage("Highest crits:", channelName)
     for _, v in ipairs(critList) do
-        SendChatMessage(v.spellName .. " " .. v.amount .. " to " .. v.target, channelName)
+        local target = v.target
+        if target == nil then
+            target = "unknown"
+        end
+        SendChatMessage(v.spellName .. " " .. v.amount .. " to " .. target, channelName)
 
     end
 
