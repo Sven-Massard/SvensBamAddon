@@ -110,7 +110,9 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
     type = "group",
     args = {
         outputMessageDamageOption = {
+            order = 1,
             type = "input",
+            width = "full",
             name = "will be replaced",
             desc = "Insert your damage message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
             get = function(_)
@@ -120,8 +122,15 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.outputDamageMessage = value
             end
         },
+        placeholderDescription1 = {
+            order = 2,
+            type = "description",
+            name = ""
+        },
         outputMessageHealOption = {
+            order = 3,
             type = "input",
+            width = "full",
             name = "will be replaced",
             desc = "Insert your heal message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
             get = function(_)
@@ -131,8 +140,15 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.outputHealMessage = value
             end
         },
+        placeholderDescription2 = {
+            order = 4,
+            type = "description",
+            name = ""
+        },
         thresholdOption = {
+            order = 5,
             type = "input",
+            width = "full",
             name = "will be replaced",
             desc = "Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything.",
             get = function(_)
@@ -142,11 +158,24 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.threshold = tonumber(value)
             end
         },
+        placeholderDescription3 = {
+            order = 6,
+            type = "description",
+            name = ""
+        },
         eventTypesToTriggerDescription = {
+            order = 7,
             type = "description",
             name = "will be replaced"
         },
+        placeholderDescription4 = {
+            order = 8,
+            type = "description",
+            name = ""
+        },
         SpellDamageCheckbox = {
+            order = 10,
+            width = "double",
             type = "toggle",
             name = "Spell Damage",
             get = function(_)
@@ -156,7 +185,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.eventList.spellDamage.boolean = value
             end
         },
+        placeholderDescription5 = {
+            order = 11,
+            type = "description",
+            name = ""
+        },
         healCheckbox = {
+            order = 12,
             type = "toggle",
             name = "Heal",
             get = function(_)
@@ -166,7 +201,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.eventList.heal.boolean = value
             end
         },
+        placeholderDescription6 = {
+            order = 13,
+            type = "description",
+            name = ""
+        },
         rangedCheckbox = {
+            order = 14,
             type = "toggle",
             name = "Ranged",
             get = function(_)
@@ -176,7 +217,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.eventList.ranged.boolean = value
             end
         },
+        placeholderDescription7 = {
+            order = 15,
+            type = "description",
+            name = ""
+        },
         meleeCheckbox = {
+            order = 16,
             type = "toggle",
             name = "Melee Autohit",
             get = function(_)
@@ -186,11 +233,23 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.eventList.melee.boolean = value
             end
         },
+        placeholderDescription8 = {
+            order = 17,
+            type = "description",
+            name = ""
+        },
         triggerOptionsDescription = {
+            order = 18,
             type = "description",
             name = "will be replaced"
         },
+        placeholderDescription9 = {
+            order = 19,
+            type = "description",
+            name = ""
+        },
         triggerOnCritRecordCheckbox = {
+            order = 20,
             type = "toggle",
             name = "Only trigger on new crit record",
             get = function(_)
@@ -200,7 +259,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.onlyOnNewMaxCrits = value
             end
         },
+        placeholderDescription10 = {
+            order = 21,
+            type = "description",
+            name = ""
+        },
         showOffHandCritsSeparately = {
+            order = 22,
             type = "toggle",
             name = "Show off-hand crits separately",
             get = function(_)
@@ -210,11 +275,23 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.showOffHandCritsSeparately = value
             end
         },
+        placeholderDescription11 = {
+            order = 23,
+            type = "description",
+            name = ""
+        },
         otherOptionsDescription = {
+            order = 24,
             type = "description",
             name = "will be replaced"
         },
+        placeholderDescription12 = {
+            order = 25,
+            type = "description",
+            name = ""
+        },
         miniMapButtonCheckbox = {
+            order = 26,
             type = "toggle",
             name = "Show Minimap Button",
             get = function(_)
@@ -229,7 +306,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 end
             end
         },
+        placeholderDescription13 = {
+            order = 27,
+            type = "description",
+            name = ""
+        },
         postLinkOfSpellCheckbox = {
+            order = 28,
             type = "toggle",
             name = "Show off-hand crits separately",
             get = function(_)
@@ -239,11 +322,23 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.postLinkOfSpell = value
             end
         },
+        placeholderDescription14 = {
+            order = 29,
+            type = "description",
+            name = ""
+        },
         fontColorDescription = {
+            order = 30,
             type = "description",
             name = "will be replaced"
         },
+        placeholderDescription15 = {
+            order = 31,
+            type = "description",
+            name = ""
+        },
         redColorSlider = {
+            order = 32,
             type = "range",
             name = "Red",
             min = 0,
@@ -263,7 +358,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon:setPanelTexts()
             end
         },
+        placeholderDescription16 = {
+            order = 33,
+            type = "description",
+            name = ""
+        },
         greenColorSlider = {
+            order = 34,
             type = "range",
             name = "Green",
             min = 0,
@@ -283,7 +384,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon:setPanelTexts()
             end
         },
+        placeholderDescription17 = {
+            order = 35,
+            type = "description",
+            name = ""
+        },
         blueColorSlider = {
+            order = 36,
             type = "range",
             name = "Blue",
             min = 0,
@@ -358,8 +465,8 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         printChannelInput = {
             order = 6,
             type = "input",
-            name = "",
-            width = double,
+            name = "Print to chat frame",
+            width = "double",
             desc = "Define Channel Frame you want SvensBamAddon to print to",
             get = function(_)
                 return localAddon.db.char.chatFrameName
@@ -512,9 +619,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         whisperListInput = {
             order = 23,
             type = "input",
-            name = "",
+            name = "Whisper list",
+            multiline = true,
             width = "double",
-            desc = "Separate names of people you want to whisper to with spaces.",
+            desc = "Put each name you want to whisper to on a new line.",
             get = function(_)
                 local listAsString = ""
                 for _, v in pairs(localAddon.db.char.whisperList) do
@@ -524,7 +632,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end,
             set = function(_, value)
                 localAddon.db.char.whisperList = {}
-                for arg in string.gmatch(value, "%S+") do
+                for arg in string.gmatch(value, "[^\r\n]+") do
                     table.insert(localAddon.db.char.whisperList, arg)
                 end
             end
@@ -549,12 +657,12 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         soundDamageFileInput = {
             order = 26,
             type = "input",
-            name = "",
+            name = "Sound file for damage to play",
             width = "double",
             multiline = true,
             desc = "Specify sound file path, beginning from your WoW _classic_ folder.\n"
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
-                    .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
+                    .. "You can enter multiple file paths. Put each file on a new line. Bam Addon will then play a random sound of that list.",
             get = function(_)
                 return localAddon.db.char.soundFilesDamage
             end,
@@ -583,11 +691,11 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             order = 29,
             type = "input",
             width = "double",
-            name = "",
+            name = "Sound file for heal to play",
             multiline = true,
             desc = "Specify sound file path, beginning from your WoW _classic_ folder.\n"
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
-                    .. "You can enter multiple file paths separated by spaces. Bam Addon will then play a random sound of that list.",
+                    .. "You can enter multiple file paths. Put each file on a new line. Bam Addon will then play a random sound of that list.",
             get = function(_)
                 return localAddon.db.char.soundFilesHeal
             end,
