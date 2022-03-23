@@ -54,8 +54,8 @@ local MinimapIcon = SvensBamAddon_ldb:NewDataObject("SvensBamAddon_dataObject", 
 
 local defaults = {
     char = {
-        outputDamageMessage = "BAM! SN SD!",
-        outputHealMessage = "BAM! SN SD!",
+        outputDamageMessage = "BAM! SN SD to TN!",
+        outputHealMessage = "BAM! SN SD to TN!",
         outputChannelList = {
             Say = false,
             Yell = false,
