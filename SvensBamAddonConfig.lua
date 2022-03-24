@@ -89,8 +89,8 @@ local defaults = {
         soundFilesHeal = { "Interface\\AddOns\\SvensBamAddon\\bam.ogg" },
         color = "|cff" .. "94" .. "CF" .. "00",
         minimap = { hide = false, },
-        critList = {}
-
+        critList = {},
+        isMigratedToVersion10 = false
     }
 }
 
@@ -757,6 +757,10 @@ function localAddon:loadAddon()
         icon:Hide("SvensBamAddon_dataObject")
     end
 
+    if (not self.db.char.isMigratedToVersion10) then
+        self:Print(tostring(self.db.char.isMigratedToVersion10))
+        self:migrateToVersion10()
+    end
 end
 
 function localAddon:convertRGBDecimalToRGBHex(decimal)
@@ -794,4 +798,172 @@ function localAddon:setIndexOfChatFrame(chatFrameName)
         end
     end
     return false
+end
+
+function localAddon:migrateToVersion10()
+    self:Print("Migrating database for Svens Bam Addon. You should see this message only once.")
+
+    -- migrate simple variables
+    if (SBM_outputDamageMessage ~= nil) then
+        self.db.char.outputDamageMessage = SBM_outputDamageMessage
+        SBM_outputDamageMessage = nil
+    end
+    if (SBM_outputHealMessage ~= nil) then
+        self.db.char.outputHealMessage = SBM_outputHealMessage
+        SBM_outputHealMessage = nil
+    end
+    if (SBM_whisperList ~= nil) then
+        self.db.char.whisperList = SBM_whisperList
+        SBM_whisperList = nil
+    end
+    if (SBM_color ~= nil) then
+        self.db.char.color = SBM_color
+        SBM_color = nil
+    end
+    if (SBM_threshold ~= nil) then
+        self.db.char.threshold = SBM_threshold
+        SBM_threshold = nil
+    end
+    if (SBM_onlyOnNewMaxCrits ~= nil) then
+        self.db.char.onlyOnNewMaxCrits = SBM_onlyOnNewMaxCrits
+        SBM_onlyOnNewMaxCrits = nil
+    end
+    if (SBM_separateOffhandCrits ~= nil) then
+        self.db.char.separateOffhandCrits = SBM_separateOffhandCrits
+        SBM_separateOffhandCrits = nil
+    end
+    if (SBM_MinimapSettings ~= nil and SBM_MinimapSettings.hide ~= nil) then
+        self.db.char.minimap.hide = SBM_MinimapSettings.hide
+        SBM_MinimapSettings = nil
+    end
+
+    self:Print("Successfully migrated simple settings")
+
+    -- SBM_Settings
+    if (SBM_Settings ~= nil) then
+        if (SBM_Settings.chatFrameName ~= nil) then
+            self.db.char.chatFrameName = SBM_Settings.chatFrameName
+        end
+        if (SBM_Settings.chatFrameIndex ~= nil) then
+            self.db.char.chatFrameIndex = SBM_Settings.chatFrameIndex
+        end
+        if (SBM_Settings.postLinkOfSpell ~= nil) then
+            self.db.char.postLinkOfSpell = SBM_Settings.postLinkOfSpell
+        end
+        SBM_Settings = nil
+    end
+
+    self:Print("Successfully migrated SBM settings")
+
+    -- migrate SBM_soundfileDamage
+    if (SBM_soundfileDamage ~= nil) then
+        for arg in string.gmatch(SBM_soundfileDamage, "%S+") do
+            table.insert(self.db.char.soundFilesDamage, arg)
+        end
+        SBM_soundfileDamage = nil
+    end
+
+    -- migrate SBM_soundfileHeal
+    if (SBM_soundfileHeal ~= nil) then
+        for arg in string.gmatch(SBM_soundfileHeal, "%S+") do
+            table.insert(self.db.char.soundFilesHeal, arg)
+        end
+        SBM_soundfileHeal = nil
+    end
+
+    self:Print("Successfully migrated sound files")
+
+    -- migrate eventList
+    local oldEventList = SBM_eventList
+    if (oldEventList ~= nil) then
+        local newEventList = self.db.char.eventList
+        for _, v in ipairs(oldEventList) do
+            if (v.name == "Spell Damage") then
+                newEventList.spellDamage.boolean = v.boolean
+            end
+            if (v.name == "Ranged") then
+                newEventList.ranged.boolean = v.boolean
+            end
+            if (v.name == "Melee Autohit") then
+                newEventList.melee.boolean = v.boolean
+            end
+            if (v.name == "Heal") then
+                newEventList.heal.boolean = v.boolean
+            end
+        end
+        SBM_eventList = nil
+    end
+
+    self:Print("Successfully migrated event list")
+
+    --migrate critList
+    local it = SBM_critList
+    if (it ~= nil) then
+        local newCritList = self.db.char.critList
+
+        while (it ~= nil)
+        do
+            local spellTable = { spellName = it.spellName, amount = it.value }
+            table.insert(newCritList, spellTable)
+            it = it.nextNode
+        end
+        SBM_critList = nil
+    end
+
+    self:Print("Successfully migrated crit list")
+
+    --migrate outputChannelList
+    local oldChannelList = SBM_outputChannelList
+    if (oldChannelList ~= nil) then
+        local newChannelList = self.db.char.outputChannelList
+        if (oldChannelList["Say"] ~= nil) then
+            newChannelList.Say = true;
+        end
+        if (oldChannelList["Yell"] ~= nil) then
+            newChannelList.Yell = true;
+        end
+        if (oldChannelList["Print"] ~= nil) then
+            newChannelList.Print = true;
+        end
+        if (oldChannelList["Guild"] ~= nil) then
+            newChannelList.Guild = true;
+        end
+        if (oldChannelList["Raid"] ~= nil) then
+            newChannelList.Raid = true;
+        end
+        if (oldChannelList["Emote"] ~= nil) then
+            newChannelList.Emote = true;
+        end
+        if (oldChannelList["Party"] ~= nil) then
+            newChannelList.Party = true;
+        end
+        if (oldChannelList["Officer"] ~= nil) then
+            newChannelList.Officer = true;
+        end
+        if (oldChannelList["Raid_Warning"] ~= nil) then
+            newChannelList.Raid_Warning = true;
+        end
+        if (oldChannelList["Battleground"] ~= nil) then
+            newChannelList.Battleground = true;
+        end
+        if (oldChannelList["Whisper"] ~= nil) then
+            newChannelList.Whisper = true;
+        end
+        if (oldChannelList["Sound DMG"] ~= nil) then
+            newChannelList.Sound_damage = true;
+        end
+        if (oldChannelList["Sound Heal"] ~= nil) then
+            newChannelList.Sound_heal = true;
+        end
+        if (oldChannelList["Do Train Emote"] ~= nil) then
+            newChannelList.Train_emote = true;
+        end
+        SBM_outputChannelList = nil
+    end
+
+    self:Print("Successfully migrated output channel list")
+
+    self.db.char.isMigratedToVersion10 = true
+    self:Print("Finished migrating database for Svens Bam Addon. You should see this message only once.")
+
 end
