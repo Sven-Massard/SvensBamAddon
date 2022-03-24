@@ -314,7 +314,7 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         postLinkOfSpellCheckbox = {
             order = 28,
             type = "toggle",
-            name = "Show off-hand crits separately",
+            name = "Post links of spells",
             get = function(_)
                 return localAddon.db.char.postLinkOfSpell
             end,
