@@ -117,7 +117,6 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                     elseif (k == "Train_emote") then
                         DoEmote("train");
                     else
-                        self:Print("Key: " .. k)
                         SendChatMessage(output, k);
                     end
                 end

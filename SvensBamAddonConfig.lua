@@ -758,7 +758,6 @@ function localAddon:loadAddon()
     end
 
     if (not self.db.char.isMigratedToVersion10) then
-        self:Print(tostring(self.db.char.isMigratedToVersion10))
         self:migrateToVersion10()
     end
 end
