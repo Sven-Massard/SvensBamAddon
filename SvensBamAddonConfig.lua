@@ -148,7 +148,7 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = ""
         },
         thresholdOption = {
-            order = 5,
+            order = 10,
             type = "input",
             width = "full",
             name = "will be replaced",
@@ -161,22 +161,22 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription3 = {
-            order = 6,
+            order = 11,
             type = "description",
             name = ""
         },
         eventTypesToTriggerDescription = {
-            order = 7,
+            order = 12,
             type = "description",
             name = "will be replaced"
         },
         placeholderDescription4 = {
-            order = 8,
+            order = 13,
             type = "description",
             name = ""
         },
         SpellDamageCheckbox = {
-            order = 10,
+            order = 20,
             width = "double",
             type = "toggle",
             name = "Spell Damage",
@@ -188,12 +188,12 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription5 = {
-            order = 11,
+            order = 21,
             type = "description",
             name = ""
         },
         healCheckbox = {
-            order = 12,
+            order = 22,
             type = "toggle",
             name = "Heal",
             get = function(_)
@@ -204,12 +204,12 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription6 = {
-            order = 13,
+            order = 23,
             type = "description",
             name = ""
         },
         rangedCheckbox = {
-            order = 14,
+            order = 24,
             type = "toggle",
             name = "Ranged",
             get = function(_)
@@ -220,12 +220,12 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription7 = {
-            order = 15,
+            order = 25,
             type = "description",
             name = ""
         },
         meleeCheckbox = {
-            order = 16,
+            order = 26,
             type = "toggle",
             name = "Melee Autohit",
             get = function(_)
@@ -236,22 +236,22 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription8 = {
-            order = 17,
+            order = 27,
             type = "description",
             name = ""
         },
         triggerOptionsDescription = {
-            order = 18,
+            order = 28,
             type = "description",
             name = "will be replaced"
         },
         placeholderDescription9 = {
-            order = 19,
+            order = 29,
             type = "description",
             name = ""
         },
         triggerOnCritRecordCheckbox = {
-            order = 20,
+            order = 40,
             type = "toggle",
             name = "Only trigger on new crit record",
             get = function(_)
@@ -262,12 +262,12 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription10 = {
-            order = 21,
+            order = 41,
             type = "description",
             name = ""
         },
         showOffHandCritsSeparately = {
-            order = 22,
+            order = 42,
             type = "toggle",
             name = "Show off-hand crits separately",
             get = function(_)
@@ -278,22 +278,22 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription11 = {
-            order = 23,
+            order = 43,
             type = "description",
             name = ""
         },
         otherOptionsDescription = {
-            order = 24,
+            order = 50,
             type = "description",
             name = "will be replaced"
         },
         placeholderDescription12 = {
-            order = 25,
+            order = 51,
             type = "description",
             name = ""
         },
         miniMapButtonCheckbox = {
-            order = 26,
+            order = 52,
             type = "toggle",
             name = "Show Minimap Button",
             get = function(_)
@@ -309,12 +309,12 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription13 = {
-            order = 27,
+            order = 53,
             type = "description",
             name = ""
         },
         postLinkOfSpellCheckbox = {
-            order = 28,
+            order = 54,
             type = "toggle",
             name = "Post links of spells",
             get = function(_)
@@ -330,17 +330,17 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = ""
         },
         fontColorDescription = {
-            order = 30,
+            order = 70,
             type = "description",
             name = "will be replaced"
         },
-        placeholderDescription15 = {
-            order = 31,
+        placeholderDescription71 = {
+            order = 71,
             type = "description",
             name = ""
         },
         redColorSlider = {
-            order = 32,
+            order = 72,
             type = "range",
             name = "Red",
             min = 0,
@@ -360,13 +360,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon:setPanelTexts()
             end
         },
-        placeholderDescription16 = {
-            order = 33,
+        placeholderDescription73 = {
+            order = 73,
             type = "description",
             name = ""
         },
         greenColorSlider = {
-            order = 34,
+            order = 74,
             type = "range",
             name = "Green",
             min = 0,
@@ -386,13 +386,13 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon:setPanelTexts()
             end
         },
-        placeholderDescription17 = {
-            order = 35,
+        placeholderDescription75 = {
+            order = 75,
             type = "description",
             name = ""
         },
         blueColorSlider = {
-            order = 36,
+            order = 76,
             type = "range",
             name = "Blue",
             min = 0,
@@ -621,7 +621,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         whisperListInput = {
             order = 23,
             type = "input",
-            name = "Whisper list",
+            name = "",
             multiline = true,
             width = "double",
             desc = "Put each name you want to whisper to on a new line.",
