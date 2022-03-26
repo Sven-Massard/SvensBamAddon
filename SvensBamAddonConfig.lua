@@ -112,8 +112,33 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
     name = "",
     type = "group",
     args = {
-        outputMessageDamageOption = {
+        chatFrameNameInput = {
             order = 1,
+            type = "input",
+            name = "to be replaced",
+            width = "full",
+            desc = "Define Channel Frame you want SvensBamAddon to print to",
+            get = function(_)
+                return localAddon.db.char.chatFrameName
+            end,
+            set = function(_, value)
+                local isValidName = localAddon:setIndexOfChatFrame(value)
+                if (isValidName) then
+                    localAddon.db.char.chatFrameName = value
+                else
+                    _G["ChatFrame" .. localAddon.db.char.chatFrameIndex]:AddMessage(localAddon.db.char.color .. "Could not find channel name!")
+                end
+            end
+        },
+
+        placeholderDescriptionOutputMessage = {
+            order = 2,
+            type = "description",
+            name = ""
+        },
+
+        outputMessageDamageOption = {
+            order = 3,
             type = "input",
             width = "full",
             name = "will be replaced",
@@ -126,12 +151,12 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription1 = {
-            order = 2,
+            order = 4,
             type = "description",
             name = ""
         },
         outputMessageHealOption = {
-            order = 3,
+            order = 5,
             type = "input",
             width = "full",
             name = "will be replaced",
@@ -144,7 +169,7 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription2 = {
-            order = 4,
+            order = 6,
             type = "description",
             name = ""
         },
@@ -490,24 +515,6 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end,
             set = function(_, value)
                 localAddon.db.char.outputChannelList.Print = value
-            end
-        },
-        printChannelInput = {
-            order = 6,
-            type = "input",
-            name = "Print to chat frame",
-            width = "double",
-            desc = "Define Channel Frame you want SvensBamAddon to print to",
-            get = function(_)
-                return localAddon.db.char.chatFrameName
-            end,
-            set = function(_, value)
-                local isValidName = localAddon:setIndexOfChatFrame(value)
-                if (isValidName) then
-                    localAddon.db.char.chatFrameName = value
-                else
-                    _G["ChatFrame" .. localAddon.db.char.chatFrameIndex]:AddMessage(localAddon.db.char.color .. "Could not find channel name!")
-                end
             end
         },
         placeholderDescription4 = {
@@ -868,6 +875,7 @@ function localAddon:setPanelTexts()
             .. "/bam report: report highest crits of each spell to channel list.\n"
             .. "/bam clear: delete list of highest crits.\n/bam config: Opens this config page."
 
+    generalOptions.args.chatFrameNameInput.name = self.db.char.color .. "Chat Frame to Print to"
     generalOptions.args.outputMessageDamageOption.name = self.db.char.color .. "Output Message Damage"
     generalOptions.args.outputMessageHealOption.name = self.db.char.color .. "Output Message Heal"
     generalOptions.args.thresholdOption.name = self.db.char.color .. "Least amount of damage/heal to trigger bam"
