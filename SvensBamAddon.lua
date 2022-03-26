@@ -49,6 +49,15 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
             return
         end
     end
+
+    for _, w in pairs(self.db.char.spellIgnoreList) do
+        if (w == spellName) then
+            do
+                return
+            end
+        end
+    end
+
     if (spellId and self.db.char.postLinkOfSpell) then
         spellLink = GetSpellLink(spellId)
     end

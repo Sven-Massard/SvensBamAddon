@@ -92,6 +92,7 @@ local defaults = {
         color = "|cff" .. "94" .. "CF" .. "00",
         minimap = { hide = false, },
         critList = {},
+        spellIgnoreList = {},
         isMigratedToVersion10 = false
     }
 }
@@ -324,8 +325,35 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.postLinkOfSpell = value
             end
         },
-        placeholderDescription14 = {
-            order = 29,
+        placeholderDescription55 = {
+            order = 55,
+            type = "description",
+            name = ""
+        },
+        spellIgnoreListInput = {
+            order = 60,
+            type = "input",
+            name = "to be replaced",
+            multiline = true,
+            width = "double",
+            desc = "Put each spell you want to ignore on a new line.",
+            get = function(_)
+                local listAsString = ""
+                for _, v in pairs(localAddon.db.char.spellIgnoreList) do
+                    listAsString = listAsString .. v .. "\n"
+                end
+                return listAsString
+            end,
+            set = function(_, value)
+                localAddon.db.char.spellIgnoreList = {}
+                for arg in string.gmatch(value, "[^\r\n]+") do
+                    table.insert(localAddon.db.char.spellIgnoreList, arg)
+                end
+            end
+        },
+
+        placeholderDescription69 = {
+            order = 69,
             type = "description",
             name = ""
         },
@@ -838,6 +866,7 @@ function localAddon:setPanelTexts()
     generalOptions.args.eventTypesToTriggerDescription.name = self.db.char.color .. "Event Types to Trigger"
     generalOptions.args.triggerOptionsDescription.name = self.db.char.color .. "Trigger Options"
     generalOptions.args.otherOptionsDescription.name = self.db.char.color .. "Other Options"
+    generalOptions.args.spellIgnoreListInput.name = self.db.char.color .. "Spells to ignore"
     generalOptions.args.fontColorDescription.name = self.db.char.color .. "Change Color of Font"
     channelOptions.name = self.db.char.color .. "Output Channel"
 end
