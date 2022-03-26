@@ -859,35 +859,27 @@ function localAddon:migrateToVersion10()
     -- migrate simple variables
     if (SBM_outputDamageMessage ~= nil) then
         self.db.char.outputDamageMessage = SBM_outputDamageMessage
-        SBM_outputDamageMessage = nil
     end
     if (SBM_outputHealMessage ~= nil) then
         self.db.char.outputHealMessage = SBM_outputHealMessage
-        SBM_outputHealMessage = nil
     end
     if (SBM_whisperList ~= nil) then
         self.db.char.whisperList = SBM_whisperList
-        SBM_whisperList = nil
     end
     if (SBM_color ~= nil) then
         self.db.char.color = SBM_color
-        SBM_color = nil
     end
     if (SBM_threshold ~= nil) then
         self.db.char.threshold = SBM_threshold
-        SBM_threshold = nil
     end
     if (SBM_onlyOnNewMaxCrits ~= nil) then
         self.db.char.onlyOnNewMaxCrits = SBM_onlyOnNewMaxCrits
-        SBM_onlyOnNewMaxCrits = nil
     end
     if (SBM_separateOffhandCrits ~= nil) then
         self.db.char.separateOffhandCrits = SBM_separateOffhandCrits
-        SBM_separateOffhandCrits = nil
     end
     if (SBM_MinimapSettings ~= nil and SBM_MinimapSettings.hide ~= nil) then
         self.db.char.minimap.hide = SBM_MinimapSettings.hide
-        SBM_MinimapSettings = nil
     end
 
     self:Print("Successfully migrated simple settings")
@@ -903,7 +895,6 @@ function localAddon:migrateToVersion10()
         if (SBM_Settings.postLinkOfSpell ~= nil) then
             self.db.char.postLinkOfSpell = SBM_Settings.postLinkOfSpell
         end
-        SBM_Settings = nil
     end
 
     self:Print("Successfully migrated SBM settings")
@@ -913,7 +904,6 @@ function localAddon:migrateToVersion10()
         for arg in string.gmatch(SBM_soundfileDamage, "%S+") do
             table.insert(self.db.char.soundFilesDamage, arg)
         end
-        SBM_soundfileDamage = nil
     end
 
     -- migrate SBM_soundfileHeal
@@ -921,7 +911,6 @@ function localAddon:migrateToVersion10()
         for arg in string.gmatch(SBM_soundfileHeal, "%S+") do
             table.insert(self.db.char.soundFilesHeal, arg)
         end
-        SBM_soundfileHeal = nil
     end
 
     self:Print("Successfully migrated sound files")
@@ -944,7 +933,6 @@ function localAddon:migrateToVersion10()
                 newEventList.heal.boolean = v.boolean
             end
         end
-        SBM_eventList = nil
     end
 
     self:Print("Successfully migrated event list")
@@ -960,7 +948,6 @@ function localAddon:migrateToVersion10()
             table.insert(newCritList, spellTable)
             it = it.nextNode
         end
-        SBM_critList = nil
     end
 
     self:Print("Successfully migrated crit list")
@@ -1011,7 +998,6 @@ function localAddon:migrateToVersion10()
         if (oldChannelList["Do Train Emote"] ~= nil) then
             newChannelList.Train_emote = true;
         end
-        SBM_outputChannelList = nil
     end
 
     self:Print("Successfully migrated output channel list")
