@@ -106,6 +106,14 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                         for _, w in pairs(self.db.char.whisperList) do
                             SendChatMessage(output, "WHISPER", "COMMON", w)
                         end
+                    elseif (k == "battleNetWhisper") then
+                        for _, w in pairs(self.db.char.battleNetWhisperBattleNetNameToId) do
+                            BNSendWhisper(w, self.db.char.color .. output)
+                        end
+                    elseif (k == "battleNetWhisper") then
+                        for _, w in pairs(self.db.char.whisperList) do
+                            SendChatMessage(output, "WHISPER", "COMMON", w)
+                        end
                     elseif (k == "Sound_damage") then
                         if (eventType == "SPELL_DAMAGE") then
                             self:playRandomSoundFromList(self.db.char.soundFilesDamage)

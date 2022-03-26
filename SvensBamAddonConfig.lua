@@ -68,6 +68,7 @@ local defaults = {
             Raid_Warning = false,
             Battleground = false,
             Whisper = false,
+            battleNetWhisper = false,
             Sound_damage = true,
             Sound_heal = true,
             Train_emote = false,
@@ -83,6 +84,7 @@ local defaults = {
             heal = { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
         },
         whisperList = {},
+        battleNetWhisperBattleNetNameToId = {},
         chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME,
         chatFrameIndex = 1,
         soundFilesDamage = { "Interface\\AddOns\\SvensBamAddon\\bam.ogg" },
@@ -642,8 +644,62 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "description",
             name = ""
         },
-        soundDamageCheckbox = {
+        battleNetwhisperCheckbox = {
             order = 25,
+            type = "toggle",
+            name = "Whisper Bnet Name",
+            descStyle = "",
+            get = function(_)
+                return localAddon.db.char.outputChannelList.battleNetWhisper
+            end,
+            set = function(_, value)
+                localAddon.db.char.outputChannelList.battleNetWhisper = value
+            end
+        },
+        battleNetWhisperListInput = {
+            order = 26,
+            type = "input",
+            name = "Whisper list",
+            multiline = true,
+            width = "double",
+            desc = "Put each battle net name on your friend list on a new line.\n",
+            get = function(_)
+                local listAsString = ""
+                for k, _ in pairs(localAddon.db.char.battleNetWhisperBattleNetNameToId) do
+                    listAsString = listAsString .. k .. "\n"
+                end
+                return listAsString
+            end,
+            set = function(_, value)
+                local bnetWhisperList = {}
+                for arg in string.gmatch(value, "[^\r\n]+") do
+                    bnetWhisperList[arg] = true
+                end
+
+                numBNetTotal, numBNetOnline, numBNetFavorite, numBNetFavoriteOnline = BNGetNumFriends()
+                localAddon.db.char.battleNetWhisperBattleNetNameToId = {}
+                for i = 1, numBNetTotal do
+                    local bnetIDAccount, _, battleTag, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = BNGetFriendInfo(i)
+                    local accountName = battleTag:gsub("(.*)#.*$", "%1")
+                    if (bnetWhisperList[accountName] == true) then
+                        localAddon.db.char.battleNetWhisperBattleNetNameToId[accountName] = bnetIDAccount;
+                    end
+                end
+
+                for k, _ in pairs(bnetWhisperList) do
+                    if (localAddon.db.char.battleNetWhisperBattleNetNameToId[k] == nil) then
+                        _G["ChatFrame" .. localAddon.db.char.chatFrameIndex]:AddMessage(localAddon.db.char.color .. "Bnet account name " .. k .. " not found.")
+                    end
+                end
+            end
+        },
+        placeholderDescription12 = {
+            order = 27,
+            type = "description",
+            name = ""
+        },
+        soundDamageCheckbox = {
+            order = 28,
             type = "toggle",
             name = "Sound DMG",
             descStyle = "",
@@ -655,7 +711,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         soundDamageFileInput = {
-            order = 26,
+            order = 29,
             type = "input",
             name = "Sound file for damage to play",
             width = "double",
@@ -678,12 +734,12 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription13 = {
-            order = 27,
+            order = 30,
             type = "description",
             name = ""
         },
         soundHealCheckbox = {
-            order = 28,
+            order = 31,
             type = "toggle",
             name = "Sound Heal",
             descStyle = "",
@@ -695,7 +751,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         soundHealFileInput = {
-            order = 29,
+            order = 32,
             type = "input",
             width = "double",
             name = "Sound file for heal to play",
@@ -718,12 +774,12 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
         placeholderDescription14 = {
-            order = 30,
+            order = 33,
             type = "description",
             name = ""
         },
         trainEmoteCheckbox = {
-            order = 31,
+            order = 34,
             type = "toggle",
             name = "Do Train Emote",
             descStyle = "",
@@ -734,8 +790,6 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.outputChannelList.Train_emote = value
             end
         },
-
-
     }
 }
 
