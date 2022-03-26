@@ -84,7 +84,7 @@ local defaults = {
             heal = { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
         },
         whisperList = {},
-        battleNetWhisperBattleNetNameToId = {},
+        battleNetWhisperBattleNetTagToId = {},
         chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME,
         chatFrameIndex = 1,
         soundFilesDamage = { "Interface\\AddOns\\SvensBamAddon\\bam.ogg" },
@@ -659,13 +659,13 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         battleNetWhisperListInput = {
             order = 26,
             type = "input",
-            name = "Whisper list",
+            name = "",
             multiline = true,
             width = "double",
-            desc = "Put each battle net name on your friend list on a new line.\n",
+            desc = "Put each battle net tag of people in your friend list on a new line.\n",
             get = function(_)
                 local listAsString = ""
-                for k, _ in pairs(localAddon.db.char.battleNetWhisperBattleNetNameToId) do
+                for k, _ in pairs(localAddon.db.char.battleNetWhisperBattleNetTagToId) do
                     listAsString = listAsString .. k .. "\n"
                 end
                 return listAsString
@@ -676,18 +676,18 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     bnetWhisperList[arg] = true
                 end
 
-                numBNetTotal, numBNetOnline, numBNetFavorite, numBNetFavoriteOnline = BNGetNumFriends()
-                localAddon.db.char.battleNetWhisperBattleNetNameToId = {}
+                local numBNetTotal, _, _, _ = BNGetNumFriends()
+                localAddon.db.char.battleNetWhisperBattleNetTagToId = {}
                 for i = 1, numBNetTotal do
                     local bnetIDAccount, _, battleTag, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = BNGetFriendInfo(i)
-                    local accountName = battleTag:gsub("(.*)#.*$", "%1")
-                    if (bnetWhisperList[accountName] == true) then
-                        localAddon.db.char.battleNetWhisperBattleNetNameToId[accountName] = bnetIDAccount;
+                    --local accountName = battleTag:gsub("(.*)#.*$", "%1")
+                    if (bnetWhisperList[battleTag] == true) then
+                        localAddon.db.char.battleNetWhisperBattleNetTagToId[battleTag] = bnetIDAccount;
                     end
                 end
 
                 for k, _ in pairs(bnetWhisperList) do
-                    if (localAddon.db.char.battleNetWhisperBattleNetNameToId[k] == nil) then
+                    if (localAddon.db.char.battleNetWhisperBattleNetTagToId[k] == nil) then
                         _G["ChatFrame" .. localAddon.db.char.chatFrameIndex]:AddMessage(localAddon.db.char.color .. "Bnet account name " .. k .. " not found.")
                     end
                 end
@@ -804,6 +804,8 @@ function localAddon:loadAddon()
 
     self:setPanelTexts()
 
+    self:realignBattleNetTagToId()
+
     icon:Register("SvensBamAddon_dataObject", MinimapIcon, self.db.char.minimap)
     if (not self.db.char.minimap.hide) then
         icon:Show("SvensBamAddon_dataObject")
@@ -851,6 +853,17 @@ function localAddon:setIndexOfChatFrame(chatFrameName)
         end
     end
     return false
+end
+
+function localAddon:realignBattleNetTagToId()
+    local numBNetTotal, _, _, _ = BNGetNumFriends()
+    for i = 1, numBNetTotal do
+        local bnetIDAccount, _, battleTag, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = BNGetFriendInfo(i)
+        --local accountName = battleTag:gsub("(.*)#.*$", "%1")
+        if (localAddon.db.char.battleNetWhisperBattleNetTagToId[battleTag] ~= nil) then
+            localAddon.db.char.battleNetWhisperBattleNetTagToId[battleTag] = bnetIDAccount;
+        end
+    end
 end
 
 function localAddon:migrateToVersion10()

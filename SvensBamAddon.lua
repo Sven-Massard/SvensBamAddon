@@ -107,7 +107,7 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                             SendChatMessage(output, "WHISPER", "COMMON", w)
                         end
                     elseif (k == "battleNetWhisper") then
-                        for _, w in pairs(self.db.char.battleNetWhisperBattleNetNameToId) do
+                        for _, w in pairs(self.db.char.battleNetWhisperBattleNetTagToId) do
                             BNSendWhisper(w, self.db.char.color .. output)
                         end
                     elseif (k == "battleNetWhisper") then
