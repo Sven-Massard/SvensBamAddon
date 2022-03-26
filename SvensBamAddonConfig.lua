@@ -422,7 +422,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             order = 0,
             type = "toggle",
             name = "Say",
-            descStyle = "",
+            desc = "Only works in instances",
             get = function(_)
                 return localAddon.db.char.outputChannelList.Say
             end,
@@ -439,7 +439,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             order = 2,
             type = "toggle",
             name = "Yell",
-            descStyle = "",
+            desc = "Only works in instances",
             get = function(_)
                 return localAddon.db.char.outputChannelList.Yell
             end,
