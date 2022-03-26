@@ -90,6 +90,17 @@ function localAddon:reportCrits()
                         SendChatMessage(c.spellName .. " " .. c.amount .. " to " .. target, "WHISPER", "COMMON", w)
                     end
                 end
+            elseif (k == "battleNetWhisper" and v == true) then
+                for _, w in pairs(self.db.char.battleNetWhisperBattleNetTagToId) do
+                    BNSendWhisper(w, "Highest crits:")
+                    for _, c in ipairs(critList) do
+                        local target = c.target
+                        if target == nil then
+                            target = "unknown"
+                        end
+                        BNSendWhisper(w, c.spellName .. " " .. c.amount .. " to " .. target)
+                    end
+                end
             elseif (k == "Sound_damage" or k == "Sound_heal" or k == "Train_emote") then
                 -- do nothing
             elseif (v == true) then

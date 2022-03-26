@@ -117,7 +117,7 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                         end
                     elseif (k == "battleNetWhisper") then
                         for _, w in pairs(self.db.char.battleNetWhisperBattleNetTagToId) do
-                            BNSendWhisper(w, self.db.char.color .. output)
+                            BNSendWhisper(w, output)
                         end
                     elseif (k == "battleNetWhisper") then
                         for _, w in pairs(self.db.char.whisperList) do
