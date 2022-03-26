@@ -115,7 +115,7 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
                             SendChatMessage(output, "WHISPER", "COMMON", w)
                         end
                     elseif (k == "Sound_damage") then
-                        if (eventType == "SPELL_DAMAGE") then
+                        if (eventType ~= "SPELL_HEAL") then
                             self:playRandomSoundFromList(self.db.char.soundFilesDamage)
                         end
                     elseif (k == "Sound_heal") then
