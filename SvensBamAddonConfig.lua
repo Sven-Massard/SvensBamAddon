@@ -901,6 +901,7 @@ function localAddon:migrateToVersion10()
 
     -- migrate SBM_soundfileDamage
     if (SBM_soundfileDamage ~= nil) then
+        self.db.char.soundFilesDamage = {}
         for arg in string.gmatch(SBM_soundfileDamage, "%S+") do
             table.insert(self.db.char.soundFilesDamage, arg)
         end
@@ -908,6 +909,7 @@ function localAddon:migrateToVersion10()
 
     -- migrate SBM_soundfileHeal
     if (SBM_soundfileHeal ~= nil) then
+        self.db.char.soundFilesHeal = {}
         for arg in string.gmatch(SBM_soundfileHeal, "%S+") do
             table.insert(self.db.char.soundFilesHeal, arg)
         end
