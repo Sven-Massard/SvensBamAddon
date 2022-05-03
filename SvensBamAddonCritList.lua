@@ -1,126 +1,125 @@
-﻿function SBM:addToCritList(spellName, val)
-    -- list was empty until now
-    if (SBM_critList.spellName == nil and SBM_critList.value == nil) then
-        SBM_critList = SBM:newNode(spellName, val)
-        return true
+﻿local localAddon = SvensBamAddon
 
-    else
-        local it = SBM_critList
-        --compare with first value
-        if (it.spellName == spellName) then
-            -- Maybe later refactor to avoid duplicate code
-            if (it.value < val) then
-                it.value = val
+function localAddon:addToCritList(spellName, val, target)
+    local critList = self.db.char.critList
+    local spellTable = { spellName = spellName, amount = val, target = target }
+
+    local foundSpell = false;
+    for i, v in ipairs(critList) do
+        if v.spellName == spellName then
+            foundSpell = true
+            if (v.amount < val) then
+                table.remove(critList, i)
+                table.insert(critList, spellTable)
                 return true
             end
-            do
-                return
-            end
         end
+    end
 
-        --compare with subsequent values
-        while not (it.nextNode == nil) do
-            it = it.nextNode
-            if (it.spellName == spellName) then
-                if (it.value < val) then
-                    it.value = val
-                    return true
-                end
-                do
-                    return
-                end
-            end
-        end
-
-        --add spell if not found till now
-        it.nextNode = SBM:newNode(spellName, val)
+    if (foundSpell == false) then
+        table.insert(critList, spellTable)
         return true
     end
-
+    return false
 end
 
-function SBM:newNode(spellName, val)
-    local newNode = {};
-    newNode.spellName = spellName
-    newNode.value = val
-    newNode.nextNode = nil
-    return newNode
+function localAddon:clearCritList()
+    local critList = self.db.char.critList
+    for i, _ in ipairs(critList) do
+        critList[i] = nil
+    end
+    _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Crit list cleared");
 end
 
-function SBM:clearCritList()
-    SBM_critList = {};
-    print(SBM_color .. "Critlist cleared");
-end
-
-function SBM:listCrits()
-    if not (SBM_critList.value == nil) then
-        print(SBM_color .. "Highest crits:");
-        local it = SBM_critList
-        print(SBM_color .. it.spellName .. ": " .. it.value)
-        while not (it.nextNode == nil) do
-            it = it.nextNode
-            print(SBM_color .. it.spellName .. ": " .. it.value)
-        end
+function localAddon:listCrits()
+    local critList = self.db.char.critList
+    if #critList == 0 then
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "No crits recorded")
     else
-        print(SBM_color .. "No crits recorded");
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Highest crits:");
+        for _, v in ipairs(critList) do
+            local target = v.target
+            if target == nil then
+                target = "unknown"
+            end
+            _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. v.spellName .. " " .. v.amount .. " to " .. target)
+        end
     end
 end
 
-function SBM:reportCrits()
-    if not (SBM_critList.value == nil) then
-        for _, v in pairs(SBM_outputChannelList) do
-            if v == "Print" then
-                print(SBM_color .. "Highest crits:");
-                local it = SBM_critList
-                print(SBM_color .. it.spellName .. ": " .. it.value)
-                while not (it.nextNode == nil) do
-                    it = it.nextNode
-                    print(SBM_color .. it.spellName .. ": " .. it.value)
+function localAddon:reportCrits()
+    local critList = self.db.char.critList
+    if (#critList == 0) then
+        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "No crits recorded");
+    else
+        for k, v in pairs(self.db.char.outputChannelList) do
+            if (k == "Print" and v == true) then
+                _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Highest crits:");
+                for _, c in ipairs(critList) do
+                    local target = c.target
+                    if target == nil then
+                        target = "unknown"
+                    end
+                    _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. c.spellName .. " " .. c.amount .. " to " .. target)
                 end
-            elseif (v == "Officer") then
+            elseif (k == "Officer" and v == true) then
                 if (CanEditOfficerNote()) then
-                    SBM:ReportToChannel(v)
+                    self:ReportToChannel(k)
                 end
-            elseif (v == "Battleground") then
+            elseif (k == "Battleground" and v == true) then
                 inInstance, instanceType = IsInInstance()
                 if (instanceType == "pvp") then
-                    SBM:ReportToChannel("INSTANCE_CHAT")
+                    self:ReportToChannel("INSTANCE_CHAT")
                 end
-            elseif (v == "Party") then
+            elseif (k == "Party" and v == true) then
                 if IsInGroup() then
-                    SBM:ReportToChannel(v);
+                    self:ReportToChannel(k);
                 end
-            elseif (v == "Raid" or v == "Raid_Warning") then
+            elseif ((k == "Raid" or k == "Raid_Warning") and v == true) then
                 if IsInRaid() then
-                    SBM:ReportToChannel(v);
+                    self:ReportToChannel(k);
                 end
-            elseif (v == "Whisper") then
-                for _, w in pairs(SBM_whisperList) do
+            elseif (k == "Whisper" and v == true) then
+                for _, w in pairs(self.db.char.whisperList) do
                     SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
-                    local it = SBM_critList
-                    SendChatMessage(it.spellName .. ": " .. it.value, "WHISPER", "COMMON", w)
-                    while not (it.nextNode == nil) do
-                        it = it.nextNode
-                        SendChatMessage(it.spellName .. ": " .. it.value, "WHISPER", "COMMON", w)
+                    for _, c in ipairs(critList) do
+                        local target = c.target
+                        if target == nil then
+                            target = "unknown"
+                        end
+                        SendChatMessage(c.spellName .. " " .. c.amount .. " to " .. target, "WHISPER", "COMMON", w)
                     end
                 end
-            elseif (v == "Sound DMG" or v == "Sound Heal" or v == "Do Train Emote") then
+            elseif (k == "battleNetWhisper" and v == true) then
+                for _, w in pairs(self.db.char.battleNetWhisperBattleNetTagToId) do
+                    BNSendWhisper(w, "Highest crits:")
+                    for _, c in ipairs(critList) do
+                        local target = c.target
+                        if target == nil then
+                            target = "unknown"
+                        end
+                        BNSendWhisper(w, c.spellName .. " " .. c.amount .. " to " .. target)
+                    end
+                end
+            elseif (k == "Sound_damage" or k == "Sound_heal" or k == "Train_emote") then
                 -- do nothing
-            else
-                SBM:ReportToChannel(v);
+            elseif (v == true) then
+                self:ReportToChannel(k);
             end
         end
-    else
-        print(SBM_color .. "No crits recorded");
     end
 end
 
-function SBM:ReportToChannel(channelName)
+function localAddon:ReportToChannel(channelName)
+    local critList = self.db.char.critList
     SendChatMessage("Highest crits:", channelName)
-    local it = SBM_critList
-    SendChatMessage(it.spellName .. ": " .. it.value, channelName)
-    while not (it.nextNode == nil) do
-        it = it.nextNode
-        SendChatMessage(it.spellName .. ": " .. it.value, channelName)
+    for _, v in ipairs(critList) do
+        local target = v.target
+        if target == nil then
+            target = "unknown"
+        end
+        SendChatMessage(v.spellName .. " " .. v.amount .. " to " .. target, channelName)
+
     end
+
 end
