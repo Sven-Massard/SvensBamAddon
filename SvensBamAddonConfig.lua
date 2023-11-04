@@ -907,7 +907,7 @@ end
 
 function localAddon:realignBattleNetTagToId()
     local numBNetTotal, _, _, _ = BNGetNumFriends()
-    local isAboveClassic = (tonumber(select(4, GetBuildInfo())) > 82000)
+    local isAboveClassic = select(4, GetBuildInfo()) > 82000
 
     for i = 1, numBNetTotal do
         local bnetIDAccount, battleTag
