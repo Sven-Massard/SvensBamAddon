@@ -20,7 +20,7 @@ end
 function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
     local name, _ = UnitName("player");
     local eventType, _, _, eventSource, _, _, _, targetName = select(2, CombatLogGetCurrentEventInfo())
-    if not (eventSource == name) then
+    if not (eventSource == name .. "-" .. GetRealmName() or eventSource == name) then
         do
             return
         end
