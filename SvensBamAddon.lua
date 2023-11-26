@@ -28,6 +28,7 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
 
     local spellId, spellName, amount, critical, spellLink
 
+    --TODO Add dot and hot ticks
     --Assign correct values to variables
     if (eventType == "SPELL_DAMAGE") then
         spellId, spellName, _, amount, _, _, _, _, _, critical, _, _ = select(12, CombatLogGetCurrentEventInfo())
@@ -195,7 +196,6 @@ function localAddon:SlashCommand(msg)
         self:clearCritList();
     elseif (msg == "config") then
         -- For some reason, needs to be called twice to function correctly on first call
-        InterfaceOptionsFrame_OpenToCategory(self.mainOptionsFrame)
         InterfaceOptionsFrame_OpenToCategory(self.mainOptionsFrame)
     elseif (msg == "test") then
         _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Function not implemented")

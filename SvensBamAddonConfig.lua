@@ -35,7 +35,6 @@ local menuList = {
     { text = "Open config", isNotRadio = true, notCheckable = true,
       func = function()
           InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
-          InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
       end
     },
     { text = "Close menu", isNotRadio = true, notCheckable = true },
@@ -374,7 +373,9 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             set = function(_, value)
                 localAddon.db.char.spellIgnoreList = {}
                 for arg in string.gmatch(value, "[^\r\n]+") do
-                    table.insert(localAddon.db.char.spellIgnoreList, arg)
+                    -- Extract spell name from link, or use the arg directly if it's not a link
+                    local spellName = string.match(arg, "%[(.-)%]") or arg
+                    table.insert(localAddon.db.char.spellIgnoreList, spellName)
                 end
             end
         },
