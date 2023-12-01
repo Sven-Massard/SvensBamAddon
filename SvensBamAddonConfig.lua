@@ -323,6 +323,7 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             order = 52,
             type = "toggle",
             name = "Show Minimap Button",
+            desc = "Note that button collector addons manage minimap visibility.\nSo this checkbox might not do anything.",
             get = function(_)
                 return not localAddon.db.char.minimap.hide
             end,
@@ -703,7 +704,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Set Battle.net Friends to Whisper to",
             multiline = true,
             width = "double",
-            desc = "Put each battle net tag of people in your friend list on a new line.\n",
+            desc = "Put each battle net tag of people in your friend list on a new line.\nFor example xyz#3453",
             get = function(_)
                 local listAsString = ""
                 for k, _ in pairs(localAddon.db.char.battleNetWhisperBattleNetTagToId) do
@@ -717,7 +718,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     bnetWhisperList[arg] = true
                 end
 
-                local isAboveClassic = (tonumber(select(4, GetBuildInfo())) > 82000)
+                local isAboveClassic = (select(4, GetBuildInfo()) > 82000)
 
                 local numBNetTotal, _, _, _ = BNGetNumFriends()
                 localAddon.db.char.battleNetWhisperBattleNetTagToId = {}
