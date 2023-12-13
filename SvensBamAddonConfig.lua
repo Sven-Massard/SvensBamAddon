@@ -292,16 +292,16 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "description",
             name = ""
         },
-        showOffHandCritsSeparately = {
+        separateOffhandCrits = {
             order = 42,
             type = "toggle",
             width = "double",
             name = "Show off-hand crits separately",
             get = function(_)
-                return localAddon.db.char.showOffHandCritsSeparately
+                return localAddon.db.char.separateOffhandCrits
             end,
             set = function(_, value)
-                localAddon.db.char.showOffHandCritsSeparately = value
+                localAddon.db.char.separateOffhandCrits = value
             end
         },
         placeholderDescription11 = {

@@ -26,7 +26,7 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     end
 
-    local spellId, spellName, amount, critical, spellLink
+    local spellId, spellName, amount, critical, spellLink, isOffHand
 
     --TODO Add dot and hot ticks
     --Assign correct values to variables
