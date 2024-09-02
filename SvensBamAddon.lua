@@ -18,9 +18,8 @@ function localAddon:OnInitialize()
 end
 
 function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
-    local name, _ = UnitName("player");
-    local eventType, _, _, eventSource, _, _, _, targetName = select(2, CombatLogGetCurrentEventInfo())
-    if not (eventSource == name .. "-" .. GetRealmName() or eventSource == name) then
+    local eventType, _, sourceGUID, _, _, _, _, targetName = select(2, CombatLogGetCurrentEventInfo())
+    if not (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then
         do
             return
         end
@@ -195,8 +194,11 @@ function localAddon:SlashCommand(msg)
     elseif (msg == "clear") then
         self:clearCritList();
     elseif (msg == "config") then
-        -- For some reason, needs to be called twice to function correctly on first call
-        InterfaceOptionsFrame_OpenToCategory(self.mainOptionsFrame)
+        if (self.isAboveClassic) then
+            Settings.OpenToCategory(self.mainOptionsCategoryID)
+        else
+            InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
+        end
     elseif (msg == "test") then
         _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Function not implemented")
     else

@@ -34,7 +34,11 @@ local menuList = {
 
     { text = "Open config", isNotRadio = true, notCheckable = true,
       func = function()
-          InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
+          if (localAddon.isAboveClassic) then
+              Settings.OpenToCategory(self.mainOptionsCategoryID)
+          else
+              InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
+          end
       end
     },
     { text = "Close menu", isNotRadio = true, notCheckable = true },
@@ -718,12 +722,10 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                     bnetWhisperList[arg] = true
                 end
 
-                local isAboveClassic = (select(4, GetBuildInfo()) > 82000)
-
                 local numBNetTotal, _, _, _ = BNGetNumFriends()
                 localAddon.db.char.battleNetWhisperBattleNetTagToId = {}
                 for i = 1, numBNetTotal do
-                    if (not isAboveClassic) then
+                    if (not self.isAboveClassic) then
                         bnetIDAccount, _, battleTag, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = BNGetFriendInfo(i)
                     else
                         local acc = C_BattleNet.GetFriendAccountInfo(i)
@@ -848,7 +850,7 @@ function localAddon:loadAddon()
     AceConfig:RegisterOptionsTable("SvensBamAddon_MainOptions", mainOptions)
     AceConfig:RegisterOptionsTable("SvensBamAddon_GeneralOptions", generalOptions)
     AceConfig:RegisterOptionsTable("SvensBamAddon_ChannelOptions", channelOptions)
-    self.mainOptionsFrame = AceConfigDialog:AddToBlizOptions("SvensBamAddon_MainOptions", "Svens Bam Addon")   -- https://www.wowace.com/projects/ace3/pages/api/ace-config-dialog-3-0
+    self.mainOptionsFrame, self.mainOptionsCategoryID = AceConfigDialog:AddToBlizOptions("SvensBamAddon_MainOptions", "Svens Bam Addon")
     AceConfigDialog:AddToBlizOptions("SvensBamAddon_GeneralOptions", "General options", "Svens Bam Addon")
     AceConfigDialog:AddToBlizOptions("SvensBamAddon_ChannelOptions", "Channel options", "Svens Bam Addon")
 
@@ -866,6 +868,7 @@ function localAddon:loadAddon()
     if (not self.db.char.isMigratedToVersion10) then
         self:migrateToVersion10()
     end
+    self.isAboveClassic = select(4, GetBuildInfo()) > 82000
 end
 
 function localAddon:convertRGBDecimalToRGBHex(decimal)
@@ -909,11 +912,10 @@ end
 
 function localAddon:realignBattleNetTagToId()
     local numBNetTotal, _, _, _ = BNGetNumFriends()
-    local isAboveClassic = select(4, GetBuildInfo()) > 82000
 
     for i = 1, numBNetTotal do
         local bnetIDAccount, battleTag
-        if (not isAboveClassic) then
+        if (not self.isAboveClassic) then
             bnetIDAccount, _, battleTag, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = BNGetFriendInfo(i)
         else
             local acc = C_BattleNet.GetFriendAccountInfo(i)
