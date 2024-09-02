@@ -846,6 +846,8 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
 }
 
 function localAddon:loadAddon()
+    self.isAboveClassic = select(4, GetBuildInfo()) > 82000
+
     self.db = AceDatabase:New("SvensBamAddonDB", defaults)
     AceConfig:RegisterOptionsTable("SvensBamAddon_MainOptions", mainOptions)
     AceConfig:RegisterOptionsTable("SvensBamAddon_GeneralOptions", generalOptions)
