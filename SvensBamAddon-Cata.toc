@@ -1,4 +1,4 @@
-## Interface: 30403
+## Interface: 40400
 ## Title: Svens Bam AddOn
 ## Author: Verband
 ## Version: 1.10.9
