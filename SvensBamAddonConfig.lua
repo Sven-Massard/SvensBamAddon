@@ -35,7 +35,7 @@ local menuList = {
     { text = "Open config", isNotRadio = true, notCheckable = true,
       func = function()
           if (localAddon.isAboveClassic) then
-              Settings.OpenToCategory(self.mainOptionsCategoryID)
+              Settings.OpenToCategory(localAddon.mainOptionsCategoryID)
           else
               InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
           end
@@ -86,6 +86,7 @@ local defaults = {
             melee = { name = "Melee Autohit", eventType = "SWING_DAMAGE", boolean = true },
             heal = { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
         },
+        pet = false;
         whisperList = {},
         battleNetWhisperBattleNetTagToId = {},
         chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME,
@@ -269,13 +270,29 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "description",
             name = ""
         },
-        triggerOptionsDescription = {
+        petCheckbox = {
             order = 28,
+            type = "toggle",
+            name = "Pet",
+            get = function(_)
+                return localAddon.db.char.pet
+            end,
+            set = function(_, value)
+                localAddon.db.char.pet = value
+            end
+        },
+        placeholderDescription21 = {
+            order = 34,
+            type = "description",
+            name = ""
+        },
+        triggerOptionsDescription = {
+            order = 35,
             type = "description",
             name = "will be replaced"
         },
         placeholderDescription9 = {
-            order = 29,
+            order = 36,
             type = "description",
             name = ""
         },
@@ -870,7 +887,6 @@ function localAddon:loadAddon()
     if (not self.db.char.isMigratedToVersion10) then
         self:migrateToVersion10()
     end
-    self.isAboveClassic = select(4, GetBuildInfo()) > 82000
 end
 
 function localAddon:convertRGBDecimalToRGBHex(decimal)

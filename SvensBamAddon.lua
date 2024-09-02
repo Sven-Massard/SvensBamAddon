@@ -19,7 +19,8 @@ end
 
 function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
     local eventType, _, sourceGUID, _, _, _, _, targetName = select(2, CombatLogGetCurrentEventInfo())
-    if not (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then
+    local isPet = (sourceGUID == UnitGUID("pet") and self.db.char.pet)
+    if not (sourceGUID == UnitGUID("player") or isPet) then
         do
             return
         end
@@ -49,6 +50,12 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
             return
         end
     end
+
+    --Pet
+    if (isPet) then
+        spellName = "Pet " .. spellName
+    end
+
 
     for _, w in pairs(self.db.char.spellIgnoreList) do
         if (w == spellName) then
