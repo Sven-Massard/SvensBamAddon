@@ -19,7 +19,7 @@ end
 
 function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
     local eventType, _, sourceGUID, _, _, _, _, targetName = select(2, CombatLogGetCurrentEventInfo())
-    local isPet = (sourceGUID == UnitGUID("pet") and self.db.char.pet)
+    local isPet = sourceGUID == UnitGUID("pet")
     if not (sourceGUID == UnitGUID("player") or isPet) then
         do
             return
@@ -51,12 +51,7 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     end
 
-    --Pet
-    if (isPet) then
-        spellName = "Pet " .. spellName
-    end
-
-
+    --Check if spell ignored
     for _, w in pairs(self.db.char.spellIgnoreList) do
         if (w == spellName) then
             do
@@ -74,15 +69,28 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
             return
         end
     end
-    --for i = 1, #self.db.char.eventList do
-    for _, event in pairs(self.db.char.eventList) do
+
+    local eventList
+    if (isPet) then
+        eventList = self.db.char.pet.eventList;
+    else
+        eventList = self.db.char.eventList;
+    end
+
+    --Check if correct event type like heal, SPELL_DAMAGE, RANGE_DAMAGE
+    for _, event in pairs(eventList) do
         if (eventType == event.eventType and event.boolean) then
+            if (isPet) then
+                spellName = "Pet " .. spellName
+            end
+
             newMaxCrit = self:addToCritList(spellName, amount, targetName);
             if (self.db.char.onlyOnNewMaxCrits and not newMaxCrit) then
                 do
                     return
                 end
             end
+
             local output
             if (spellLink) then
                 spellName = spellLink
@@ -92,61 +100,67 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
             else
                 output = self.db.char.outputDamageMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", targetName)
             end
-            for k, v in pairs(self.db.char.outputChannelList) do
-                if v == true then
-                    if k == "Print" then
-                        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. output)
-                    elseif (k == "Say" or k == "Yell") then
-                        local inInstance, _ = IsInInstance()
-                        if (inInstance) then
-                            SendChatMessage(output, k);
-                        end
-                    elseif (k == "Battleground") then
-                        local _, instanceType = IsInInstance()
-                        if (instanceType == "pvp") then
-                            SendChatMessage(output, "INSTANCE_CHAT")
-                        end
-                    elseif (k == "Officer") then
-                        if (CanEditOfficerNote()) then
-                            SendChatMessage(output, k)
-                        end
-                    elseif (k == "Raid" or v == "Raid_Warning") then
-                        if IsInRaid() then
-                            SendChatMessage(output, k);
-                        end
-                    elseif (k == "Party") then
-                        if IsInGroup() then
-                            SendChatMessage(output, k);
-                        end
-                    elseif (k == "Whisper") then
-                        for _, w in pairs(self.db.char.whisperList) do
-                            SendChatMessage(output, "WHISPER", "COMMON", w)
-                        end
-                    elseif (k == "battleNetWhisper") then
-                        for _, w in pairs(self.db.char.battleNetWhisperBattleNetTagToId) do
-                            BNSendWhisper(w, output)
-                        end
-                    elseif (k == "battleNetWhisper") then
-                        for _, w in pairs(self.db.char.whisperList) do
-                            SendChatMessage(output, "WHISPER", "COMMON", w)
-                        end
-                    elseif (k == "Sound_damage") then
-                        if (eventType ~= "SPELL_HEAL") then
-                            self:playRandomSoundFromList(self.db.char.soundFilesDamage)
-                        end
-                    elseif (k == "Sound_heal") then
-                        if (eventType == "SPELL_HEAL") then
-                            self:playRandomSoundFromList(self.db.char.soundFilesHeal)
-                        end
-                    elseif (k == "Train_emote") then
-                        DoEmote("train");
-                    else
-                        SendChatMessage(output, k);
-                    end
+            self:postToChannel(output)
+
+        end
+    end
+end
+
+function localAddon:postToChannel(output)
+    for k, v in pairs(self.db.char.outputChannelList) do
+        if v == true then
+            if k == "Print" then
+                _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. output)
+            elseif (k == "Say" or k == "Yell") then
+                local inInstance, _ = IsInInstance()
+                if (inInstance) then
+                    SendChatMessage(output, k);
                 end
+            elseif (k == "Battleground") then
+                local _, instanceType = IsInInstance()
+                if (instanceType == "pvp") then
+                    SendChatMessage(output, "INSTANCE_CHAT")
+                end
+            elseif (k == "Officer") then
+                if (CanEditOfficerNote()) then
+                    SendChatMessage(output, k)
+                end
+            elseif (k == "Raid" or v == "Raid_Warning") then
+                if IsInRaid() then
+                    SendChatMessage(output, k);
+                end
+            elseif (k == "Party") then
+                if IsInGroup() then
+                    SendChatMessage(output, k);
+                end
+            elseif (k == "Whisper") then
+                for _, w in pairs(self.db.char.whisperList) do
+                    SendChatMessage(output, "WHISPER", "COMMON", w)
+                end
+            elseif (k == "battleNetWhisper") then
+                for _, w in pairs(self.db.char.battleNetWhisperBattleNetTagToId) do
+                    BNSendWhisper(w, output)
+                end
+            elseif (k == "battleNetWhisper") then
+                for _, w in pairs(self.db.char.whisperList) do
+                    SendChatMessage(output, "WHISPER", "COMMON", w)
+                end
+            elseif (k == "Sound_damage") then
+                if (eventType ~= "SPELL_HEAL") then
+                    self:playRandomSoundFromList(self.db.char.soundFilesDamage)
+                end
+            elseif (k == "Sound_heal") then
+                if (eventType == "SPELL_HEAL") then
+                    self:playRandomSoundFromList(self.db.char.soundFilesHeal)
+                end
+            elseif (k == "Train_emote") then
+                DoEmote("train");
+            else
+                SendChatMessage(output, k);
             end
         end
     end
+
 end
 
 function localAddon:playRandomSoundFromList(tableWithSoundFileNames)

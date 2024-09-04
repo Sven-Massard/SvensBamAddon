@@ -86,7 +86,14 @@ local defaults = {
             melee = { name = "Melee Autohit", eventType = "SWING_DAMAGE", boolean = true },
             heal = { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
         },
-        pet = false;
+        pet = {
+            eventList = {
+                spellDamage = { name = "Spell Damage", eventType = "SPELL_DAMAGE", boolean = true },
+                ranged = { name = "Ranged", eventType = "RANGE_DAMAGE", boolean = true },
+                melee = { name = "Melee Autohit", eventType = "SWING_DAMAGE", boolean = true },
+                heal = { name = "Heal", eventType = "SPELL_HEAL", boolean = true },
+            },
+        };
         whisperList = {},
         battleNetWhisperBattleNetTagToId = {},
         chatFrameName = COMMUNITIES_DEFAULT_CHANNEL_NAME,
@@ -182,6 +189,7 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "input",
             width = "full",
             name = "will be replaced",
+
             desc = "Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything.",
             get = function(_)
                 return tostring(localAddon.db.char.threshold)
@@ -195,91 +203,141 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             type = "description",
             name = ""
         },
-        eventTypesToTriggerDescription = {
-            order = 12,
-            type = "description",
-            name = "will be replaced"
+
+        critOptions = {
+            type = "group",
+            name = "To be Replaced",
+            inline = true, -- Makes the options appear as part of the parent group
+            order = 29, -- Adjust order to fit your needs
+            args = {
+                SpellDamageCheckbox = {
+                    order = 1,
+                    width = "double",
+                    type = "toggle",
+                    name = "Spell Damage",
+                    get = function(_)
+                        return localAddon.db.char.eventList.spellDamage.boolean
+                    end,
+                    set = function(_, value)
+                        localAddon.db.char.eventList.spellDamage.boolean = value
+                    end
+                },
+                placeholderDescription5 = {
+                    order = 2,
+                    type = "description",
+                    name = ""
+                },
+                healCheckbox = {
+                    order = 3,
+                    type = "toggle",
+                    name = "Heal",
+                    get = function(_)
+                        return localAddon.db.char.eventList.heal.boolean
+                    end,
+                    set = function(_, value)
+                        localAddon.db.char.eventList.heal.boolean = value
+                    end
+                },
+                placeholderDescription6 = {
+                    order = 4,
+                    type = "description",
+                    name = ""
+                },
+                rangedCheckbox = {
+                    order = 5,
+                    type = "toggle",
+                    name = "Ranged",
+                    get = function(_)
+                        return localAddon.db.char.eventList.ranged.boolean
+                    end,
+                    set = function(_, value)
+                        localAddon.db.char.eventList.ranged.boolean = value
+                    end
+                },
+                placeholderDescription7 = {
+                    order = 6,
+                    type = "description",
+                    name = ""
+                },
+                meleeCheckbox = {
+                    order = 7,
+                    type = "toggle",
+                    name = "Melee Autohit",
+                    get = function(_)
+                        return localAddon.db.char.eventList.melee.boolean
+                    end,
+                    set = function(_, value)
+                        localAddon.db.char.eventList.melee.boolean = value
+                    end
+                },
+            }
         },
-        placeholderDescription4 = {
-            order = 13,
-            type = "description",
-            name = ""
-        },
-        SpellDamageCheckbox = {
-            order = 20,
-            width = "double",
-            type = "toggle",
-            name = "Spell Damage",
-            get = function(_)
-                return localAddon.db.char.eventList.spellDamage.boolean
-            end,
-            set = function(_, value)
-                localAddon.db.char.eventList.spellDamage.boolean = value
-            end
-        },
-        placeholderDescription5 = {
-            order = 21,
-            type = "description",
-            name = ""
-        },
-        healCheckbox = {
-            order = 22,
-            type = "toggle",
-            name = "Heal",
-            get = function(_)
-                return localAddon.db.char.eventList.heal.boolean
-            end,
-            set = function(_, value)
-                localAddon.db.char.eventList.heal.boolean = value
-            end
-        },
-        placeholderDescription6 = {
-            order = 23,
-            type = "description",
-            name = ""
-        },
-        rangedCheckbox = {
-            order = 24,
-            type = "toggle",
-            name = "Ranged",
-            get = function(_)
-                return localAddon.db.char.eventList.ranged.boolean
-            end,
-            set = function(_, value)
-                localAddon.db.char.eventList.ranged.boolean = value
-            end
-        },
-        placeholderDescription7 = {
-            order = 25,
-            type = "description",
-            name = ""
-        },
-        meleeCheckbox = {
-            order = 26,
-            type = "toggle",
-            name = "Melee Autohit",
-            get = function(_)
-                return localAddon.db.char.eventList.melee.boolean
-            end,
-            set = function(_, value)
-                localAddon.db.char.eventList.melee.boolean = value
-            end
-        },
-        placeholderDescription8 = {
-            order = 27,
-            type = "description",
-            name = ""
-        },
-        petCheckbox = {
-            order = 28,
-            type = "toggle",
-            name = "Pet",
-            get = function(_)
-                return localAddon.db.char.pet
-            end,
-            set = function(_, value)
-                localAddon.db.char.pet = value
-            end
+        petCritOptions = {
+            type = "group",
+            name = "To be Replaced",
+            inline = true, -- Makes the options appear as part of the parent group
+            order = 30, -- Adjust order to fit your needs
+            args = {
+                spellDamage = {
+                    order = 1,
+                    type = "toggle",
+                    name = "Pet Spell Damage",
+                    get = function(_)
+                        return localAddon.db.char.pet.eventList.spellDamage.boolean
+                    end,
+                    set = function(_, value)
+                        localAddon.db.char.pet.eventList.spellDamage.boolean = value
+                    end,
+                },
+                newLineDescription1 = {
+                    order = 2,
+                    type = "description",
+                    name = ""
+                },
+                ranged = {
+                    order = 3,
+                    type = "toggle",
+                    name = "Pet Ranged",
+                    get = function(_)
+                        return localAddon.db.char.pet.eventList.ranged.boolean
+                    end,
+                    set = function(_, value)
+                        localAddon.db.char.pet.eventList.ranged.boolean = value
+                    end,
+                },
+                newLineDescription2 = {
+                    order = 4,
+                    type = "description",
+                    name = ""
+                },
+                melee = {
+                    order = 5,
+                    type = "toggle",
+                    name = "Pet Melee Autohit",
+                    get = function(_)
+                        return localAddon.db.char.pet.eventList.melee.boolean
+                    end,
+                    set = function(_, value)
+                        localAddon.db.char.pet.eventList.melee.boolean = value
+                    end,
+                },
+                newLineDescription3 = {
+                    order = 6,
+                    type = "description",
+                    name = ""
+                },
+                heal = {
+                    order = 7,
+                    type = "toggle",
+                    name = "Pet Heal",
+                    get = function(_)
+                        return localAddon.db.char.pet.eventList.heal.boolean
+                    end,
+                    set = function(_, value)
+                        localAddon.db.char.pet.eventList.heal.boolean = value
+                    end,
+                },
+            },
         },
         placeholderDescription21 = {
             order = 34,
@@ -866,6 +924,8 @@ function localAddon:loadAddon()
     self.isAboveClassic = select(4, GetBuildInfo()) > 82000
 
     self.db = AceDatabase:New("SvensBamAddonDB", defaults)
+    self:fixPetNotTable()
+
     AceConfig:RegisterOptionsTable("SvensBamAddon_MainOptions", mainOptions)
     AceConfig:RegisterOptionsTable("SvensBamAddon_GeneralOptions", generalOptions)
     AceConfig:RegisterOptionsTable("SvensBamAddon_ChannelOptions", channelOptions)
@@ -907,7 +967,8 @@ function localAddon:setPanelTexts()
     generalOptions.args.outputMessageDamageOption.name = self.db.char.color .. "Output Message Damage"
     generalOptions.args.outputMessageHealOption.name = self.db.char.color .. "Output Message Heal"
     generalOptions.args.thresholdOption.name = self.db.char.color .. "Least amount of damage/heal to trigger bam"
-    generalOptions.args.eventTypesToTriggerDescription.name = self.db.char.color .. "Event Types to Trigger"
+    generalOptions.args.critOptions.name = self.db.char.color .. "Event Types to Trigger"
+    generalOptions.args.petCritOptions.name = self.db.char.color .. "Pet Event Types to Trigger"
     generalOptions.args.triggerOptionsDescription.name = self.db.char.color .. "Trigger Options"
     generalOptions.args.otherOptionsDescription.name = self.db.char.color .. "Other Options"
     generalOptions.args.spellIgnoreListInput.name = self.db.char.color .. "Spells to ignore"
@@ -1102,4 +1163,11 @@ function localAddon:migrateToVersion10()
     self.db.char.isMigratedToVersion10 = true
     self:Print("Finished migrating database for Svens Bam Addon. You should see this message only once.")
 
+end
+
+-- In some point in alpha version, db.char.pet was a boolean and thus when loading the addon, we got an error.
+function localAddon:fixPetNotTable()
+    if type(localAddon.db.char.pet) ~= "table" then
+        localAddon.db.char.pet = defaults.char.pet
+    end
 end
