@@ -123,10 +123,16 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
     name = "",
     type = "group",
     args = {
+        chatFrameNameInputDescription = {
+            order = 4,
+            type = "description",
+            fontSize = "medium",
+            name = "to be replaced"
+        },
         chatFrameNameInput = {
-            order = 1,
+            order = 5,
             type = "input",
-            name = "to be replaced",
+            name = "",
             width = "full",
             desc = "Define Channel Frame you want SvensBamAddon to print to",
             get = function(_)
@@ -142,17 +148,25 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
 
-        placeholderDescriptionOutputMessage = {
-            order = 2,
+        placeholderDescription1 = {
+            order = 6,
             type = "description",
+            fontSize = "large",
             name = ""
         },
 
+        outputMessageDamageOptionDescription = {
+            order = 7,
+            type = "description",
+            fontSize = "medium",
+            name = "to be replaced"
+        },
+
         outputMessageDamageOption = {
-            order = 3,
+            order = 8,
             type = "input",
             width = "full",
-            name = "will be replaced",
+            name = "",
             desc = "Insert your damage message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
             get = function(_)
                 return localAddon.db.char.outputDamageMessage
@@ -161,16 +175,24 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.outputDamageMessage = value
             end
         },
-        placeholderDescription1 = {
-            order = 4,
+        placeholderDescription2 = {
+            order = 9,
             type = "description",
+            fontSize = "large",
             name = ""
         },
+
+        outputMessageHealOptionDescription = {
+            order = 10,
+            type = "description",
+            fontSize = "medium",
+            name = "to be replaced"
+        },
         outputMessageHealOption = {
-            order = 5,
+            order = 11,
             type = "input",
             width = "full",
-            name = "will be replaced",
+            name = "",
             desc = "Insert your heal message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
             get = function(_)
                 return localAddon.db.char.outputHealMessage
@@ -179,17 +201,23 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.outputHealMessage = value
             end
         },
-        placeholderDescription2 = {
-            order = 6,
+        placeholderDescription3 = {
+            order = 19,
             type = "description",
+            fontSize = "large",
             name = ""
         },
+        thresholdOptionDescription = {
+            order = 20,
+            type = "description",
+            fontSize = "medium",
+            name = "to be replaced"
+        },
         thresholdOption = {
-            order = 10,
+            order = 21,
             type = "input",
             width = "full",
-            name = "will be replaced",
-
+            name = "",
             desc = "Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything.",
             get = function(_)
                 return tostring(localAddon.db.char.threshold)
@@ -198,17 +226,24 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.threshold = tonumber(value)
             end
         },
-        placeholderDescription3 = {
-            order = 11,
+        placeholderDescription4 = {
+            order = 22,
             type = "description",
+            fontSize = "large",
             name = ""
         },
 
+        critOptionsDescription = {
+            order = 27,
+            type = "description",
+            fontSize = "medium",
+            name = "to be replaced"
+        },
         critOptions = {
             type = "group",
-            name = "To be Replaced",
-            inline = true, -- Makes the options appear as part of the parent group
-            order = 29, -- Adjust order to fit your needs
+            name = "",
+            inline = true,
+            order = 28,
             args = {
                 SpellDamageCheckbox = {
                     order = 1,
@@ -272,11 +307,23 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 },
             }
         },
+        placeholderDescription5 = {
+            order = 29,
+            type = "description",
+            fontSize = "large",
+            name = ""
+        },
+        petCritOptionsDescription = {
+            order = 30,
+            type = "description",
+            fontSize = "medium",
+            name = "to be replaced"
+        },
         petCritOptions = {
             type = "group",
-            name = "To be Replaced",
+            name = "",
             inline = true, -- Makes the options appear as part of the parent group
-            order = 30, -- Adjust order to fit your needs
+            order = 31, -- Adjust order to fit your needs
             args = {
                 spellDamage = {
                     order = 1,
@@ -339,19 +386,22 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 },
             },
         },
-        placeholderDescription21 = {
+        placeholderDescription6 = {
             order = 34,
             type = "description",
+            fontSize = "large",
             name = ""
         },
         triggerOptionsDescription = {
             order = 35,
             type = "description",
-            name = "will be replaced"
+            fontSize = "medium",
+            name = "to be replaced"
         },
-        placeholderDescription9 = {
+        placeholderDescription7 = {
             order = 36,
             type = "description",
+            fontSize = "large",
             name = ""
         },
         triggerOnCritRecordCheckbox = {
@@ -369,6 +419,7 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         placeholderDescription10 = {
             order = 41,
             type = "description",
+            fontSize = "large",
             name = ""
         },
         separateOffhandCrits = {
@@ -386,12 +437,14 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         placeholderDescription11 = {
             order = 43,
             type = "description",
+            fontSize = "large",
             name = ""
         },
         otherOptionsDescription = {
             order = 50,
             type = "description",
-            name = "will be replaced"
+            fontSize = "medium",
+            name = "to be replaced"
         },
         placeholderDescription12 = {
             order = 51,
@@ -431,15 +484,16 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.postLinkOfSpell = value
             end
         },
-        placeholderDescription55 = {
+        spellIgnoreListInputDescription = {
             order = 55,
             type = "description",
-            name = ""
+            fontSize = "medium",
+            name = "to be replaced"
         },
         spellIgnoreListInput = {
             order = 60,
             type = "input",
-            name = "to be replaced",
+            name = "",
             multiline = true,
             width = "double",
             desc = "Put each spell you want to ignore on a new line.",
@@ -468,7 +522,8 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
         fontColorDescription = {
             order = 70,
             type = "description",
-            name = "will be replaced"
+            fontSize = "medium",
+            name = "to be replaced"
         },
         placeholderDescription71 = {
             order = 71,
@@ -963,15 +1018,15 @@ function localAddon:setPanelTexts()
             .. "/bam report: report highest crits of each spell to channel list.\n"
             .. "/bam clear: delete list of highest crits.\n/bam config: Opens this config page."
 
-    generalOptions.args.chatFrameNameInput.name = self.db.char.color .. "Chat Frame to Print to"
-    generalOptions.args.outputMessageDamageOption.name = self.db.char.color .. "Output Message Damage"
-    generalOptions.args.outputMessageHealOption.name = self.db.char.color .. "Output Message Heal"
-    generalOptions.args.thresholdOption.name = self.db.char.color .. "Least amount of damage/heal to trigger bam"
-    generalOptions.args.critOptions.name = self.db.char.color .. "Event Types to Trigger"
-    generalOptions.args.petCritOptions.name = self.db.char.color .. "Pet Event Types to Trigger"
+    generalOptions.args.chatFrameNameInputDescription.name = self.db.char.color .. "Chat Frame to Print to"
+    generalOptions.args.outputMessageDamageOptionDescription.name = self.db.char.color .. "Output Message Damage"
+    generalOptions.args.outputMessageHealOptionDescription.name = self.db.char.color .. "Output Message Heal"
+    generalOptions.args.thresholdOptionDescription.name = self.db.char.color .. "Least amount of damage/heal to trigger bam Test"
+    generalOptions.args.critOptionsDescription.name = self.db.char.color .. "Event Types to Trigger"
+    generalOptions.args.petCritOptionsDescription.name = self.db.char.color .. "Pet Event Types to Trigger"
     generalOptions.args.triggerOptionsDescription.name = self.db.char.color .. "Trigger Options"
     generalOptions.args.otherOptionsDescription.name = self.db.char.color .. "Other Options"
-    generalOptions.args.spellIgnoreListInput.name = self.db.char.color .. "Spells to ignore"
+    generalOptions.args.spellIgnoreListInputDescription.name = self.db.char.color .. "Spells to ignore"
     generalOptions.args.fontColorDescription.name = self.db.char.color .. "Change Color of Font"
     channelOptions.name = self.db.char.color .. "Output Channel"
 end
