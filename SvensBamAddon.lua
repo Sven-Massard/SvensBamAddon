@@ -61,7 +61,11 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
     end
 
     if (spellId and self.db.char.postLinkOfSpell) then
-        spellLink = GetSpellLink(spellId)
+        if (self.isAboveClassic) then
+            spellLink = C_Spell.GetSpellLink(spellId)
+        else
+            spellLink = GetSpellLink(spellId)
+        end
     end
 
     if (amount ~= nil and tonumber(amount) < self.db.char.threshold and self.db.char.threshold ~= 0) then
