@@ -219,11 +219,7 @@ function localAddon:SlashCommand(msg)
     elseif (msg == "clear") then
         self:clearCritList();
     elseif (msg == "config") then
-        if (self.isAboveClassic) then
             Settings.OpenToCategory(self.mainOptionsCategoryID)
-        else
-            InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
-        end
     elseif (msg == "test") then
         _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Function not implemented")
     else
