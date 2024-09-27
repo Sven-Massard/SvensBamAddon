@@ -34,11 +34,7 @@ local menuList = {
 
     { text = "Open config", isNotRadio = true, notCheckable = true,
       func = function()
-          if (localAddon.isAboveClassic) then
               Settings.OpenToCategory(localAddon.mainOptionsCategoryID)
-          else
-              InterfaceOptionsFrame_OpenToCategory(localAddon.mainOptionsFrame)
-          end
       end
     },
     { text = "Close menu", isNotRadio = true, notCheckable = true },
