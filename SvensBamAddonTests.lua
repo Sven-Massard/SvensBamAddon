@@ -10,11 +10,10 @@ end
 function localAddon:runApiTests()
     print("Running tests")
 
-    -- TODO Remove isAboveClassic
-
     print("Need to test crit once manually")
-    spellLink = C_Spell.GetSpellLink(15431)
-    assertEquals("|cff71d5ff|Hspell:15431:0|h[Holy Nova]|h|r", spellLink, "Spell link broken")
+
+    assertEquals("|cff71d5ff|Hspell:15431:0|h[Holy Nova]|h|r", C_Spell.GetSpellLink(15431), "Spell link broken")
+
     assert(type(UnitGUID("player")) == "string" and #UnitGUID("player") > 0, "Player GUID invalid")
 
     SendChatMessage("Bam Test Say", "Say");
