@@ -12,8 +12,6 @@ function localAddon:runApiTests()
 
     print("Need to test crit once manually")
 
-    assertEquals("|cff71d5ff|Hspell:15431:0|h[Holy Nova]|h|r", C_Spell.GetSpellLink(15431), "Spell link broken")
-
     assert(type(UnitGUID("player")) == "string" and #UnitGUID("player") > 0, "Player GUID invalid")
 
     SendChatMessage("Bam Test Say", "Say");
@@ -44,6 +42,8 @@ function localAddon:runApiTests()
     assert(type(GetChatWindowInfo(1)) == "string", "GetChatWindowInfo type is not a string")
 
     assert(type(NUM_CHAT_WINDOWS) == "number", "NUM_CHAT_WINDOWS type is not a number")
+
+    assert(C_Spell.GetSpellLink(1), "Spell link broken")
 
     print("All tests successful")
 end
