@@ -81,13 +81,13 @@ function localAddon:reportCrits()
                 end
             elseif (k == "Whisper" and v == true) then
                 for _, w in pairs(self.db.char.whisperList) do
-                    SendChatMessage("Highest crits:", "WHISPER", "COMMON", w)
+                    SendChatMessage("Highest crits:", "WHISPER", select(2, GetDefaultLanguage()), w)
                     for _, c in ipairs(critList) do
                         local target = c.target
                         if target == nil then
                             target = "unknown"
                         end
-                        SendChatMessage(c.spellName .. " " .. c.amount .. " to " .. target, "WHISPER", "COMMON", w)
+                        SendChatMessage(c.spellName .. " " .. c.amount .. " to " .. target, "WHISPER", select(2, GetDefaultLanguage()), w)
                     end
                 end
             elseif (k == "battleNetWhisper" and v == true) then

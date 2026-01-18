@@ -139,7 +139,7 @@ function localAddon:postToChannel(output)
                 end
             elseif (k == "Whisper") then
                 for _, w in pairs(self.db.char.whisperList) do
-                    SendChatMessage(output, "WHISPER", "COMMON", w)
+                    SendChatMessage(output, "WHISPER", select(2, GetDefaultLanguage()), w)
                 end
             elseif (k == "battleNetWhisper") then
                 for _, w in pairs(self.db.char.battleNetWhisperBattleNetTagToId) do
@@ -147,7 +147,7 @@ function localAddon:postToChannel(output)
                 end
             elseif (k == "battleNetWhisper") then
                 for _, w in pairs(self.db.char.whisperList) do
-                    SendChatMessage(output, "WHISPER", "COMMON", w)
+                    SendChatMessage(output, "WHISPER", select(2, GetDefaultLanguage()), w)
                 end
             elseif (k == "Sound_damage") then
                 if (eventType ~= "SPELL_HEAL") then
