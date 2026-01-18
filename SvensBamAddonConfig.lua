@@ -946,8 +946,6 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
 }
 
 function localAddon:loadAddon()
-    self.isAboveClassic = select(4, GetBuildInfo()) > 82000
-
     self.db = AceDatabase:New("SvensBamAddonDB", defaults)
 
     AceConfig:RegisterOptionsTable("SvensBamAddon_MainOptions", mainOptions)
@@ -1015,13 +1013,9 @@ function localAddon:alignBattleNetTagToId(bnetWhisperList)
     local numBNetTotal, _, _, _ = BNGetNumFriends()
     for i = 1, numBNetTotal do
         local bnetIDAccount, battleTag
-        if (not self.isAboveClassic) then
-            bnetIDAccount, _, battleTag, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = BNGetFriendInfo(i)
-        else
-            local acc = C_BattleNet.GetFriendAccountInfo(i)
-            bnetIDAccount = acc.bnetAccountID
-            battleTag = acc.battleTag
-        end
+        local acc = C_BattleNet.GetFriendAccountInfo(i)
+        bnetIDAccount = acc.bnetAccountID
+        battleTag = acc.battleTag
         --local accountName = battleTag:gsub("(.*)#.*$", "%1")
         if (bnetWhisperList[battleTag]) then
             battleNetTagToIdMap[battleTag] = bnetIDAccount;
