@@ -63,7 +63,7 @@ function localAddon:reportCrits()
                     _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. c.spellName .. " " .. c.amount .. " to " .. target)
                 end
             elseif (k == "Officer" and v == true) then
-                if (CanEditOfficerNote()) then
+                if (C_GuildInfo.CanEditOfficerNote()) then
                     self:ReportToChannel(k)
                 end
             elseif (k == "Battleground" and v == true) then

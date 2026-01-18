@@ -60,14 +60,6 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
         end
     end
 
-    if (spellId and self.db.char.postLinkOfSpell) then
-        if (self.isAboveClassic) then
-            spellLink = C_Spell.GetSpellLink(spellId)
-        else
-            spellLink = GetSpellLink(spellId)
-        end
-    end
-
     if (amount ~= nil and tonumber(amount) < self.db.char.threshold and self.db.char.threshold ~= 0) then
         do
             return
@@ -96,8 +88,8 @@ function localAddon:COMBAT_LOG_EVENT_UNFILTERED()
             end
 
             local output
-            if (spellLink) then
-                spellName = spellLink
+            if (spellId and self.db.char.postLinkOfSpell) then
+                spellName = C_Spell.GetSpellLink(spellId)
             end
             if eventType == "SPELL_HEAL" then
                 output = self.db.char.outputHealMessage:gsub("(SN)", spellName):gsub("(SD)", amount):gsub("TN", targetName)
@@ -126,7 +118,7 @@ function localAddon:postToChannel(output)
                     SendChatMessage(output, "INSTANCE_CHAT")
                 end
             elseif (k == "Officer") then
-                if (CanEditOfficerNote()) then
+                if (C_GuildInfo.CanEditOfficerNote()) then
                     SendChatMessage(output, k)
                 end
             elseif (k == "Raid" or v == "Raid_Warning") then
@@ -144,10 +136,6 @@ function localAddon:postToChannel(output)
             elseif (k == "battleNetWhisper") then
                 for _, w in pairs(self.db.char.battleNetWhisperBattleNetTagToId) do
                     BNSendWhisper(w, output)
-                end
-            elseif (k == "battleNetWhisper") then
-                for _, w in pairs(self.db.char.whisperList) do
-                    SendChatMessage(output, "WHISPER", select(2, GetDefaultLanguage()), w)
                 end
             elseif (k == "Sound_damage") then
                 if (eventType ~= "SPELL_HEAL") then
@@ -219,9 +207,9 @@ function localAddon:SlashCommand(msg)
     elseif (msg == "clear") then
         self:clearCritList();
     elseif (msg == "config") then
-            Settings.OpenToCategory(self.mainOptionsCategoryID)
+        Settings.OpenToCategory(self.mainOptionsCategoryID)
     elseif (msg == "test") then
-        _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Function not implemented")
+        self:runApiTests();
     else
         _G["ChatFrame" .. self.db.char.chatFrameIndex]:AddMessage(self.db.char.color .. "Bam Error: Unknown command")
     end

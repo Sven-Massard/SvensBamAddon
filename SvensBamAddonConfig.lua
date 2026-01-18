@@ -842,32 +842,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 return listAsString
             end,
             set = function(_, value)
-                local bnetWhisperList = {}
-                for arg in string.gmatch(value, "[^\r\n]+") do
-                    bnetWhisperList[arg] = true
-                end
-
-                local numBNetTotal, _, _, _ = BNGetNumFriends()
-                localAddon.db.char.battleNetWhisperBattleNetTagToId = {}
-                for i = 1, numBNetTotal do
-                    if (not localAddon.isAboveClassic) then
-                        bnetIDAccount, _, battleTag, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = BNGetFriendInfo(i)
-                    else
-                        local acc = C_BattleNet.GetFriendAccountInfo(i)
-                        bnetIDAccount = acc.bnetAccountID
-                        battleTag = acc.battleTag
-                    end
-                    --local accountName = battleTag:gsub("(.*)#.*$", "%1")
-                    if (bnetWhisperList[battleTag] == true) then
-                        localAddon.db.char.battleNetWhisperBattleNetTagToId[battleTag] = bnetIDAccount;
-                    end
-                end
-
-                for k, _ in pairs(bnetWhisperList) do
-                    if (localAddon.db.char.battleNetWhisperBattleNetTagToId[k] == nil) then
-                        _G["ChatFrame" .. localAddon.db.char.chatFrameIndex]:AddMessage(localAddon.db.char.color .. "Bnet account name " .. k .. " not found.")
-                    end
-                end
+                localAddon.db.char.battleNetWhisperBattleNetTagToId = localAddon:mapBattleNetTagToId(value)
             end
         },
         placeholderDescription12 = {
@@ -974,7 +949,6 @@ function localAddon:loadAddon()
     self.isAboveClassic = select(4, GetBuildInfo()) > 82000
 
     self.db = AceDatabase:New("SvensBamAddonDB", defaults)
-    self:fixPetNotTable()
 
     AceConfig:RegisterOptionsTable("SvensBamAddon_MainOptions", mainOptions)
     AceConfig:RegisterOptionsTable("SvensBamAddon_GeneralOptions", generalOptions)
@@ -985,7 +959,7 @@ function localAddon:loadAddon()
 
     self:setPanelTexts()
 
-    self:realignBattleNetTagToId()
+    localAddon.db.char.battleNetWhisperBattleNetTagToId = self:alignBattleNetTagToId(localAddon.db.char.battleNetWhisperBattleNetTagToId)
 
     icon:Register("SvensBamAddon_dataObject", MinimapIcon, self.db.char.minimap)
     if (not self.db.char.minimap.hide) then
@@ -1035,9 +1009,10 @@ function localAddon:setIndexOfChatFrame(chatFrameName)
     return false
 end
 
-function localAddon:realignBattleNetTagToId()
-    local numBNetTotal, _, _, _ = BNGetNumFriends()
+function localAddon:alignBattleNetTagToId(bnetWhisperList)
 
+    local battleNetTagToIdMap = {}
+    local numBNetTotal, _, _, _ = BNGetNumFriends()
     for i = 1, numBNetTotal do
         local bnetIDAccount, battleTag
         if (not self.isAboveClassic) then
@@ -1048,16 +1023,27 @@ function localAddon:realignBattleNetTagToId()
             battleTag = acc.battleTag
         end
         --local accountName = battleTag:gsub("(.*)#.*$", "%1")
-        if (localAddon.db.char.battleNetWhisperBattleNetTagToId[battleTag] ~= nil) then
-            localAddon.db.char.battleNetWhisperBattleNetTagToId[battleTag] = bnetIDAccount;
+        if (bnetWhisperList[battleTag]) then
+            battleNetTagToIdMap[battleTag] = bnetIDAccount;
         end
-
     end
+
+    return battleNetTagToIdMap
 end
 
--- At some point in alpha version, db.char.pet was a boolean and thus when loading the addon, we got an error.
-function localAddon:fixPetNotTable()
-    if type(localAddon.db.char.pet) ~= "table" then
-        localAddon.db.char.pet = defaults.char.pet
+function localAddon:mapBattleNetTagToId(value)
+    local bnetWhisperList = {}
+    for arg in string.gmatch(value, "[^\r\n]+") do
+        bnetWhisperList[arg] = true
     end
+
+    local battleNetTagToIdMap = self:alignBattleNetTagToId(bnetWhisperList)
+
+    for k, _ in pairs(bnetWhisperList) do
+        if (battleNetTagToIdMap[k] == nil) then
+            _G["ChatFrame" .. localAddon.db.char.chatFrameIndex]:AddMessage(localAddon.db.char.color .. "Bnet account name " .. k .. " not found.")
+        end
+    end
+
+    return battleNetTagToIdMap
 end
