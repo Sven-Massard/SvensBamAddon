@@ -118,16 +118,10 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
     name = "",
     type = "group",
     args = {
-        chatFrameNameInputDescription = {
-            order = 4,
-            type = "description",
-            fontSize = "medium",
-            name = "to be replaced"
-        },
         chatFrameNameInput = {
             order = 5,
             type = "input",
-            name = "",
+            name = "Chat Frame to Print to",
             width = "full",
             desc = "Define Channel Frame you want SvensBamAddon to print to",
             get = function(_)
@@ -143,25 +137,11 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             end
         },
 
-        placeholderDescription1 = {
-            order = 6,
-            type = "description",
-            fontSize = "large",
-            name = ""
-        },
-
-        outputMessageDamageOptionDescription = {
-            order = 7,
-            type = "description",
-            fontSize = "medium",
-            name = "to be replaced"
-        },
-
         outputMessageDamageOption = {
             order = 8,
             type = "input",
             width = "full",
-            name = "",
+            name = "Output Message Damage",
             desc = "Insert your damage message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
             get = function(_)
                 return localAddon.db.char.outputDamageMessage
@@ -170,24 +150,12 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.outputDamageMessage = value
             end
         },
-        placeholderDescription2 = {
-            order = 9,
-            type = "description",
-            fontSize = "large",
-            name = ""
-        },
 
-        outputMessageHealOptionDescription = {
-            order = 10,
-            type = "description",
-            fontSize = "medium",
-            name = "to be replaced"
-        },
         outputMessageHealOption = {
             order = 11,
             type = "input",
             width = "full",
-            name = "",
+            name = "Output Message Heal",
             desc = "Insert your heal message here.\nSN will be replaced with spell name,\nSD with spell damage,\nTN with enemy name.\nDefault: BAM! SN SD!",
             get = function(_)
                 return localAddon.db.char.outputHealMessage
@@ -196,23 +164,11 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.outputHealMessage = value
             end
         },
-        placeholderDescription3 = {
-            order = 19,
-            type = "description",
-            fontSize = "large",
-            name = ""
-        },
-        thresholdOptionDescription = {
-            order = 20,
-            type = "description",
-            fontSize = "medium",
-            name = "to be replaced"
-        },
         thresholdOption = {
             order = 21,
             type = "input",
             width = "full",
-            name = "",
+            name = "Least amount of damage/heal to trigger bam Test",
             desc = "Damage or heal must be at least this high to trigger bam!\nSet 0 to trigger on everything.",
             get = function(_)
                 return tostring(localAddon.db.char.threshold)
@@ -479,16 +435,15 @@ local generalOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
                 localAddon.db.char.postLinkOfSpell = value
             end
         },
-        spellIgnoreListInputDescription = {
+        placeholderDescription14 = {
             order = 55,
             type = "description",
-            fontSize = "medium",
-            name = "to be replaced"
+            name = ""
         },
         spellIgnoreListInput = {
             order = 60,
             type = "input",
-            name = "",
+            name = "Spells to ignore",
             multiline = true,
             width = "double",
             desc = "Put each spell you want to ignore on a new line.",
@@ -981,16 +936,11 @@ function localAddon:setPanelTexts()
             .. "/bam report: report highest crits of each spell to channel list.\n"
             .. "/bam clear: delete list of highest crits.\n/bam config: Opens this config page."
 
-    generalOptions.args.chatFrameNameInputDescription.name = self.db.char.color .. "Chat Frame to Print to"
-    generalOptions.args.outputMessageDamageOptionDescription.name = self.db.char.color .. "Output Message Damage"
-    generalOptions.args.outputMessageHealOptionDescription.name = self.db.char.color .. "Output Message Heal"
-    generalOptions.args.thresholdOptionDescription.name = self.db.char.color .. "Least amount of damage/heal to trigger bam Test"
     generalOptions.args.critOptionsDescription.name = self.db.char.color .. "Event Types to Trigger"
     generalOptions.args.petCritOptionsDescription.name = self.db.char.color .. "Pet Event Types to Trigger"
     generalOptions.args.triggerOptionsDescription.name = self.db.char.color .. "Trigger Options"
     generalOptions.args.otherOptionsDescription.name = self.db.char.color .. "Other Options"
-    generalOptions.args.spellIgnoreListInputDescription.name = self.db.char.color .. "Spells to ignore"
-    generalOptions.args.fontColorDescription.name = self.db.char.color .. "Change Color of Font"
+    generalOptions.args.fontColorDescription.name = self.db.char.color .. "Change Color of Font. Used when printing)"
     channelOptions.name = self.db.char.color .. "Output Channel"
 end
 

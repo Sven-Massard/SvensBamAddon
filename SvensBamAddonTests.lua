@@ -11,6 +11,7 @@ function localAddon:runApiTests()
     print("Running tests")
 
     print("Need to test crit once manually")
+    print("Need to test minimap button manually")
 
     assert(type(UnitGUID("player")) == "string" and #UnitGUID("player") > 0, "Player GUID invalid")
 

@@ -1,7 +1,7 @@
 ## Interface: 20505
 ## Title: Svens Bam AddOn
 ## Author: Verband
-## Version: 1.11.4
+## Version: 1.12.0
 ## Notes: Makes a bam sound and outputs a message when you crit
 ## SavedVariables: SvensBamAddonDB
 ## OptionalDeps: Ace3
