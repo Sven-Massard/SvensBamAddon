@@ -823,7 +823,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             name = "Sound file for damage to play",
             width = "double",
             multiline = true,
-            desc = "Specify sound file path, beginning from your WoW _classic_ folder.\n"
+            desc = "Specify sound file path, beginning from your WoW _classic_, _classic_era_ or _anniversary_ folder.\n"
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths. Put each file on a new line. Bam Addon will then play a random sound of that list.",
             get = function(_)
@@ -863,7 +863,7 @@ local channelOptions = { -- https://www.wowace.com/projects/ace3/pages/ace-confi
             width = "double",
             name = "Sound file for heal to play",
             multiline = true,
-            desc = "Specify sound file path, beginning from your WoW _classic_ folder.\n"
+            desc = "Specify sound file path, beginning from your WoW _classic_, _classic_era_ or _anniversary_ folder.\n"
                     .. "If you copy a sound file to your World of Warcraft folder, you have to restart the client before that file works!\n"
                     .. "You can enter multiple file paths. Put each file on a new line. Bam Addon will then play a random sound of that list.",
             get = function(_)
@@ -962,13 +962,14 @@ function localAddon:alignBattleNetTagToId(bnetWhisperList)
     local battleNetTagToIdMap = {}
     local numBNetTotal, _, _, _ = BNGetNumFriends()
     for i = 1, numBNetTotal do
-        local bnetIDAccount, battleTag
         local acc = C_BattleNet.GetFriendAccountInfo(i)
-        bnetIDAccount = acc.bnetAccountID
-        battleTag = acc.battleTag
-        --local accountName = battleTag:gsub("(.*)#.*$", "%1")
-        if (bnetWhisperList[battleTag]) then
-            battleNetTagToIdMap[battleTag] = bnetIDAccount;
+        if acc then
+            -- Check if acc is not nil
+            local bnetIDAccount = acc.bnetAccountID
+            local battleTag = acc.battleTag
+            if bnetWhisperList[battleTag] then
+                battleNetTagToIdMap[battleTag] = bnetIDAccount
+            end
         end
     end
 
