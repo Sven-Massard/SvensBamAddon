@@ -1,6 +1,7 @@
 # Lib: LibDropDownMenu
 
-## [r45](https://github.com/HizurosWoWAddOns/LibDropDownMenu/tree/r45) (2024-08-14)
-[Full Changelog](https://github.com/HizurosWoWAddOns/LibDropDownMenu/commits/r45) [Previous Releases](https://github.com/HizurosWoWAddOns/LibDropDownMenu/releases)
+## [r61](https://github.com/HizurosWoWAddOns/LibDropDownMenu/tree/r61) (2026-06-01)
 
-- Update toc file; wrong version number  
+[Full Changelog](https://github.com/HizurosWoWAddOns/LibDropDownMenu/commits/r61) [Previous Releases](https://github.com/HizurosWoWAddOns/LibDropDownMenu/releases)
+
+- Update toc file  

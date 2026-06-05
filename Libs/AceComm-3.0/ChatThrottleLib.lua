@@ -588,6 +588,7 @@ function ChatThrottleLib:SendChatMessage(prio, prefix, text, chattype, language,
     self:Enqueue(prio, queueName or prefix, msg)
 end
 
+
 local function SendAddonMessageInternal(self, sendFunction, prio, prefix, text, chattype, target, queueName, callbackFn, callbackArg)
     local nSize = #text + self.MSG_OVERHEAD
 
@@ -626,6 +627,7 @@ local function SendAddonMessageInternal(self, sendFunction, prio, prefix, text, 
     self:Enqueue(prio, queueName or prefix, msg)
 end
 
+
 function ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, queueName, callbackFn, callbackArg)
     if not self or not prio or not prefix or not text or not chattype or not self.Prio[prio] then
         error('Usage: ChatThrottleLib:SendAddonMessage("{BULK||NORMAL||ALERT}", "prefix", "text", "chattype"[, "target"])', 2)
@@ -638,6 +640,7 @@ function ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, 
     local sendFunction = _G.C_ChatInfo.SendAddonMessage
     SendAddonMessageInternal(self, sendFunction, prio, prefix, text, chattype, target, queueName, callbackFn, callbackArg)
 end
+
 
 function ChatThrottleLib:SendAddonMessageLogged(prio, prefix, text, chattype, target, queueName, callbackFn, callbackArg)
     if not self or not prio or not prefix or not text or not chattype or not self.Prio[prio] then
